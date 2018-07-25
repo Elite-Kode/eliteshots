@@ -1,5 +1,5 @@
 /*
- * KodeBlox Copyright 2017 Sayak Mukhopadhyay
+ * KodeBlox Copyright 2018 Sayak Mukhopadhyay
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,58 +19,28 @@
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-let eddb_api_url = require('../secrets').eddb_api_db_url;
-let elite_bgs_url = require('../secrets').elite_bgs_db_url;
+let elite_shots_url = require('../secrets').elite_shots_db_url;
 
-let eddb_api_connection;
-let elite_bgs_connection;
+let elite_shots_connection;
 
 function connect() {
-    eddb_api_connection = mongoose.createConnection(eddb_api_url);
-    elite_bgs_connection = mongoose.createConnection(elite_bgs_url);
+    elite_shots_connection = mongoose.createConnection(elite_shots_url);
 }
 
 connect();
 
-eddb_api_connection.on('connected', () => {
-    console.log(`Connected to ${eddb_api_url}`);
+elite_shots_connection.on('connected', () => {
+    console.log(`Connected to ${elite_shots_url}`);
 });
 
-eddb_api_connection.on('error', err => {
-    console.log(`Mongoose error ${err}`);
-});
-
-elite_bgs_connection.on('connected', () => {
-    console.log(`Connected to ${elite_bgs_url}`);
-});
-
-elite_bgs_connection.on('error', err => {
+elite_shots_connection.on('error', err => {
     console.log(`Mongoose error ${err}`);
 });
 
 (function () {
     let tracker = 0;
-    eddb_api_connection.on('disconnected', () => {
-        console.log(`Mongoose connection to ${eddb_api_url} disconnected`);
-        if (tracker < 5) {
-            console.log('Mongoose disconnected. Reconnecting in 5 seconds');
-            tracker++;
-
-            setTimeout(() => {
-                tracker--;
-            }, 60000);
-
-            setTimeout(() => {
-                connect();
-            }, 5000);
-        }
-    })
-});
-
-(function () {
-    let tracker = 0;
-    elite_bgs_connection.on('disconnected', () => {
-        console.log(`Mongoose connection to ${elite_bgs_url} disconnected`);
+    elite_shots_connection.on('disconnected', () => {
+        console.log(`Mongoose connection to ${elite_shots_url} disconnected`);
         if (tracker < 5) {
             console.log('Mongoose disconnected. Reconnecting in 5 seconds');
             tracker++;
@@ -87,15 +57,11 @@ elite_bgs_connection.on('error', err => {
 });
 
 process.on('SIGINT', () => {
-    eddb_api_connection.close(() => {
-        console.log(`Connection to ${eddb_api_url} closed via app termination`);
-    });
-    elite_bgs_connection.close(() => {
-        console.log(`Connection to ${elite_bgs_url} closed via app termination`);
+    elite_shots_connection.close(() => {
+        console.log(`Connection to ${elite_shots_url} closed via app termination`);
     });
     process.exit(0);
 });
 
-module.exports.eddb_api = eddb_api_connection;
-module.exports.elite_bgs = elite_bgs_connection;
+module.exports.elite_shots = elite_bgs_connection;
 module.exports.mongoose = mongoose;
