@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height>
+  <div>
     <ed-toolbar>
     </ed-toolbar>
     <v-content>
@@ -7,7 +7,7 @@
         <h1>Login</h1>
       </v-container>
     </v-content>
-  </v-container>
+  </div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height>
+  <div>
     <ed-toolbar>
       <v-tabs
         slot="toolbar-tabs"
@@ -18,7 +18,7 @@
         <router-view></router-view>
       </v-container>
     </v-content>
-  </v-container>
+  </div>
 </template>
 
 <script>
