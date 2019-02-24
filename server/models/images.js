@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-"use strict";
+'use strict'
 
-module.exports = new Promise((resolve, reject) => {
-    let db = require('../db');
-    let connection = db.elite_shots;
-    let mongoose = db.mongoose;
-    let Schema = mongoose.Schema;
+module.exports = async () => {
+  let db = require('../db')
+  let connection = db.elite_shots
+  let mongoose = db.mongoose
+  let Schema = mongoose.Schema
 
-    let images = new Schema({
-        title: String,
-        title_lower: { type: String, lowercase: true, index: true },
-        description: String,
-        description_lower: { type: String, lowercase: true, index: true },
-        uploaded_at: Date,
-        last_modified_at: Date
-    }, { runSettersOnQuery: true });
+  let images = new Schema({
+    image_location: String,
+    thumbnail_location: String,
+    low_res_location: String,
+    title: String,
+    title_lower: {type: String, lowercase: true, index: true},
+    description: String,
+    description_lower: {type: String, lowercase: true, index: true},
+    album_id: {type: ObjectId, index: true},
+    uploaded_at: Date,
+    last_modified_at: Date,
+    user_id: {type: ObjectId, index: true}
+  }, {runSettersOnQuery: true})
 
-    let model = connection.model('images', images);
-
-    resolve(model);
-})
+  return connection.model('images', images)
+}

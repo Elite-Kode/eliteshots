@@ -14,58 +14,58 @@
  * limitations under the License.
  */
 
-"use strict";
+'use strict'
 
-const express = require('express');
-const path = require('path');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
+const express = require('express')
+const path = require('path')
+const logger = require('morgan')
+const bodyParser = require('body-parser')
 
-const app = express();
+const bugsnagClient = require('./server/bugsnag')
+const bugsnagClientMiddleware = bugsnagClient.getPlugin('express')
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'dist')));
+require('./server/db').connect()
 
-let host = '';
-if (process.env.NODE_ENV === 'development') {
-    host = 'localhost:3002';
-} else if (process.env.NODE_ENV === 'production') {
-    host = 'eliteshots.kodeblox.com';
-}
+const app = express()
+
+app.use(bugsnagClientMiddleware.requestHandler)
+app.use(logger('dev'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(express.static(path.join(__dirname, 'dist')))
 
 // Pass all 404 errors called by browser to angular
 app.all('*', (req, res) => {
-    console.log(`Server 404 request: ${req.originalUrl}`);
-    res.status(200).sendFile(path.join(__dirname, 'dist', 'index.html'))
-});
+  console.log(`Server 404 request: ${req.originalUrl}`)
+  res.status(200).sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
 
 // error handlers
+app.use(bugsnagClientMiddleware.errorHandler)
 
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.send({
-            message: err.message,
-            error: err
-        });
-        console.log(err);
-    });
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500)
+    res.send({
+      message: err.message,
+      error: err
+    })
+    console.log(err)
+  })
 }
 
 // production error handler
 // no stacktraces leaked to user
 if (app.get('env') === 'production') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.send({
-            message: err.message,
-            error: {}
-        });
-    });
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500)
+    res.send({
+      message: err.message,
+      error: {}
+    })
+  })
 }
 
-module.exports = app;
+module.exports = app

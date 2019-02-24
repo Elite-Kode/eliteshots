@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-'use strict'
+"use strict";
 
-module.exports = async () => {
-  let db = require('../db')
-  let connection = db.elite_shots
-  let mongoose = db.mongoose
-  let Schema = mongoose.Schema
+const bugsnag = require('@bugsnag/js');
+const bugsnagExpress = require('@bugsnag/plugin-express');
 
-  let albums = new Schema({
-    title: String,
-    title_lower: {type: String, lowercase: true, index: true},
-    description: String,
-    description_lower: {type: String, lowercase: true, index: true},
-    created_at: Date,
-    last_modified_at: Date,
-    user_id: {type: ObjectId, index: true}
-  }, {runSettersOnQuery: true})
+const processVars = require('../processVars');
 
-  return connection.model('albums', albums)
-}
+let bugsnagClient = bugsnag({
+  apiKey: require('../secrets').bugsnag_token,
+  notifyReleaseStages: ['development', 'production'],
+  appVersion: processVars.version
+});
+bugsnagClient.use(bugsnagExpress);
+
+module.exports = bugsnagClient;

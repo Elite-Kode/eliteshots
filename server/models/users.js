@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-"use strict";
+'use strict'
 
-module.exports = new Promise((resolve, reject) => {
-    let db = require('../db');
-    let connection = db.elite_shots;
-    let mongoose = db.mongoose;
-    let Schema = mongoose.Schema;
+module.exports = async () => {
+  let db = require('../db')
+  let connection = db.elite_shots
+  let mongoose = db.mongoose
+  let Schema = mongoose.Schema
 
-    let users = new Schema({
-        id: String,
-        discord_username: String,
-        email: String,
-        discord_avatar: String,
-        discord_discriminator: String,
-        patronage: {
-            level: Number,
-            since: Date
-        },
-        donation: [{
-            amount: Number,
-            date: Date
-        }]
-    }, { runSettersOnQuery: true });
+  let users = new Schema({
+    discord_id: String,
+    discord_username: String,
+    discord_avatar: String,
+    discord_discriminator: String,
+    frontier_id: String,
+    commander: String,
+    email: String,
+    joined_at: Date
+  }, {runSettersOnQuery: true})
 
-    let model = connection.model('users', users);
-
-    resolve(model);
-})
+  return connection.model('users', users)
+}

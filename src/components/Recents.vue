@@ -1,9 +1,9 @@
 <template>
-  <h1>Yolo</h1>
+  <h1>Recents</h1>
 </template>
 
 <script>
 export default {
-  name: 'Home'
+  name: 'Recents'
 }
 </script>

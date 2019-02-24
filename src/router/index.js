@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MainLayout from '@/components/MainLayout'
-import Home from '@/components/Home'
+import Popular from '@/components/Popular'
+import Recents from '@/components/Recents'
+import Curated from '@/components/Curated'
 
 Vue.use(Router)
 
@@ -13,7 +15,15 @@ export default new Router({
       children: [
         {
           path: '',
-          component: Home
+          component: Popular
+        },
+        {
+          path: 'recents',
+          component: Recents
+        },
+        {
+          path: 'curated',
+          component: Curated
         }
       ]
     }

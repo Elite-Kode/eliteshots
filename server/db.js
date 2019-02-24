@@ -14,54 +14,55 @@
  * limitations under the License.
  */
 
-"use strict";
+'use strict'
 
-let mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+let mongoose = require('mongoose')
+mongoose.Promise = global.Promise
 
-let elite_shots_url = require('../secrets').elite_shots_db_url;
+let elite_shots_url = require('../secrets').elite_shots_db_url
 
-let elite_shots_connection;
+let elite_shots_connection
 
-function connect() {
-    elite_shots_connection = mongoose.createConnection(elite_shots_url);
+function connect () {
+  elite_shots_connection = mongoose.createConnection(elite_shots_url)
 }
 
-connect();
+connect()
 
 elite_shots_connection.on('connected', () => {
-    console.log(`Connected to ${elite_shots_url}`);
-});
+  console.log(`Connected to ${elite_shots_url}`)
+})
 
 elite_shots_connection.on('error', err => {
-    console.log(`Mongoose error ${err}`);
+  console.log(`Mongoose error ${err}`)
 });
 
 (function () {
-    let tracker = 0;
-    elite_shots_connection.on('disconnected', () => {
-        console.log(`Mongoose connection to ${elite_shots_url} disconnected`);
-        if (tracker < 5) {
-            console.log('Mongoose disconnected. Reconnecting in 5 seconds');
-            tracker++;
+  let tracker = 0
+  elite_shots_connection.on('disconnected', () => {
+    console.log(`Mongoose connection to ${elite_shots_url} disconnected`)
+    if (tracker < 5) {
+      console.log('Mongoose disconnected. Reconnecting in 5 seconds')
+      tracker++
 
-            setTimeout(() => {
-                tracker--;
-            }, 60000);
+      setTimeout(() => {
+        tracker--
+      }, 60000)
 
-            setTimeout(() => {
-                connect();
-            }, 5000);
-        }
-    })
-});
+      setTimeout(() => {
+        connect()
+      }, 5000)
+    }
+  })
+})();
 
 process.on('SIGINT', () => {
-    elite_shots_connection.close(() => {
-        console.log(`Connection to ${elite_shots_url} closed via app termination`);
-    });
-    process.exit(0);
-});
+  elite_shots_connection.close(() => {
+    console.log(`Connection to ${elite_shots_url} closed via app termination`)
+  })
+  process.exit(0)
+})
 
-module.exports.elite_shots = elite_bgs_connection;
-module.exports.mongoose = mongoose;
+module.exports.connect = connect;
+module.exports.elite_shots = elite_shots_connection
+module.exports.mongoose = mongoose
