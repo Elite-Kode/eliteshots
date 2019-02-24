@@ -1,9 +1,8 @@
 <template>
   <v-toolbar app color="primary" dark tabs>
-    <v-toolbar-title class="headline text-uppercase" @click="goToHome()">
-      <v-btn icon large>
+    <v-toolbar-title class="headline text-uppercase">
+      <v-btn icon large to="/" exact>
         <img
-          class="eliteshots-topband-logo"
           :src="require('@/assets/EliteShotsv1.png')"
           alt="Elite Shots"
         >
@@ -17,17 +16,31 @@
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
     </v-btn>
-    <v-tabs
-      slot="extension"
-      color="accent"
-      align-with-title
-      slider-color="secondary"
-      light
-    >
-      <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link" exact>
-        {{tabItem.name}}
-      </v-tab>
-    </v-tabs>
+    <v-menu offset-y>
+      <v-btn
+        slot="activator" icon
+        round>
+        <img
+          :src="require('@/assets/ED Avatar v2-inverse.png')"
+          alt="User Icon"
+        >
+      </v-btn>
+      <v-list>
+        <v-list-tile to="/login">
+          <v-list-tile-title>Login</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile to="/admin">
+          <v-list-tile-title>Admin</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile to="/profile">
+          <v-list-tile-title>Profile</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile to="/about">
+          <v-list-tile-title>About</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+    <slot name="toolbar-tabs" slot="extension"></slot>
   </v-toolbar>
 </template>
 
@@ -36,20 +49,6 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Toolbar',
-  data () {
-    return {
-      tabItems: [{
-        name: 'Popular',
-        link: '/'
-      }, {
-        name: 'Recents',
-        link: '/recents'
-      }, {
-        name: 'Curated',
-        link: '/curated'
-      }]
-    }
-  },
   computed: {
     ...mapState({
       themes: state => state.themes.themes
@@ -71,9 +70,6 @@ export default {
         this.theme = this.themes[0]
       }
       localStorage.setItem('theme', this.theme)
-    },
-    goToHome () {
-      this.$router.push({ name: 'home' })
     }
   }
 }
