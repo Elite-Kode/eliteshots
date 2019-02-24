@@ -2,11 +2,11 @@ const path = require('path');
 const fs = require('fs-extra');
 const appVersion = require('./package.json').version;
 
-// const angularVersionFilePath = path.join(__dirname + '/src/environments/version.ts');
-const nodeVersionFilePath = path.join(__dirname + '/server/version.js');
+const vueVersionFilePath = path.join(__dirname + '/src/version.js');
+const nodeVersionFilePath = path.join(__dirname + '/version.js');
 
-// const angularSrc = `export const version = '${appVersion}';\n`;
+const vueSrc = `export default '${appVersion}'\n`;
 const nodeSrc = `module.exports = '${appVersion}';\n`;
 
-// fs.writeFileSync(angularVersionFilePath, angularSrc);
+fs.writeFileSync(vueVersionFilePath, vueSrc);
 fs.writeFileSync(nodeVersionFilePath, nodeSrc);

@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'development') {
   protocol = 'https';
 }
 
-let version = require('./server/version');
+let version = require('./version');
 
 module.exports = {
   host, protocol, version
