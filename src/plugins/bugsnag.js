@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import bugsnag from '@bugsnag/js'
 import bugsnagVue from '@bugsnag/plugin-vue'
-import token from '../../secrets'
+import token from '../secrets'
 import version from '../version'
 
 const bugsnagClient = bugsnag({

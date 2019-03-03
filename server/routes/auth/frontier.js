@@ -16,22 +16,13 @@
 
 'use strict'
 
-module.exports = (async () => {
-  let db = require('../db')
-  let connection = db.elite_shots
-  let mongoose = db.mongoose
-  let Schema = mongoose.Schema
+const express = require('express')
+const passport = require('passport')
 
-  let users = new Schema({
-    discord_id: String,
-    discord_username: String,
-    discord_avatar: String,
-    discord_discriminator: String,
-    frontier_id: String,
-    commander: String,
-    email: String,
-    trusted: Boolean
-  }, {runSettersOnQuery: true})
+let router = express.Router()
 
-  return connection.model('users', users)
-})()
+router.get('/', passport.authenticate('frontier', { successRedirect: '/', failureRedirect: '/' }))
+
+router.get('/callback', passport.authenticate('frontier', { successRedirect: '/', failureRedirect: '/' }))
+
+module.exports = router

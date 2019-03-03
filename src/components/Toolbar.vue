@@ -12,34 +12,47 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
 
+    <v-btn v-if="authenticated" href="/auth/logout" icon>
+      <v-icon>fas fa-sign-out-alt</v-icon>
+    </v-btn>
+    <v-dialog v-else v-model="dialog" width="360">
+
+      <v-btn slot="activator" icon>
+        <v-icon>fas fa-sign-in-alt</v-icon>
+      </v-btn>
+
+      <v-card>
+        <v-card-title primary-title class="title text-uppercase">
+          Login
+        </v-card-title>
+
+        <v-card-text>
+          Login using your Frontier credentials for a seamless integration
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn block color="primary" href="/auth/frontier" class="login-button">
+            Login with <img :src="require('@/assets/Frontier-invert.svg')">
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-btn icon @click="switchTheme()">
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
     </v-btn>
-    <v-menu offset-y>
-      <v-btn
-        slot="activator" icon
-        round>
-        <img
-          :src="require('@/assets/ED Avatar v2-inverse.png')"
-          alt="User Icon"
-        >
-      </v-btn>
-      <v-list>
-        <v-list-tile to="/login">
-          <v-list-tile-title>Login</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/admin">
-          <v-list-tile-title>Admin</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/profile">
-          <v-list-tile-title>Profile</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/about">
-          <v-list-tile-title>About</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-menu>
+    <v-btn icon to="/admin" exact>
+      <v-icon>fas fa-user-secret</v-icon>
+    </v-btn>
+    <v-btn icon to="/about" exact>
+      <v-icon>info</v-icon>
+    </v-btn>
+    <v-btn icon to="/profile" exact round>
+      <img
+        :src="require('@/assets/ED Avatar v2-inverse.png')"
+        alt="User Icon"
+      >
+    </v-btn>
     <slot name="toolbar-tabs" slot="extension"></slot>
   </v-toolbar>
 </template>
@@ -51,7 +64,8 @@ export default {
   name: 'Toolbar',
   computed: {
     ...mapState({
-      themes: state => state.themes.themes
+      themes: state => state.themes.themes,
+      authenticated: state => state.auth.authenticated
     }),
     theme: {
       get () {
@@ -61,6 +75,9 @@ export default {
         this.$store.commit('setTheme', newTheme)
       }
     }
+  },
+  created () {
+    this.$store.dispatch('checkAuthenticated')
   },
   methods: {
     switchTheme () {
@@ -74,3 +91,10 @@ export default {
   }
 }
 </script>
+
+<style>
+  .login-button img {
+    height: 24px;
+    padding-left: 4px;
+  }
+</style>

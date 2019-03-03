@@ -5,7 +5,8 @@ import Home from '@/components/Home'
 import Popular from '@/components/Popular'
 import Recents from '@/components/Recents'
 import Curated from '@/components/Curated'
-import Login from '@/components/Login'
+import Admin from '@/components/Admin'
+import Profile from '@/components/Profile'
 
 Vue.use(Router)
 
@@ -34,8 +35,12 @@ export default new Router({
           ]
         },
         {
-          path: '/login',
-          component: Login
+          path: '/admin',
+          component: Admin
+        },
+        {
+          path: '/profile',
+          component: Profile
         }
       ]
     }

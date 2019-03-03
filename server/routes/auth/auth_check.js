@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-'use strict'
+"use strict";
 
-module.exports = (async () => {
-  let db = require('../db')
-  let connection = db.elite_shots
-  let mongoose = db.mongoose
-  let Schema = mongoose.Schema
+const express = require('express');
 
-  let users = new Schema({
-    discord_id: String,
-    discord_username: String,
-    discord_avatar: String,
-    discord_discriminator: String,
-    frontier_id: String,
-    commander: String,
-    email: String,
-    trusted: Boolean
-  }, {runSettersOnQuery: true})
+let router = express.Router();
 
-  return connection.model('users', users)
-})()
+router.get('/', (req, res) => {
+  res.send(req.isAuthenticated());
+});
+
+module.exports = router;

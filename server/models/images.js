@@ -16,7 +16,7 @@
 
 'use strict'
 
-module.exports = async () => {
+module.exports = (async () => {
   let db = require('../db')
   let connection = db.elite_shots
   let mongoose = db.mongoose
@@ -37,4 +37,4 @@ module.exports = async () => {
   }, {runSettersOnQuery: true})
 
   return connection.model('images', images)
-}
+})()

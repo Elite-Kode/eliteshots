@@ -4,7 +4,7 @@
     </ed-toolbar>
     <v-content>
       <v-container fluid grid-list-lg>
-        <h1>Login</h1>
+        <h1>Admin</h1>
       </v-container>
     </v-content>
   </div>
@@ -14,7 +14,7 @@
 import Toolbar from '@/components/Toolbar'
 
 export default {
-  name: 'Login',
+  name: 'Admin',
   components: {
     'ed-toolbar': Toolbar
   }

@@ -20,9 +20,20 @@ const express = require('express')
 const path = require('path')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
+const session = require('express-session')
+const request = require('request-promise-native')
+const passport = require('passport')
+const FrontierStrategy = require('passport-frontier').Strategy
+const secrets = require('./secrets')
+const processVars = require('./processVars')
 
 const bugsnagClient = require('./server/bugsnag')
 const bugsnagClientMiddleware = bugsnagClient.getPlugin('express')
+
+const authCheck = require('./server/routes/auth/auth_check');
+const authFrontier = require('./server/routes/auth/frontier')
+const authLogout = require('./server/routes/auth/logout');
+const authUser = require('./server/routes/auth/auth_user');
 
 require('./server/db').connect()
 
@@ -31,8 +42,19 @@ const app = express()
 app.use(bugsnagClientMiddleware.requestHandler)
 app.use(logger('dev'))
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'dist')))
+app.use(session({
+  name: 'EliteShots',
+  secret: secrets.session_secret
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.use('/auth/check', authCheck);
+app.use('/auth/frontier', authFrontier)
+app.use('/auth/logout', authLogout);
+app.use('/auth/user', authUser);
 
 // Pass all 404 errors called by browser to angular
 app.all('*', (req, res) => {
@@ -67,5 +89,83 @@ if (app.get('env') === 'production') {
     })
   })
 }
+
+passport.serializeUser(function (user, done) {
+  done(null, user.frontier_id)
+})
+passport.deserializeUser(async (id, done) => {
+  try {
+    let model = await require('./server/models/users')
+    let user = await model.findOne({ frontier_id: id })
+    done(null, user)
+  } catch (err) {
+    bugsnagClient.notify(err)
+    done(err)
+  }
+})
+
+let onAuthentication = async (accessToken, refreshToken, profile, done, type) => {
+  let requestOptions = {
+    url: 'https://companion.orerve.net/profile',
+    resolveWithFullResponse: true
+  }
+  try {
+    let response = await request.get(requestOptions).auth(null, null, true, accessToken)
+    if (response.statusCode === 200) {
+      let responseObject = JSON.parse(response.body)
+      let commanderName = responseObject.commander.name
+
+      let model = await require('./server/models/users')
+      let user = await model.findOne({ frontier_id: profile.customer_id })
+      if (user) {
+        let updatedUser = {
+          frontier_id: profile.customer_id,
+          commander: commanderName,
+          email: profile.email
+        }
+        await model.findOneAndUpdate(
+          { frontier_id: profile.customer_id },
+          updatedUser,
+          {
+            upsert: false,
+            runValidators: true
+          })
+        done(null, user)
+      } else {
+        let user = {
+          frontier_id: profile.customer_id,
+          commander: commanderName,
+          email: profile.email,
+          trusted: false
+        }
+        await model.findOneAndUpdate(
+          { frontier_id: profile.customer_id },
+          user,
+          {
+            upsert: true,
+            runValidators: true
+          })
+        done(null, user)
+      }
+    } else {
+      throw new Error('CAPI data not found')
+    }
+  } catch (err) {
+    bugsnagClient.notify(err)
+    done(err)
+  }
+}
+
+let onAuthenticationIdentify = (accessToken, refreshToken, profile, done) => {
+  onAuthentication(accessToken, refreshToken, profile, done, 'identify')
+}
+
+passport.use('frontier', new FrontierStrategy({
+  clientID: secrets.client_id,
+  clientSecret: secrets.client_secret,
+  callbackURL: `${processVars.protocol}://${processVars.host}/auth/frontier/callback`,
+  scope: ['auth', 'capi'],
+  state: true
+}, onAuthenticationIdentify))
 
 module.exports = app

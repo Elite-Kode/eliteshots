@@ -15,4 +15,4 @@ yarn-error.log*
 
 # Secrets
 secrets.js
-src/secrets.ts
+src/secrets.js
