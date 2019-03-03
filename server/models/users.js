@@ -30,7 +30,8 @@ module.exports = (async () => {
     frontier_id: String,
     commander: String,
     email: String,
-    trusted: Boolean
+    trusted: Boolean,
+    access: Number
   }, {runSettersOnQuery: true})
 
   return connection.model('users', users)

@@ -136,7 +136,8 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
           frontier_id: profile.customer_id,
           commander: commanderName,
           email: profile.email,
-          trusted: false
+          trusted: false,
+          access: 1,
         }
         await model.findOneAndUpdate(
           { frontier_id: profile.customer_id },

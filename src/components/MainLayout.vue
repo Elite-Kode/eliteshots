@@ -14,6 +14,10 @@ export default {
       theme: state => state.themes.theme,
       themes: state => state.themes.themes
     })
+  },
+  created () {
+    this.$store.dispatch('checkAuthenticated')
+    this.$store.dispatch('fetchAuthUser')
   }
 }
 </script>

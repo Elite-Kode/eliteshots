@@ -12,10 +12,10 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
 
-    <v-btn v-if="authenticated" href="/auth/logout" icon>
+    <v-btn v-if="auth.authenticated" href="/auth/logout" icon>
       <v-icon>fas fa-sign-out-alt</v-icon>
     </v-btn>
-    <v-dialog v-else v-model="dialog" width="360">
+    <v-dialog v-else width="360">
 
       <v-btn slot="activator" icon>
         <v-icon>fas fa-sign-in-alt</v-icon>
@@ -41,13 +41,13 @@
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
     </v-btn>
-    <v-btn icon to="/admin" exact>
+    <v-btn v-if="auth.user.access === 0" icon to="/admin" exact>
       <v-icon>fas fa-user-secret</v-icon>
     </v-btn>
     <v-btn icon to="/about" exact>
       <v-icon>info</v-icon>
     </v-btn>
-    <v-btn icon to="/profile" exact round>
+    <v-btn v-if="auth.authenticated" icon to="/profile" exact round>
       <img
         :src="require('@/assets/ED Avatar v2-inverse.png')"
         alt="User Icon"
@@ -65,7 +65,7 @@ export default {
   computed: {
     ...mapState({
       themes: state => state.themes.themes,
-      authenticated: state => state.auth.authenticated
+      auth: state => state.auth
     }),
     theme: {
       get () {
