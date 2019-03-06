@@ -16,32 +16,24 @@
       <v-icon>fas fa-sign-out-alt</v-icon>
     </v-btn>
     <v-dialog v-else width="360">
-
       <v-btn slot="activator" icon>
         <v-icon>fas fa-sign-in-alt</v-icon>
       </v-btn>
+      <login-card></login-card>
+    </v-dialog>
 
-      <v-card>
-        <v-card-title primary-title class="title text-uppercase">
-          Login
-        </v-card-title>
-
-        <v-card-text>
-          Login using your Frontier credentials for a seamless integration
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn block color="primary" href="/auth/frontier" class="login-button">
-            Login with <img :src="require('@/assets/Frontier-invert.svg')">
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+    <v-dialog v-model="uploadDialog" v-if="auth.authenticated && auth.user.access !== 2" fullscreen hide-overlay
+              transition="dialog-bottom-transition">
+      <v-btn slot="activator" icon>
+        <v-icon>fas fa-upload</v-icon>
+      </v-btn>
+      <upload-card @close="uploadDialog = false"></upload-card>
     </v-dialog>
     <v-btn icon @click="switchTheme()">
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
     </v-btn>
-    <v-btn v-if="auth.user.access === 0" icon to="/admin" exact>
+    <v-btn v-if="auth.authenticated && auth.user.access === 0" icon to="/admin" exact>
       <v-icon>fas fa-user-secret</v-icon>
     </v-btn>
     <v-btn icon to="/about" exact>
@@ -59,9 +51,20 @@
 
 <script>
 import { mapState } from 'vuex'
+import LoginCard from '@/components/LoginCard'
+import UploadCard from '@/components/UploadCard'
 
 export default {
   name: 'Toolbar',
+  components: {
+    'login-card': LoginCard,
+    'upload-card': UploadCard
+  },
+  data () {
+    return {
+      uploadDialog: false
+    }
+  },
   computed: {
     ...mapState({
       themes: state => state.themes.themes,
@@ -93,8 +96,5 @@ export default {
 </script>
 
 <style>
-  .login-button img {
-    height: 24px;
-    padding-left: 4px;
-  }
+
 </style>

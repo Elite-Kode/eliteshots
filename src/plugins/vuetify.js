@@ -13,5 +13,7 @@ Vue.use(Vuetify, {
     info: colors.indigo.base,
     success: colors.green.base
   },
-  customProperties: true
+  options: {
+    customProperties: true
+  }
 })

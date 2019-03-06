@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 import './plugins/bugsnag'
 import './plugins/vuetify'
 import App from './App.vue'

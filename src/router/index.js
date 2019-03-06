@@ -7,6 +7,7 @@ import Recents from '@/components/Recents'
 import Curated from '@/components/Curated'
 import Admin from '@/components/Admin'
 import Profile from '@/components/Profile'
+import About from '@/components/About'
 
 Vue.use(Router)
 
@@ -41,6 +42,10 @@ export default new Router({
         {
           path: '/profile',
           component: Profile
+        },
+        {
+          path: '/about',
+          component: About
         }
       ]
     }
