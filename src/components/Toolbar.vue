@@ -24,10 +24,12 @@
 
     <v-dialog v-model="uploadDialog" v-if="auth.authenticated && auth.user.access !== 2" fullscreen hide-overlay
               transition="dialog-bottom-transition">
+      <!--<v-dialog v-model="uploadDialog" fullscreen hide-overlay-->
+      <!--transition="dialog-bottom-transition">-->
       <v-btn slot="activator" icon>
         <v-icon>fas fa-upload</v-icon>
       </v-btn>
-      <upload-card @close="uploadDialog = false"></upload-card>
+      <upload-card v-model="uploadDialog"></upload-card>
     </v-dialog>
     <v-btn icon @click="switchTheme()">
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>

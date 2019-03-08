@@ -21,6 +21,7 @@ module.exports = (async () => {
   let connection = db.elite_shots
   let mongoose = db.mongoose
   let Schema = mongoose.Schema
+  let ObjectId = mongoose.Schema.Types.ObjectId;
 
   let albums = new Schema({
     title: String,
