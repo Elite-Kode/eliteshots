@@ -27,7 +27,7 @@ const FrontierStrategy = require('passport-frontier').Strategy
 const secrets = require('./secrets')
 const processVars = require('./processVars')
 
-const bugsnagClient = require('./server/bugsnag')
+const bugsnagClient = require('./server/modules/bugsnag')
 const bugsnagClientMiddleware = bugsnagClient.getPlugin('express')
 
 const authCheck = require('./server/routes/auth/auth_check')
@@ -37,6 +37,7 @@ const authUser = require('./server/routes/auth/auth_user')
 const frontEnd = require('./server/routes/front_end')
 
 require('./server/db').connect()
+require('./server/modules/backblaze')
 
 const app = express()
 

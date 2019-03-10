@@ -56,7 +56,7 @@ export default {
         url: '/frontend/upload',
         thumbnailWidth: 500,
         maxFilesize: 10,
-        acceptedFiles: 'image/*',
+        acceptedFiles: 'image/jpeg,image/png,image.bmp',
         paramName: 'screenshot',
         autoProcessQueue: false,
         previewTemplate: this.template()
@@ -100,8 +100,10 @@ export default {
     uploadEvent (file, xhr, formData) {
       let title = file.previewElement.querySelector('input#image-title').value
       let description = file.previewElement.querySelector('input#image-description').value
+      let isPublic = file.previewElement.querySelector('input#image-public').checked
       formData.append('imageTitle', title)
       formData.append('imageDescription', description)
+      formData.append('isPublic', isPublic)
       formData.append('albumTitle', this.currentAlbumTitle)
     },
     template: function () {

@@ -16,7 +16,7 @@
 
 'use strict'
 
-let mongoose = require('mongoose')
+const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
 let elite_shots_url = require('../secrets').elite_shots_db_url
@@ -25,19 +25,30 @@ let elite_shots_connection
 
 function connect () {
   elite_shots_connection = mongoose.createConnection(elite_shots_url)
+
+  elite_shots_connection.on('connected', () => {
+    console.log(`Connected to ${elite_shots_url}`)
+  })
+
+  elite_shots_connection.on('error', err => {
+    console.log(`Mongoose error ${err}`)
+  })
+
+  retryOnDisconnect()
+
+  process.on('SIGINT', () => {
+    elite_shots_connection.close(() => {
+      console.log(`Connection to ${elite_shots_url} closed via app termination`)
+    })
+    process.exit(0)
+  })
 }
 
-connect()
+function getEliteShotsConection () {
+  return elite_shots_connection
+}
 
-elite_shots_connection.on('connected', () => {
-  console.log(`Connected to ${elite_shots_url}`)
-})
-
-elite_shots_connection.on('error', err => {
-  console.log(`Mongoose error ${err}`)
-});
-
-(function () {
+function retryOnDisconnect () {
   let tracker = 0
   elite_shots_connection.on('disconnected', () => {
     console.log(`Mongoose connection to ${elite_shots_url} disconnected`)
@@ -54,15 +65,8 @@ elite_shots_connection.on('error', err => {
       }, 5000)
     }
   })
-})();
+}
 
-process.on('SIGINT', () => {
-  elite_shots_connection.close(() => {
-    console.log(`Connection to ${elite_shots_url} closed via app termination`)
-  })
-  process.exit(0)
-})
-
-module.exports.connect = connect;
-module.exports.elite_shots = elite_shots_connection
+module.exports.connect = connect
+module.exports.elite_shots = getEliteShotsConection
 module.exports.mongoose = mongoose

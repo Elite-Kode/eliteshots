@@ -16,23 +16,19 @@
 
 'use strict'
 
-module.exports = (async () => {
-  let db = require('../db')
-  let connection = db.elite_shots()
-  let mongoose = db.mongoose
-  let Schema = mongoose.Schema
+const B2 = require('backblaze-b2')
+const axiosRetry = require('axios-retry')
 
-  let users = new Schema({
-    discord_id: String,
-    discord_username: String,
-    discord_avatar: String,
-    discord_discriminator: String,
-    frontier_id: String,
-    commander: String,
-    email: String,
-    trusted: Boolean,
-    access: Number
-  }, {runSettersOnQuery: true})
+const secrets = require('../../../secrets')
 
-  return connection.model('users', users)
-})()
+let b2Client = new B2({
+  accountId: secrets.b2_key_id,
+  applicationKey: secrets.b2_key,
+  retry:{
+    retries: 5,
+    retryDelay: axiosRetry.exponentialDelay
+  }
+})
+b2Client.authorize()
+
+module.exports = b2Client

@@ -18,7 +18,7 @@
 
 module.exports = (async () => {
   let db = require('../db')
-  let connection = db.elite_shots
+  let connection = db.elite_shots()
   let mongoose = db.mongoose
   let Schema = mongoose.Schema
   let ObjectId = mongoose.Schema.Types.ObjectId;

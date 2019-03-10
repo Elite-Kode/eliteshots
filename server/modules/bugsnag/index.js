@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-"use strict";
+'use strict'
 
-const bugsnag = require('@bugsnag/js');
-const bugsnagExpress = require('@bugsnag/plugin-express');
+const bugsnag = require('@bugsnag/js')
+const bugsnagExpress = require('@bugsnag/plugin-express')
 
-const processVars = require('../processVars');
+const processVars = require('../../../processVars')
 
 let bugsnagClient = bugsnag({
-  apiKey: require('../secrets').bugsnag_token,
+  apiKey: require('../../../secrets').bugsnag_token,
   notifyReleaseStages: ['development', 'production'],
   appVersion: processVars.version
-});
-bugsnagClient.use(bugsnagExpress);
+})
+bugsnagClient.use(bugsnagExpress)
 
-module.exports = bugsnagClient;
+module.exports = bugsnagClient
