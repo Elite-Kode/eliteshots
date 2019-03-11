@@ -2,10 +2,10 @@
   <v-toolbar app color="primary" dark tabs>
     <v-toolbar-title class="headline text-uppercase">
       <v-btn icon large to="/" exact>
-        <img
+        <v-img
           :src="require('@/assets/EliteShotsv1.png')"
           alt="Elite Shots"
-        >
+        ></v-img>
       </v-btn>
       <span>Elite </span>
       <span class="font-weight-light">Shots</span>
@@ -42,10 +42,10 @@
       <v-icon>info</v-icon>
     </v-btn>
     <v-btn v-if="auth.authenticated" icon to="/profile" exact round>
-      <img
+      <v-img
         :src="require('@/assets/ED Avatar v2-inverse.png')"
         alt="User Icon"
-      >
+      ></v-img>
     </v-btn>
     <slot name="toolbar-tabs" slot="extension"></slot>
   </v-toolbar>
