@@ -1,5 +1,10 @@
 <template>
-  <v-toolbar app color="primary" dark tabs>
+  <v-toolbar
+    app
+    :color="toolbarColor"
+    dark
+    tabs
+    :class="{'custom-dark': theme === themes[1]}">
     <v-toolbar-title class="headline text-uppercase">
       <v-btn icon large to="/" exact>
         <v-img
@@ -79,6 +84,9 @@ export default {
       set (newTheme) {
         this.$store.commit('setTheme', newTheme)
       }
+    },
+    toolbarColor () {
+      return this.theme === this.themes[0] ? 'primary' : ''
     }
   },
   created () {
@@ -97,6 +105,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .custom-dark, .custom-dark .theme--dark.v-btn {
+    color: var(--v-primary-base);
+  }
 </style>

@@ -27,7 +27,7 @@
     </v-flex>
     <v-flex grow>
       <vue-dropzone ref="uploadDropzone" id="uploadDropzone" :options="dropzoneOptions" @vdropzone-sending="uploadEvent"
-                    v-bind:class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
+                    :class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
                     class="fill-height outline d-flex justify-center" useCustomSlot>
         <div class="message">
           <h3 class="title">Drag and drop to upload content!</h3>

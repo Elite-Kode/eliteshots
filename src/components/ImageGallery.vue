@@ -1,0 +1,126 @@
+<!--
+  - KodeBlox Copyright 2019 Sayak Mukhopadhyay
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  - http: //www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -->
+
+<template>
+  <v-layout row wrap>
+    <v-flex xs3 v-for="(imageItem, i) in imageItems" :key="i">
+      <slot name="thumbnail" :imageItem="imageItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
+        <v-card>
+          <v-hover>
+            <v-img
+              slot-scope="{ hover }"
+              :src="imageItem.thumbnail_location"
+              @click="clickThumbnail(i)"
+              class="image-thumbnail"
+            >
+              <v-expand-transition>
+                <v-layout v-if="hover" ma-0 primary class="image-title-background">
+                  <v-flex class="text-truncate">
+                    {{imageItem.title}}
+                  </v-flex>
+                  <v-flex shrink d-inline-flex>
+                    <v-icon class="mr-1">favorite</v-icon>
+                    {{imageItem.no_of_likes}}
+                  </v-flex>
+                </v-layout>
+              </v-expand-transition>
+            </v-img>
+          </v-hover>
+          <v-card-actions>
+            <v-icon class="mr-1">remove_red_eye</v-icon>
+            {{imageItem.no_of_views + imageItem.anonymous_views}}
+            <v-spacer></v-spacer>
+            <v-btn v-if="authenticated" icon @click="clickLike(i)">
+              <v-icon v-if="imageItem.self_like" color="primary">favorite</v-icon>
+              <v-icon v-else>favorite_border</v-icon>
+            </v-btn>
+            <v-btn v-if="authenticated" icon @click="clickSave(i)">
+              <v-icon v-if="imageItem.self_save" color="primary">bookmark</v-icon>
+              <v-icon v-else>bookmark_border</v-icon>
+            </v-btn>
+            <v-btn icon>
+              <v-icon>share</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </slot>
+    </v-flex>
+    <slot name="lightbox" :imageLinks="imageLinks" :selectedImageIndex="selectedImageIndex"
+          :closeGallery="closeGallery">
+      <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
+    </slot>
+  </v-layout>
+</template>
+
+<script>
+import vueGallery from 'vue-gallery'
+
+export default {
+  name: 'ImageGallery',
+  components: {
+    'gallery': vueGallery
+  },
+  props: {
+    imageItems: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    authenticated: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      selectedImageIndex: null
+    }
+  },
+  computed: {
+    imageLinks () {
+      return this.imageItems.map(imageItem => {
+        return imageItem.low_res_location
+      })
+    }
+  },
+  methods: {
+    clickThumbnail (index) {
+      this.selectedImageIndex = index
+      this.$store.dispatch('triggerImageViewed', this.imageItems[index])
+    },
+    clickLike (index) {
+      this.$store.dispatch('triggerImageLiked', this.imageItems[index])
+    },
+    clickSave (index) {
+      this.$store.dispatch('triggerImageSaved', this.imageItems[index])
+    },
+    closeGallery () {
+      this.selectedImageIndex = null
+    }
+  }
+}
+</script>
+
+<style scoped>
+  .image-title-background {
+    opacity: 0.85;
+  }
+
+  .image-thumbnail:hover {
+    cursor: pointer;
+  }
+</style>

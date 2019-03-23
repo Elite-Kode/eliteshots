@@ -36,7 +36,7 @@ const authLogout = require('./server/routes/auth/logout')
 const authUser = require('./server/routes/auth/auth_user')
 const frontEnd = require('./server/routes/front_end')
 
-require('./server/db').connect()
+require('./server/db')
 require('./server/modules/backblaze')
 
 const app = express()

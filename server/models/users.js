@@ -16,23 +16,20 @@
 
 'use strict'
 
-module.exports = (async () => {
-  let db = require('../db')
-  let connection = db.elite_shots()
-  let mongoose = db.mongoose
-  let Schema = mongoose.Schema
+const mongoose = require('mongoose')
 
-  let users = new Schema({
-    discord_id: String,
-    discord_username: String,
-    discord_avatar: String,
-    discord_discriminator: String,
-    frontier_id: String,
-    commander: String,
-    email: String,
-    trusted: Boolean,
-    access: Number
-  }, {runSettersOnQuery: true})
+let Schema = mongoose.Schema
 
-  return connection.model('users', users)
-})()
+let users = new Schema({
+  discord_id: String,
+  discord_username: String,
+  discord_avatar: String,
+  discord_discriminator: String,
+  frontier_id: String,
+  commander: String,
+  email: String,
+  trusted: Boolean,
+  access: Number
+}, { runSettersOnQuery: true })
+
+module.exports = new mongoose.model('users', users)

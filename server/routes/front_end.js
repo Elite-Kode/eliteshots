@@ -25,6 +25,14 @@ const backblaze = require('../modules/backblaze')
 const secrets = require('../../secrets')
 const upload = multer()
 
+let albumModel = require('../models/albums')
+let imageModel = require('../models/images')
+let likesModel = require('../models/likes')
+let savesModel = require('../models/saves')
+let viewsModel = require('../models/views')
+
+let imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots/'
+
 let router = express.Router()
 
 router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
@@ -34,13 +42,13 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
         let createdDate = new Date()
         let album
         if (req.body.albumTitle) {
-          let albumModel = await require('../models/albums')
-          album = await albumModel.findOne({
+          let albumModelResolved = await albumModel
+          album = await albumModelResolved.findOne({
             user_id: req.user._id,
             title_lower: req.body.albumTitle.toLowerCase()
           }).lean()
           if (!album) {
-            let albumDocument = new albumModel({
+            let albumDocument = new albumModelResolved({
               title: req.body.albumTitle,
               title_lower: req.body.albumTitle.toLowerCase(),
               description: '',
@@ -84,7 +92,10 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
             uploadAuthToken: urlParams[0].authorizationToken,
             fileName: originalFileName,
             data: req.file.buffer,
-            mime: req.file.mimetype
+            mime: req.file.mimetype,
+            onUploadProgress: event => {
+              console.log(event)
+            }
           }),
           backblaze.uploadFile({
             uploadUrl: urlParams[1].uploadUrl,
@@ -102,8 +113,8 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
           })
         ])
 
-        let imageModel = await require('../models/images')
-        let imageDocument = new imageModel({
+        let imageModelResolved = await imageModel
+        let imageDocument = new imageModelResolved({
           image_location: originalFileName,
           thumbnail_location: thumbnailFileName,
           low_res_location: lowQualityFileName,
@@ -134,12 +145,281 @@ router.get('/albums/self', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== 2) {
-        let model = await require('../models/albums')
+        let model = await albumModel
         let albums = await model.find({ user_id: req.user._id }).lean()
         res.send(albums)
       } else {
         res.status(403).send({})
       }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/images/popular', async (req, res, next) => {
+  try {
+
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/images/recents', async (req, res, next) => {
+  try {
+    let model = await imageModel
+    let page = req.query.page || 1
+    let aggregate = model.aggregate()
+    let aggregateOptions = {
+      sort: { uploaded_at: -1 },
+      page: page,
+      limit: 10
+    }
+
+    aggregate.lookup({
+      from: 'views',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'views'
+    }).lookup({
+      from: 'likes',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'likes'
+    }).lookup({
+      from: 'saves',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'saves'
+    }).addFields({
+      no_of_views: {
+        $size: '$views'
+      },
+      no_of_likes: {
+        $size: '$likes'
+      },
+      no_of_saves: {
+        $size: '$saves'
+      }
+    })
+
+    if (req.user) {
+      aggregate.addFields({
+        self_like: {
+          $size: {
+            $filter: {
+              input: '$likes',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        },
+        self_save: {
+          $size: {
+            $filter: {
+              input: '$saves',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        }
+      })
+    }
+    aggregate.project({
+      views: 0,
+      likes: 0,
+      saves: 0
+    })
+
+    let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+
+    imageData.data.map(image => {
+      image.image_location = `${imageUrlRoute}${image.image_location}`
+      image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+      image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+      image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+      if (req.user) {
+        image.self_like = !!image.self_like
+        image.self_save = !!image.self_save
+      }
+    })
+    res.send(imageData)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/images/curated', async (req, res, next) => {
+  try {
+    let model = await imageModel
+    let page = req.query.page || 1
+    let aggregate = model.aggregate()
+    let aggregateOptions = {
+      sort: { uploaded_at: -1 },
+      page: page,
+      limit: 10
+    }
+    let query = { curated: true }
+
+    aggregate.match(query).lookup({
+      from: 'views',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'views'
+    }).lookup({
+      from: 'likes',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'likes'
+    }).lookup({
+      from: 'saves',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'saves'
+    }).addFields({
+      no_of_views: {
+        $size: '$views'
+      },
+      no_of_likes: {
+        $size: '$likes'
+      },
+      no_of_saves: {
+        $size: '$saves'
+      }
+    })
+
+    if (req.user) {
+      aggregate.addFields({
+        self_like: {
+          $size: {
+            $filter: {
+              input: '$likes',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        },
+        self_save: {
+          $size: {
+            $filter: {
+              input: '$saves',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        }
+      })
+    }
+    aggregate.project({
+      views: 0,
+      likes: 0,
+      saves: 0
+    })
+
+    let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+
+    imageData.data.map(image => {
+      image.image_location = `${imageUrlRoute}${image.image_location}`
+      image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+      image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+      image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+      if (req.user) {
+        image.self_like = !!image.self_like
+        image.self_save = !!image.self_save
+      }
+    })
+    res.send(imageData)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/images/:imageId/view', async (req, res, next) => {
+  try {
+    if (req.user) {
+      let model = await viewsModel
+      let viewDocument = new model({
+        image_id: req.params.imageId,
+        user_id: req.user._id,
+        viewed_at: new Date()
+      })
+      await viewDocument.save()
+    } else {
+      let model = await imageModel
+      await model.findOneAndUpdate({
+        _id: req.params.imageId
+      }, {
+        $inc: { anonymous_views: 1 }
+      })
+    }
+    res.status(200).send({})
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/images/:imageId/like', async (req, res, next) => {
+  try {
+    if (req.user) {
+      let model = await likesModel
+      let liked = await model.findOne({
+        image_id: req.params.imageId,
+        user_id: req.user._id
+      }).lean()
+      if (liked) {
+        await model.findOneAndRemove({
+          image_id: req.params.imageId,
+          user_id: req.user._id
+        })
+      } else {
+        let likesDocument = new model({
+          image_id: req.params.imageId,
+          user_id: req.user._id,
+          liked_at: new Date()
+        })
+        await likesDocument.save()
+      }
+      res.status(200).send({})
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/images/:imageId/save', async (req, res, next) => {
+  try {
+    if (req.user) {
+      let model = await savesModel
+      let saves = await model.findOne({
+        image_id: req.params.imageId,
+        user_id: req.user._id
+      }).lean()
+      if (saves) {
+        await model.findOneAndRemove({
+          image_id: req.params.imageId,
+          user_id: req.user._id
+        })
+      } else {
+        let savesDocument = new model({
+          image_id: req.params.imageId,
+          user_id: req.user._id,
+          saved_at: new Date()
+        })
+        await savesDocument.save()
+      }
+      res.status(200).send({})
     } else {
       res.status(401).send({})
     }
