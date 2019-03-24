@@ -37,6 +37,7 @@ let images = new Schema({
   album_id: { type: ObjectId, index: true },
   curated: { type: Boolean, index: true },
   curated_by: { type: ObjectId, index: true },
+  curated_at: { type: Date, index: true },
   uploaded_at: { type: Date, index: true },
   last_modified_at: Date,
   user_id: { type: ObjectId, index: true }

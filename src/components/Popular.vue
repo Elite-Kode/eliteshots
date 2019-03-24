@@ -19,7 +19,7 @@ export default {
   },
   created () {
     this.$store.dispatch('checkAuthenticated')
-    this.$store.dispatch('fetchRecents')
+    this.$store.dispatch('fetchPopular')
   }
 }
 </script>
