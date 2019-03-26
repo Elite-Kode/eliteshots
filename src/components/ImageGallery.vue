@@ -15,54 +15,62 @@
   -->
 
 <template>
-  <v-layout row wrap>
-    <v-flex xs3 v-for="(imageItem, i) in imageItems" :key="i">
-      <slot name="thumbnail" :imageItem="imageItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
-        <v-card>
-          <v-hover>
-            <v-img
-              slot-scope="{ hover }"
-              :src="imageItem.thumbnail_location"
-              @click="clickThumbnail(i)"
-              class="image-thumbnail"
-            >
-              <v-expand-transition>
-                <v-layout v-if="hover" ma-0 primary class="image-title-background">
-                  <v-flex class="text-truncate">
-                    {{imageItem.title}}
-                  </v-flex>
-                  <v-flex shrink d-inline-flex>
-                    <v-icon class="mr-1">favorite</v-icon>
-                    {{imageItem.no_of_likes}}
-                  </v-flex>
-                </v-layout>
-              </v-expand-transition>
-            </v-img>
-          </v-hover>
-          <v-card-actions>
-            <v-icon class="mr-1">remove_red_eye</v-icon>
-            {{imageItem.no_of_views + imageItem.anonymous_views}}
-            <v-spacer></v-spacer>
-            <v-btn v-if="authenticated" icon @click="clickLike(i)">
-              <v-icon v-if="imageItem.self_like" color="primary">favorite</v-icon>
-              <v-icon v-else>favorite_border</v-icon>
-            </v-btn>
-            <v-btn v-if="authenticated" icon @click="clickSave(i)">
-              <v-icon v-if="imageItem.self_save" color="primary">bookmark</v-icon>
-              <v-icon v-else>bookmark_border</v-icon>
-            </v-btn>
-            <v-btn icon>
-              <v-icon>share</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+  <div>
+    <v-layout row wrap>
+      <v-flex xs3 v-for="(imageItem, i) in imageItems" :key="i">
+        <slot name="thumbnail" :imageItem="imageItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
+          <v-card>
+            <v-hover>
+              <v-img
+                slot-scope="{ hover }"
+                :src="imageItem.thumbnail_location"
+                @click="clickThumbnail(i)"
+                class="image-thumbnail"
+              >
+                <v-expand-transition>
+                  <v-layout v-if="hover" ma-0 primary class="image-title-background">
+                    <v-flex class="text-truncate">
+                      {{imageItem.title}}
+                    </v-flex>
+                    <v-flex shrink d-inline-flex>
+                      <v-icon class="mr-1">favorite</v-icon>
+                      {{imageItem.no_of_likes}}
+                    </v-flex>
+                  </v-layout>
+                </v-expand-transition>
+              </v-img>
+            </v-hover>
+            <v-card-actions>
+              <v-icon class="mr-1">remove_red_eye</v-icon>
+              {{imageItem.no_of_views + imageItem.anonymous_views}}
+              <v-spacer></v-spacer>
+              <v-btn v-if="authenticated" icon @click="clickLike(i)">
+                <v-icon v-if="imageItem.self_like" color="primary">favorite</v-icon>
+                <v-icon v-else>favorite_border</v-icon>
+              </v-btn>
+              <v-btn v-if="authenticated" icon @click="clickSave(i)">
+                <v-icon v-if="imageItem.self_save" color="primary">bookmark</v-icon>
+                <v-icon v-else>bookmark_border</v-icon>
+              </v-btn>
+              <v-btn icon>
+                <v-icon>share</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </slot>
+      </v-flex>
+      <slot name="lightbox" :imageLinks="imageLinks" :selectedImageIndex="selectedImageIndex"
+            :closeGallery="closeGallery">
+        <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
       </slot>
-    </v-flex>
-    <slot name="lightbox" :imageLinks="imageLinks" :selectedImageIndex="selectedImageIndex"
-          :closeGallery="closeGallery">
-      <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
-    </slot>
-  </v-layout>
+    </v-layout>
+    <v-layout row align-center justify-center>
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+      ></v-pagination>
+    </v-layout>
+  </div>
 </template>
 
 <script>
@@ -80,6 +88,14 @@ export default {
         return []
       }
     },
+    page: {
+      type: Number,
+      default: 1
+    },
+    totalPages: {
+      type: Number,
+      default: 1
+    },
     authenticated: {
       type: Boolean,
       default: false
@@ -95,6 +111,14 @@ export default {
       return this.imageItems.map(imageItem => {
         return imageItem.low_res_location
       })
+    },
+    currentPage: {
+      get () {
+        return this.page
+      },
+      set (newPage) {
+        this.$emit('pageChange', newPage)
+      }
     }
   },
   methods: {

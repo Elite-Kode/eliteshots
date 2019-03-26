@@ -147,20 +147,20 @@ const mutations = {
   }
 }
 const actions = {
-  async fetchPopular ({ commit }) {
-    let response = await axios.get('/frontend/images/popular')
+  async fetchPopular ({ commit }, page) {
+    let response = await axios.get('/frontend/images/popular', { params: { page } })
     let popular = response.data
     commit('setPopular', popular)
     return popular
   },
-  async fetchRecents ({ commit }) {
-    let response = await axios.get('/frontend/images/recents')
+  async fetchRecents ({ commit }, page) {
+    let response = await axios.get('/frontend/images/recents', { params: { page } })
     let recents = response.data
     commit('setRecents', recents)
     return recents
   },
-  async fetchCurated ({ commit }) {
-    let response = await axios.get('/frontend/images/curated')
+  async fetchCurated ({ commit }, page) {
+    let response = await axios.get('/frontend/images/curated', { params: { page } })
     let curated = response.data
     commit('setCurated', curated)
     return curated

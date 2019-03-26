@@ -16,36 +16,83 @@ export default new Router({
     {
       path: '/',
       component: MainLayout,
+      name: 'main',
       children: [
         {
           path: '',
           component: Home,
+          name: 'home',
           children: [
             {
-              path: '',
-              component: Popular
+              path: '/',
+              component: Popular,
+              name: 'popular',
+              children: [
+                {
+                  path: 'page',
+                  redirect: {
+                    name: 'popular'
+                  }
+                },
+                {
+                  path: 'page/:pageNumber',
+                  component: Popular,
+                  name: 'popular-page'
+                }
+              ]
             },
             {
               path: 'recents',
-              component: Recents
+              component: Recents,
+              name: 'recents',
+              children: [
+                {
+                  path: 'page',
+                  redirect: {
+                    name: 'recents'
+                  }
+                },
+                {
+                  path: 'page/:pageNumber',
+                  component: Recents,
+                  name: 'recents-page'
+                }
+              ]
             },
             {
               path: 'curated',
-              component: Curated
+              component: Curated,
+              name: 'curated',
+              children: [
+                {
+                  path: 'page',
+                  redirect: {
+                    name: 'curated'
+                  }
+                },
+                {
+                  path: 'page/:pageNumber',
+                  component: Curated,
+                  name: 'curated-page'
+                }
+              ]
             }
           ]
         },
         {
           path: '/admin',
-          component: Admin
+          component: Admin,
+          name: 'admin'
         },
         {
           path: '/profile',
-          component: Profile
+          component: Profile,
+          name: 'profile'
         },
         {
           path: '/about',
-          component: About
+          component: About,
+          name: 'about'
         }
       ]
     }

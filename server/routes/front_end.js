@@ -166,7 +166,7 @@ router.get('/images/popular', async (req, res, next) => {
     let aggregate = model.aggregate()
     let aggregateOptions = {
       page: page,
-      limit: 10
+      limit: 8
     }
 
     aggregate.lookup({
@@ -272,9 +272,9 @@ router.get('/images/recents', async (req, res, next) => {
     let page = req.query.page || 1
     let aggregate = model.aggregate()
     let aggregateOptions = {
-      sort: { uploaded_at: -1 },
+      sortBy: { uploaded_at: -1 },
       page: page,
-      limit: 10
+      limit: 8
     }
 
     aggregate.lookup({
@@ -360,9 +360,9 @@ router.get('/images/curated', async (req, res, next) => {
     let page = req.query.page || 1
     let aggregate = model.aggregate()
     let aggregateOptions = {
-      sort: { curated_at: -1 },
+      sortBy: { curated_at: -1 },
       page: page,
-      limit: 10
+      limit: 8
     }
     let query = { curated: true }
 
