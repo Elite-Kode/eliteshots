@@ -46,11 +46,12 @@
     <v-btn icon to="/about" exact>
       <v-icon>info</v-icon>
     </v-btn>
-    <v-btn v-if="auth.authenticated" icon to="/profile" exact round>
-      <v-img
+    <v-btn v-if="auth.authenticated" icon to="/profile">
+      <!--<v-img
         :src="require('@/assets/ED Avatar v2-inverse.png')"
         alt="User Icon"
-      ></v-img>
+      ></v-img>-->
+      <v-icon>person</v-icon>
     </v-btn>
     <slot name="toolbar-tabs" slot="extension"></slot>
   </v-toolbar>

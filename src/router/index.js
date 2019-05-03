@@ -1,13 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MainLayout from '@/components/MainLayout'
-import Home from '@/components/Home'
-import Popular from '@/components/Popular'
-import Recents from '@/components/Recents'
-import Curated from '@/components/Curated'
+import Home from '@/components/home/Home'
+import Popular from '@/components/home/Popular'
+import Recents from '@/components/home/Recents'
+import Curated from '@/components/home/Curated'
 import Admin from '@/components/Admin'
-import Profile from '@/components/Profile'
+import Profile from '@/components/profile/Profile'
 import About from '@/components/About'
+import Data from '@/components/profile/Data'
+import Images from '@/components/profile/Images'
+import Albums from '@/components/profile/Albums'
+import Likes from '@/components/profile/Likes'
+import Saves from '@/components/profile/Saves'
+import Views from '@/components/profile/Views'
 
 Vue.use(Router)
 
@@ -87,7 +93,78 @@ export default new Router({
         {
           path: '/profile',
           component: Profile,
-          name: 'profile'
+          name: 'profile',
+          children: [
+            {
+              path: '/',
+              component: Data,
+              name: 'data'
+            },
+            {
+              path: 'images',
+              component: Images,
+              name: 'images',
+              children: [
+                {
+                  path: 'page',
+                  redirect: {
+                    name: 'images'
+                  }
+                },
+                {
+                  path: 'page/:pageNumber',
+                  component: Images,
+                  name: 'images-page'
+                }
+              ]
+            },
+            {
+              path: 'albums',
+              component: Albums,
+              name: 'albums'
+            },
+            {
+              path: 'likes',
+              component: Likes,
+              name: 'likes',
+              children: [
+                {
+                  path: 'page',
+                  redirect: {
+                    name: 'likes'
+                  }
+                },
+                {
+                  path: 'page/:pageNumber',
+                  component: Likes,
+                  name: 'likes-page'
+                }
+              ]
+            },
+            {
+              path: 'saves',
+              component: Saves,
+              name: 'saves',
+              children: [
+                {
+                  path: 'page',
+                  redirect: {
+                    name: 'saves'
+                  }
+                },
+                {
+                  path: 'page/:pageNumber',
+                  component: Saves,
+                  name: 'saves-page'
+                }
+              ]
+            },
+            {
+              path: 'views',
+              component: Views,
+              name: 'views'
+            }
+          ]
         },
         {
           path: '/about',

@@ -44,6 +44,9 @@
               <v-icon class="mr-1">remove_red_eye</v-icon>
               {{imageItem.no_of_views + imageItem.anonymous_views}}
               <v-spacer></v-spacer>
+              <v-btn v-if="deletable" icon @click="clickDelete(i)">
+                <v-icon>delete</v-icon>
+              </v-btn>
               <v-btn v-if="authenticated" icon @click="clickLike(i)">
                 <v-icon v-if="imageItem.self_like" color="primary">favorite</v-icon>
                 <v-icon v-else>favorite_border</v-icon>
@@ -99,6 +102,10 @@ export default {
     authenticated: {
       type: Boolean,
       default: false
+    },
+    deletable: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -124,13 +131,16 @@ export default {
   methods: {
     clickThumbnail (index) {
       this.selectedImageIndex = index
-      this.$store.dispatch('triggerImageViewed', this.imageItems[index])
+      this.$emit('imageViewed', this.imageItems[index])
+    },
+    clickDelete (index) {
+      this.$emit('imageDeleted', this.imageItems[index])
     },
     clickLike (index) {
-      this.$store.dispatch('triggerImageLiked', this.imageItems[index])
+      this.$emit('imageLiked', this.imageItems[index])
     },
     clickSave (index) {
-      this.$store.dispatch('triggerImageSaved', this.imageItems[index])
+      this.$emit('imageSaved', this.imageItems[index])
     },
     closeGallery () {
       this.selectedImageIndex = null

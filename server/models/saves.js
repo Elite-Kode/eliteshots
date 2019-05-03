@@ -18,6 +18,9 @@
 
 const mongoose = require('mongoose')
 
+let mongoosePaginate = require('mongoose-paginate')
+let mongooseAggregatePaginate = require('mongoose-aggregate-paginate')
+
 let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId
 
@@ -26,5 +29,8 @@ let saves = new Schema({
   user_id: { type: ObjectId, index: true },
   saved_at: Date
 }, { runSettersOnQuery: true })
+
+saves.plugin(mongoosePaginate)
+saves.plugin(mongooseAggregatePaginate)
 
 module.exports = new mongoose.model('saves', saves)

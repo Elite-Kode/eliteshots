@@ -23,32 +23,34 @@
 
 <script>
 import Toolbar from '@/components/Toolbar'
-import { mapState } from 'vuex'
 
 export default {
-  name: 'Home',
+  name: 'Profile',
   data () {
     return {
       tabItems: [{
-        name: 'Popular',
-        link: '/'
+        name: 'Profile',
+        link: '/profile'
       }, {
-        name: 'Recents',
-        link: '/recents'
+        name: 'Images',
+        link: '/profile/images'
       }, {
-        name: 'Curated',
-        link: '/curated'
+        name: 'Albums',
+        link: '/profile/albums'
+      }, {
+        name: 'Likes',
+        link: '/profile/likes'
+      }, {
+        name: 'Saves',
+        link: '/profile/saves'
+      }, {
+        name: 'Views',
+        link: '/profile/views'
       }]
     }
   },
   components: {
     'ed-toolbar': Toolbar
-  },
-  computed: {
-    ...mapState({
-      theme: state => state.themes.theme,
-      themes: state => state.themes.themes
-    })
   }
 }
 </script>

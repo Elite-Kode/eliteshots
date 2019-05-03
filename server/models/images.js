@@ -19,7 +19,7 @@
 const mongoose = require('mongoose')
 
 let mongoosePaginate = require('mongoose-paginate')
-let mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
+let mongooseAggregatePaginate = require('mongoose-aggregate-paginate')
 
 let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId

@@ -1,6 +1,10 @@
 <template>
   <image-gallery :imageItems="popularImages.data" :page="currentPage"
-                 :totalPages=popularImages.pageCount @pageChange="onPageChange"
+                 :totalPages=popularImages.pageCount
+                 @imageViewed="onClickThumbnail"
+                 @imageLiked="onClickLike"
+                 @imageSaved="onClickSave"
+                 @pageChange="onPageChange"
                  :authenticated="auth.authenticated"></image-gallery>
 </template>
 
@@ -36,6 +40,15 @@ export default {
       this.$router.push({ name: 'popular-page', params: { pageNumber: page } })
       this.currentPage = page
       this.$store.dispatch('fetchPopular', this.currentPage)
+    },
+    onClickThumbnail (image) {
+      this.$store.dispatch('triggerImageViewed', image)
+    },
+    onClickLike (image) {
+      this.$store.dispatch('triggerImageLiked', image)
+    },
+    onClickSave (image) {
+      this.$store.dispatch('triggerImageSaved', image)
     }
   }
 }
