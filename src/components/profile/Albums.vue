@@ -17,38 +17,42 @@
 <template>
   <div>
     <h1>My Albums</h1>
+    <album-gallery :albumItems="albums"
+                   @albumOpened="onClickThumbnail"
+                   @albumDeleted="onClickDelete"
+                   :authenticated="auth.authenticated" deletable></album-gallery>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import AlbumGallery from '@/components/AlbumGallery'
 
 export default {
-  name: 'Album'
-  // data () {
-  //   return {
-  //     currentPage: 1
-  //   }
-  // },
-  // computed: {
-  //   ...mapState({
-  //     popularImages: state => state.images.popular,
-  //     auth: state => state.auth
-  //   })
-  // },
-  // created () {
-  //   if (this.$router.currentRoute.name === 'popular-page') {
-  //     this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
-  //   }
-  //   this.$store.dispatch('checkAuthenticated')
-  //   this.$store.dispatch('fetchPopular', this.currentPage)
-  // },
-  // methods: {
-  //   onPageChange (page) {
-  //     this.$router.push({ name: 'popular-page', params: { pageNumber: page } })
-  //     this.currentPage = page
-  //     this.$store.dispatch('fetchPopular', this.currentPage)
-  //   }
-  // }
+  name: 'Album',
+  components: {
+    'album-gallery': AlbumGallery
+  },
+  computed: {
+    ...mapState({
+      albums: state => state.users.albums,
+      auth: state => state.auth
+    })
+  },
+  created () {
+    if (this.$router.currentRoute.name === 'images-page') {
+      this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
+    }
+    this.$store.dispatch('checkAuthenticated')
+    this.$store.dispatch('fetchAlbums', this.currentPage)
+  },
+  methods: {
+    onClickThumbnail (image) {
+      this.$store.dispatch('triggerUserImageViewed', image)
+    },
+    onClickDelete (image) {
+      this.$store.dispatch('triggerUserImageDeleted', image)
+    }
+  }
 }
 </script>
