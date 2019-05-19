@@ -32,56 +32,17 @@ export default new Router({
             {
               path: '/',
               component: Popular,
-              name: 'popular',
-              children: [
-                {
-                  path: 'page',
-                  redirect: {
-                    name: 'popular'
-                  }
-                },
-                {
-                  path: 'page/:pageNumber',
-                  component: Popular,
-                  name: 'popular-page'
-                }
-              ]
+              name: 'popular'
             },
             {
               path: 'recents',
               component: Recents,
-              name: 'recents',
-              children: [
-                {
-                  path: 'page',
-                  redirect: {
-                    name: 'recents'
-                  }
-                },
-                {
-                  path: 'page/:pageNumber',
-                  component: Recents,
-                  name: 'recents-page'
-                }
-              ]
+              name: 'recents'
             },
             {
               path: 'curated',
               component: Curated,
-              name: 'curated',
-              children: [
-                {
-                  path: 'page',
-                  redirect: {
-                    name: 'curated'
-                  }
-                },
-                {
-                  path: 'page/:pageNumber',
-                  component: Curated,
-                  name: 'curated-page'
-                }
-              ]
+              name: 'curated'
             }
           ]
         },

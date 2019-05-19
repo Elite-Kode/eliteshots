@@ -16,7 +16,7 @@
 
 <template>
   <div>
-    <v-layout row wrap>
+    <v-layout row wrap ref="imageContainer">
       <v-flex xs3 v-for="(imageItem, i) in imageItems" :key="i">
         <slot name="thumbnail" :imageItem="imageItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
           <v-card>
@@ -67,22 +67,26 @@
         <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
       </slot>
     </v-layout>
-    <v-layout row align-center justify-center>
-      <v-pagination
-        v-model="currentPage"
-        :length="totalPages"
-      ></v-pagination>
-    </v-layout>
+    <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end">
+      <div v-if="end">
+        No more images
+      </div>
+      <div v-else>
+        loading...
+      </div>
+    </mugen-scroll>
   </div>
 </template>
 
 <script>
 import vueGallery from 'vue-gallery'
+import MugenScroll from 'vue-mugen-scroll'
 
 export default {
   name: 'ImageGallery',
   components: {
-    'gallery': vueGallery
+    'gallery': vueGallery,
+    'mugen-scroll': MugenScroll
   },
   props: {
     imageItems: {
@@ -91,19 +95,19 @@ export default {
         return []
       }
     },
-    page: {
-      type: Number,
-      default: 1
-    },
-    totalPages: {
-      type: Number,
-      default: 1
-    },
     authenticated: {
       type: Boolean,
       default: false
     },
     deletable: {
+      type: Boolean,
+      default: false
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    end: {
       type: Boolean,
       default: false
     }
@@ -118,13 +122,12 @@ export default {
       return this.imageItems.map(imageItem => {
         return imageItem.low_res_location
       })
-    },
-    currentPage: {
-      get () {
-        return this.page
-      },
-      set (newPage) {
-        this.$emit('pageChange', newPage)
+    }
+  },
+  watch: {
+    imageItems () {
+      if (this.$refs.imageContainer.clientHeight < window.innerHeight && !this.end) {
+        this.fetchImages()
       }
     }
   },
@@ -144,6 +147,9 @@ export default {
     },
     closeGallery () {
       this.selectedImageIndex = null
+    },
+    fetchImages () {
+      this.$emit('fetchImages')
     }
   }
 }

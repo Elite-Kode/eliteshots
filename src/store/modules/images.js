@@ -18,151 +18,178 @@ import axios from 'axios'
 
 const state = {
   popular: [],
+  popularEnd: false,
   recents: [],
-  curated: []
+  recentsEnd: false,
+  curated: [],
+  curatedEnd: false
 }
 const mutations = {
   setPopular (state, popular) {
-    state.popular = popular
+    state.popular.push(...popular)
+  },
+  setPopularEnd (state, end) {
+    state.popularEnd = end
   },
   setRecents (state, recents) {
-    state.recents = recents
+    state.recents.push(...recents)
+  },
+  setRecentsEnd (state, end) {
+    state.recentsEnd = end
   },
   setCurated (state, curated) {
-    state.curated = curated
+    state.curated.push(...curated)
+  },
+  setCuratedEnd (state, end) {
+    state.curatedEnd = end
   },
   increaseViewCount (state, { imageItem, authenticated }) {
-    let index = state.popular.data ? state.popular.data.findIndex(image => {
+    let index = state.popular ? state.popular.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        state.popular.data[index].no_of_views = ++state.popular.data[index].no_of_views || 1
+        state.popular[index].no_of_views = ++state.popular[index].no_of_views || 1
       } else {
-        state.popular.data[index].anonymous_views = ++state.popular.data[index].anonymous_views || 1
+        state.popular[index].anonymous_views = ++state.popular[index].anonymous_views || 1
       }
     }
-    index = state.recents.data ? state.recents.data.findIndex(image => {
+    index = state.recents ? state.recents.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        state.recents.data[index].no_of_views = ++state.recents.data[index].no_of_views || 1
+        state.recents[index].no_of_views = ++state.recents[index].no_of_views || 1
       } else {
-        state.recents.data[index].anonymous_views = ++state.recents.data[index].anonymous_views || 1
+        state.recents[index].anonymous_views = ++state.recents[index].anonymous_views || 1
       }
     }
-    index = state.curated.data ? state.curated.data.findIndex(image => {
+    index = state.curated ? state.curated.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        state.curated.data[index].no_of_views = ++state.curated.data[index].no_of_views || 1
+        state.curated[index].no_of_views = ++state.curated[index].no_of_views || 1
       } else {
-        state.curated.data[index].anonymous_views = ++state.curated.data[index].anonymous_views || 1
+        state.curated[index].anonymous_views = ++state.curated[index].anonymous_views || 1
       }
     }
   },
   likeImage (state, { imageItem, authenticated }) {
-    let index = state.popular.data ? state.popular.data.findIndex(image => {
+    let index = state.popular ? state.popular.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.popular.data[index].self_like) {
-          state.popular.data[index].no_of_likes = --state.popular.data[index].no_of_likes || 0
+        if (state.popular[index].self_like) {
+          state.popular[index].no_of_likes = --state.popular[index].no_of_likes || 0
         } else {
-          state.popular.data[index].no_of_likes = ++state.popular.data[index].no_of_likes || 1
+          state.popular[index].no_of_likes = ++state.popular[index].no_of_likes || 1
         }
-        state.popular.data[index].self_like = !state.popular.data[index].self_like
+        state.popular[index].self_like = !state.popular[index].self_like
       }
     }
-    index = state.recents.data ? state.recents.data.findIndex(image => {
+    index = state.recents ? state.recents.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.recents.data[index].self_like) {
-          state.recents.data[index].no_of_likes = --state.recents.data[index].no_of_likes || 0
+        if (state.recents[index].self_like) {
+          state.recents[index].no_of_likes = --state.recents[index].no_of_likes || 0
         } else {
-          state.recents.data[index].no_of_likes = ++state.recents.data[index].no_of_likes || 1
+          state.recents[index].no_of_likes = ++state.recents[index].no_of_likes || 1
         }
-        state.recents.data[index].self_like = !state.recents.data[index].self_like
+        state.recents[index].self_like = !state.recents[index].self_like
       }
     }
-    index = state.curated.data ? state.curated.data.findIndex(image => {
+    index = state.curated ? state.curated.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.curated.data[index].self_like) {
-          state.curated.data[index].no_of_likes = --state.curated.data[index].no_of_likes || 0
+        if (state.curated[index].self_like) {
+          state.curated[index].no_of_likes = --state.curated[index].no_of_likes || 0
         } else {
-          state.curated.data[index].no_of_likes = ++state.curated.data[index].no_of_likes || 1
+          state.curated[index].no_of_likes = ++state.curated[index].no_of_likes || 1
         }
-        state.curated.data[index].self_like = !state.curated.data[index].self_like
+        state.curated[index].self_like = !state.curated[index].self_like
       }
     }
   },
   saveImage (state, { imageItem, authenticated }) {
-    let index = state.popular.data ? state.popular.data.findIndex(image => {
+    let index = state.popular ? state.popular.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.popular.data[index].self_save) {
-          state.popular.data[index].no_of_saves = --state.popular.data[index].no_of_saves || 0
+        if (state.popular[index].self_save) {
+          state.popular[index].no_of_saves = --state.popular[index].no_of_saves || 0
         } else {
-          state.popular.data[index].no_of_saves = ++state.popular.data[index].no_of_saves || 1
+          state.popular[index].no_of_saves = ++state.popular[index].no_of_saves || 1
         }
-        state.popular.data[index].self_save = !state.popular.data[index].self_save
+        state.popular[index].self_save = !state.popular[index].self_save
       }
     }
-    index = state.recents.data ? state.recents.data.findIndex(image => {
+    index = state.recents ? state.recents.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.recents.data[index].self_save) {
-          state.recents.data[index].no_of_saves = --state.recents.data[index].no_of_saves || 0
+        if (state.recents[index].self_save) {
+          state.recents[index].no_of_saves = --state.recents[index].no_of_saves || 0
         } else {
-          state.recents.data[index].no_of_saves = ++state.recents.data[index].no_of_saves || 1
+          state.recents[index].no_of_saves = ++state.recents[index].no_of_saves || 1
         }
-        state.recents.data[index].self_save = !state.recents.data[index].self_save
+        state.recents[index].self_save = !state.recents[index].self_save
       }
     }
-    index = state.curated.data ? state.curated.data.findIndex(image => {
+    index = state.curated ? state.curated.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.curated.data[index].self_save) {
-          state.curated.data[index].no_of_saves = --state.curated.data[index].no_of_saves || 0
+        if (state.curated[index].self_save) {
+          state.curated[index].no_of_saves = --state.curated[index].no_of_saves || 0
         } else {
-          state.curated.data[index].no_of_saves = ++state.curated.data[index].no_of_saves || 1
+          state.curated[index].no_of_saves = ++state.curated[index].no_of_saves || 1
         }
-        state.curated.data[index].self_save = !state.curated.data[index].self_save
+        state.curated[index].self_save = !state.curated[index].self_save
       }
     }
   }
 }
 const actions = {
-  async fetchPopular ({ commit }, page) {
-    let response = await axios.get('/frontend/images/popular', { params: { page } })
+  async fetchPopular ({ commit }, last) {
+    let response = await axios.get('/frontend/images/popular', { params: { last } })
     let popular = response.data
     commit('setPopular', popular)
+    if (popular.length === 0) {
+      commit('setPopularEnd', true)
+    } else {
+      commit('setPopularEnd', false)
+    }
     return popular
   },
-  async fetchRecents ({ commit }, page) {
-    let response = await axios.get('/frontend/images/recents', { params: { page } })
+  async fetchRecents ({ commit }, last) {
+    let response = await axios.get('/frontend/images/recents', { params: { last } })
     let recents = response.data
     commit('setRecents', recents)
+    if (recents.length === 0) {
+      commit('setRecentsEnd', true)
+    } else {
+      commit('setRecentsEnd', false)
+    }
     return recents
   },
-  async fetchCurated ({ commit }, page) {
-    let response = await axios.get('/frontend/images/curated', { params: { page } })
+  async fetchCurated ({ commit }, last) {
+    let response = await axios.get('/frontend/images/curated', { params: { last } })
     let curated = response.data
     commit('setCurated', curated)
+    if (curated.length === 0) {
+      commit('setCuratedEnd', true)
+    } else {
+      commit('setCuratedEnd', false)
+    }
     return curated
   },
   async triggerImageViewed ({ commit, rootState }, imageItem) {

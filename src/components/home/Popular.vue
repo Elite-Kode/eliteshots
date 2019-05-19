@@ -1,10 +1,11 @@
 <template>
-  <image-gallery :imageItems="popularImages.data" :page="currentPage"
-                 :totalPages=popularImages.pageCount
+  <image-gallery :imageItems="popularImages"
+                 :loading="loadingNewImages"
+                 :end="popularImagesEnd"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
-                 @pageChange="onPageChange"
+                 @fetchImages="onFetchImages"
                  :authenticated="auth.authenticated"></image-gallery>
 </template>
 
@@ -19,28 +20,20 @@ export default {
   },
   data () {
     return {
-      currentPage: 1
+      loadingNewImages: false
     }
   },
   computed: {
     ...mapState({
       popularImages: state => state.images.popular,
+      popularImagesEnd: state => state.images.popularEnd,
       auth: state => state.auth
     })
   },
   created () {
-    if (this.$router.currentRoute.name === 'popular-page') {
-      this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
-    }
     this.$store.dispatch('checkAuthenticated')
-    this.$store.dispatch('fetchPopular', this.currentPage)
   },
   methods: {
-    onPageChange (page) {
-      this.$router.push({ name: 'popular-page', params: { pageNumber: page } })
-      this.currentPage = page
-      this.$store.dispatch('fetchPopular', this.currentPage)
-    },
     onClickThumbnail (image) {
       this.$store.dispatch('triggerImageViewed', image)
     },
@@ -49,6 +42,16 @@ export default {
     },
     onClickSave (image) {
       this.$store.dispatch('triggerImageSaved', image)
+    },
+    async onFetchImages () {
+      this.loadingNewImages = true
+      if (this.popularImages && this.popularImages.length > 0) {
+        await this.$store.dispatch('fetchPopular', this.popularImages[this.popularImages.length - 1].score)
+        this.loadingNewImages = false
+      } else {
+        await this.$store.dispatch('fetchPopular', null)
+        this.loadingNewImages = false
+      }
     }
   }
 }

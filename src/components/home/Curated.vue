@@ -1,10 +1,11 @@
 <template>
-  <image-gallery :imageItems="curatedImages.data" :page="currentPage"
-                 :totalPages=curatedImages.pageCount
+  <image-gallery :imageItems="curatedImages"
+                 :loading="loadingNewImages"
+                 :end="curatedImagesEnd"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
-                 @pageChange="onPageChange"
+                 @fetchImages="onFetchImages"
                  :authenticated="auth.authenticated"></image-gallery>
 </template>
 
@@ -19,28 +20,20 @@ export default {
   },
   data () {
     return {
-      currentPage: 1
+      loadingNewImages: false
     }
   },
   computed: {
     ...mapState({
       curatedImages: state => state.images.curated,
+      curatedImagesEnd: state => state.images.curatedEnd,
       auth: state => state.auth
     })
   },
   created () {
-    if (this.$router.currentRoute.name === 'curated-page') {
-      this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
-    }
     this.$store.dispatch('checkAuthenticated')
-    this.$store.dispatch('fetchCurated', this.currentPage)
   },
   methods: {
-    onPageChange (page) {
-      this.$router.push({ name: 'curated-page', params: { pageNumber: page } })
-      this.currentPage = page
-      this.$store.dispatch('fetchCurated', this.currentPage)
-    },
     onClickThumbnail (image) {
       this.$store.dispatch('triggerImageViewed', image)
     },
@@ -49,6 +42,16 @@ export default {
     },
     onClickSave (image) {
       this.$store.dispatch('triggerImageSaved', image)
+    },
+    async onFetchImages () {
+      this.loadingNewImages = true
+      if (this.curatedImages && this.curatedImages.length > 0) {
+        await this.$store.dispatch('fetchCurated', this.curatedImages[this.curatedImages.length - 1].curated_at)
+        this.loadingNewImages = false
+      } else {
+        await this.$store.dispatch('fetchCurated', null)
+        this.loadingNewImages = false
+      }
     }
   }
 }

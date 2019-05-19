@@ -1,10 +1,11 @@
 <template>
-  <image-gallery :imageItems="recentImages.data" :page="currentPage"
-                 :totalPages=recentImages.pageCount
+  <image-gallery :imageItems="recentImages"
+                 :loading="loadingNewImages"
+                 :end="recentImagesEnd"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
-                 @pageChange="onPageChange"
+                 @fetchImages="onFetchImages"
                  :authenticated="auth.authenticated"></image-gallery>
 </template>
 
@@ -19,28 +20,20 @@ export default {
   },
   data () {
     return {
-      currentPage: 1
+      loadingNewImages: false
     }
   },
   computed: {
     ...mapState({
       recentImages: state => state.images.recents,
+      recentImagesEnd: state => state.images.recentsEnd,
       auth: state => state.auth
     })
   },
   created () {
-    if (this.$router.currentRoute.name === 'recents-page') {
-      this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
-    }
     this.$store.dispatch('checkAuthenticated')
-    this.$store.dispatch('fetchRecents', this.currentPage)
   },
   methods: {
-    onPageChange (page) {
-      this.$router.push({ name: 'recents-page', params: { pageNumber: page } })
-      this.currentPage = page
-      this.$store.dispatch('fetchRecents', this.currentPage)
-    },
     onClickThumbnail (image) {
       this.$store.dispatch('triggerImageViewed', image)
     },
@@ -49,6 +42,16 @@ export default {
     },
     onClickSave (image) {
       this.$store.dispatch('triggerImageSaved', image)
+    },
+    async onFetchImages () {
+      this.loadingNewImages = true
+      if (this.recentImages && this.recentImages.length > 0) {
+        await this.$store.dispatch('fetchRecents', this.recentImages[this.recentImages.length - 1].uploaded_at)
+        this.loadingNewImages = false
+      } else {
+        await this.$store.dispatch('fetchRecents', null)
+        this.loadingNewImages = false
+      }
     }
   }
 }

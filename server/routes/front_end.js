@@ -35,6 +35,8 @@ let imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots/'
 
 let router = express.Router()
 
+let imagesPerfetch = 4
+
 router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
   try {
     if (req.user) {
@@ -168,6 +170,7 @@ router.get('/albums/self', async (req, res, next) => {
           first_image: 0
         })
         let albums = await aggregate.exec()
+
         albums.map(album => {
           album.thumbnail_location = `${imageUrlRoute}${album.thumbnail_location}`
         })
@@ -485,12 +488,8 @@ router.get('/images/self/saved', async (req, res, next) => {
 router.get('/images/popular', async (req, res, next) => {
   try {
     let model = await imageModel
-    let page = req.query.page || 1
+    let lastElement = req.query.last
     let aggregate = model.aggregate()
-    let aggregateOptions = {
-      page: page,
-      limit: 8
-    }
 
     aggregate.lookup({
       from: 'views',
@@ -562,18 +561,25 @@ router.get('/images/popular', async (req, res, next) => {
           ]
         }]
       }
-    }).sort({
-      score: -1
     }).project({
       views: 0,
       likes: 0,
-      saves: 0,
-      score: 0
+      saves: 0
     })
 
-    let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+    if (lastElement) {
+      aggregate.match({
+        score: { $lt: parseFloat(lastElement) }
+      })
+    }
 
-    imageData.data.map(image => {
+    aggregate.sort({
+      score: -1
+    }).limit(imagesPerfetch)
+
+    let imageData = await aggregate.exec()
+
+    imageData.map(image => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -592,13 +598,8 @@ router.get('/images/popular', async (req, res, next) => {
 router.get('/images/recents', async (req, res, next) => {
   try {
     let model = await imageModel
-    let page = req.query.page || 1
+    let lastElement = req.query.last
     let aggregate = model.aggregate()
-    let aggregateOptions = {
-      sortBy: { uploaded_at: -1 },
-      page: page,
-      limit: 8
-    }
 
     aggregate.lookup({
       from: 'views',
@@ -659,9 +660,19 @@ router.get('/images/recents', async (req, res, next) => {
       saves: 0
     })
 
-    let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+    if (lastElement) {
+      aggregate.match({
+        uploaded_at: { $lt: new Date(lastElement) }
+      })
+    }
 
-    imageData.data.map(image => {
+    aggregate.sort({
+      uploaded_at: -1
+    }).limit(imagesPerfetch)
+
+    let imageData = await aggregate.exec()
+
+    imageData.map(image => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -680,13 +691,8 @@ router.get('/images/recents', async (req, res, next) => {
 router.get('/images/curated', async (req, res, next) => {
   try {
     let model = await imageModel
-    let page = req.query.page || 1
+    let lastElement = req.query.last
     let aggregate = model.aggregate()
-    let aggregateOptions = {
-      sortBy: { curated_at: -1 },
-      page: page,
-      limit: 8
-    }
     let query = { curated: true }
 
     aggregate.match(query).lookup({
@@ -748,9 +754,19 @@ router.get('/images/curated', async (req, res, next) => {
       saves: 0
     })
 
-    let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+    if (lastElement) {
+      aggregate.match({
+        curated_at: { $lt: new Date(lastElement) }
+      })
+    }
 
-    imageData.data.map(image => {
+    aggregate.sort({
+      curated_at: -1
+    }).limit(imagesPerfetch)
+
+    let imageData = await aggregate.exec()
+
+    imageData.map(image => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
