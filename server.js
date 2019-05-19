@@ -21,6 +21,7 @@ const path = require('path')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 const session = require('express-session')
+const mongoStore = require('connect-mongo')(session);
 const request = require('request-promise-native')
 const passport = require('passport')
 const FrontierStrategy = require('passport-frontier').Strategy
@@ -48,7 +49,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'dist')))
 app.use(session({
   name: 'EliteShots',
-  secret: secrets.session_secret
+  secret: secrets.session_secret,
+  cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+  store: new mongoStore({ mongooseConnection: require('mongoose').connection })
 }))
 app.use(passport.initialize())
 app.use(passport.session())
