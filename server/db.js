@@ -27,7 +27,7 @@ class DB {
     this.connect()
   }
 
-  listeners() {
+  listeners () {
     mongoose.connection.on('connected', () => {
       console.log(`Connected to ${elite_shots_url}`)
     })

@@ -24,7 +24,7 @@ const secrets = require('../../../secrets')
 let b2Client = new B2({
   accountId: secrets.b2_key_id,
   applicationKey: secrets.b2_key,
-  retry:{
+  retry: {
     retries: 5,
     retryDelay: axiosRetry.exponentialDelay
   }
