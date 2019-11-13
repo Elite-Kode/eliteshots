@@ -1,7 +1,23 @@
+<!--
+  - KodeBlox Copyright 2019 Sayak Mukhopadhyay
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  - http: //www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -->
+
 <template>
   <image-gallery :imageItems="popularImages"
                  :loading="loadingNewImages"
-                 :end="popularImagesEnd"
+                 :end="imagesEnd"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
@@ -20,13 +36,13 @@ export default {
   },
   data () {
     return {
-      loadingNewImages: false
+      loadingNewImages: false,
+      imagesEnd: false
     }
   },
   computed: {
     ...mapState({
       popularImages: state => state.images.popular,
-      popularImagesEnd: state => state.images.popularEnd,
       auth: state => state.auth
     })
   },
@@ -45,13 +61,14 @@ export default {
     },
     async onFetchImages () {
       this.loadingNewImages = true
+      let images = []
       if (this.popularImages && this.popularImages.length > 0) {
-        await this.$store.dispatch('fetchPopular', this.popularImages[this.popularImages.length - 1].score)
-        this.loadingNewImages = false
+        images = await this.$store.dispatch('fetchPopular', this.popularImages[this.popularImages.length - 1].score)
       } else {
-        await this.$store.dispatch('fetchPopular', null)
-        this.loadingNewImages = false
+        images = await this.$store.dispatch('fetchPopular', null)
       }
+      this.imagesEnd = images.length === 0
+      this.loadingNewImages = false
     }
   }
 }

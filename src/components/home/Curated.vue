@@ -1,7 +1,7 @@
 <template>
   <image-gallery :imageItems="curatedImages"
                  :loading="loadingNewImages"
-                 :end="curatedImagesEnd"
+                 :end="imagesEnd"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
@@ -20,13 +20,13 @@ export default {
   },
   data () {
     return {
-      loadingNewImages: false
+      loadingNewImages: false,
+      imagesEnd: false
     }
   },
   computed: {
     ...mapState({
       curatedImages: state => state.images.curated,
-      curatedImagesEnd: state => state.images.curatedEnd,
       auth: state => state.auth
     })
   },
@@ -45,13 +45,14 @@ export default {
     },
     async onFetchImages () {
       this.loadingNewImages = true
+      let images = []
       if (this.curatedImages && this.curatedImages.length > 0) {
-        await this.$store.dispatch('fetchCurated', this.curatedImages[this.curatedImages.length - 1].curated_at)
-        this.loadingNewImages = false
+        images = await this.$store.dispatch('fetchCurated', this.curatedImages[this.curatedImages.length - 1].curated_at)
       } else {
-        await this.$store.dispatch('fetchCurated', null)
-        this.loadingNewImages = false
+        images = await this.$store.dispatch('fetchCurated', null)
       }
+      this.imagesEnd = images.length === 0
+      this.loadingNewImages = false
     }
   }
 }

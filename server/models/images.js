@@ -29,6 +29,7 @@ let images = new Schema({
   thumbnail_location: String,
   low_res_location: String,
   title: String,
+  moderation_status: { type: String, enum: ['PENDING', 'ACCEPTED', 'REJECTED'], uppercase: true },
   title_lower: { type: String, lowercase: true, index: true },
   description: String,
   description_lower: { type: String, lowercase: true, index: true },

@@ -1,7 +1,7 @@
 <template>
   <image-gallery :imageItems="recentImages"
                  :loading="loadingNewImages"
-                 :end="recentImagesEnd"
+                 :end="imagesEnd"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
@@ -20,13 +20,13 @@ export default {
   },
   data () {
     return {
-      loadingNewImages: false
+      loadingNewImages: false,
+      imagesEnd: false
     }
   },
   computed: {
     ...mapState({
       recentImages: state => state.images.recents,
-      recentImagesEnd: state => state.images.recentsEnd,
       auth: state => state.auth
     })
   },
@@ -45,13 +45,14 @@ export default {
     },
     async onFetchImages () {
       this.loadingNewImages = true
+      let images = []
       if (this.recentImages && this.recentImages.length > 0) {
-        await this.$store.dispatch('fetchRecents', this.recentImages[this.recentImages.length - 1].uploaded_at)
-        this.loadingNewImages = false
+        images = await this.$store.dispatch('fetchRecents', this.recentImages[this.recentImages.length - 1].uploaded_at)
       } else {
-        await this.$store.dispatch('fetchRecents', null)
-        this.loadingNewImages = false
+        images = await this.$store.dispatch('fetchRecents', null)
       }
+      this.imagesEnd = images.length === 0
+      this.loadingNewImages = false
     }
   }
 }

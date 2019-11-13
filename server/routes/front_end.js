@@ -191,13 +191,14 @@ router.get('/images/self', async (req, res, next) => {
     if (req.user) {
       if (req.user.access !== 2) {
         let model = await imageModel
-        let page = req.query.page || 1
+        let lastElement = req.query.last
         let aggregate = model.aggregate()
-        let aggregateOptions = {
-          page: page,
-          limit: 8
-        }
+
         let query = { user_id: req.user._id }
+
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
 
         aggregate.match(query).lookup({
           from: 'views',
@@ -249,17 +250,19 @@ router.get('/images/self', async (req, res, next) => {
               }
             }
           }
-        })
-
-        aggregate.project({
+        }).project({
           views: 0,
           likes: 0,
           saves: 0
         })
 
-        let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+        aggregate.sort({
+          uploaded_at: -1
+        }).limit(imagesPerfetch)
 
-        imageData.data.map(image => {
+        let imageData = await aggregate.exec()
+
+        imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -286,13 +289,14 @@ router.get('/images/self/liked', async (req, res, next) => {
     if (req.user) {
       if (req.user.access !== 2) {
         let model = await likesModel
-        let page = req.query.page || 1
+        let lastElement = req.query.last
         let aggregate = model.aggregate()
-        let aggregateOptions = {
-          page: page,
-          limit: 8
-        }
+
         let query = { user_id: req.user._id }
+
+        if (lastElement) {
+          query.liked_at = { $lt: new Date(lastElement) }
+        }
 
         aggregate.match(query).lookup({
           from: 'images',
@@ -300,6 +304,9 @@ router.get('/images/self/liked', async (req, res, next) => {
           foreignField: '_id',
           as: 'images'
         }).unwind('$images')
+          .addFields({
+            'images.liked_at': '$liked_at'
+          })
           .replaceRoot('$images')
           .lookup({
             from: 'views',
@@ -351,17 +358,19 @@ router.get('/images/self/liked', async (req, res, next) => {
               }
             }
           }
-        })
-
-        aggregate.project({
+        }).project({
           views: 0,
           likes: 0,
           saves: 0
         })
 
-        let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+        aggregate.sort({
+          liked_at: -1
+        }).limit(imagesPerfetch)
 
-        imageData.data.map(image => {
+        let imageData = await aggregate.exec()
+
+        imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -388,13 +397,14 @@ router.get('/images/self/saved', async (req, res, next) => {
     if (req.user) {
       if (req.user.access !== 2) {
         let model = await savesModel
-        let page = req.query.page || 1
+        let lastElement = req.query.last
         let aggregate = model.aggregate()
-        let aggregateOptions = {
-          page: page,
-          limit: 8
-        }
+
         let query = { user_id: req.user._id }
+
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
 
         aggregate.match(query).lookup({
           from: 'images',
@@ -402,6 +412,9 @@ router.get('/images/self/saved', async (req, res, next) => {
           foreignField: '_id',
           as: 'images'
         }).unwind('$images')
+          .addFields({
+            'images.saved_at': '$saved_at'
+          })
           .replaceRoot('$images')
           .lookup({
             from: 'views',
@@ -453,17 +466,19 @@ router.get('/images/self/saved', async (req, res, next) => {
               }
             }
           }
-        })
-
-        aggregate.project({
+        }).project({
           views: 0,
           likes: 0,
           saves: 0
         })
 
-        let imageData = await model.aggregatePaginate(aggregate, aggregateOptions)
+        aggregate.sort({
+          saved_at: -1
+        }).limit(imagesPerfetch)
 
-        imageData.data.map(image => {
+        let imageData = await aggregate.exec()
+
+        imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -601,6 +616,12 @@ router.get('/images/recents', async (req, res, next) => {
     let lastElement = req.query.last
     let aggregate = model.aggregate()
 
+    if (lastElement) {
+      aggregate.match({
+        uploaded_at: { $lt: new Date(lastElement) }
+      })
+    }
+
     aggregate.lookup({
       from: 'views',
       localField: '_id',
@@ -660,12 +681,6 @@ router.get('/images/recents', async (req, res, next) => {
       saves: 0
     })
 
-    if (lastElement) {
-      aggregate.match({
-        uploaded_at: { $lt: new Date(lastElement) }
-      })
-    }
-
     aggregate.sort({
       uploaded_at: -1
     }).limit(imagesPerfetch)
@@ -693,7 +708,12 @@ router.get('/images/curated', async (req, res, next) => {
     let model = await imageModel
     let lastElement = req.query.last
     let aggregate = model.aggregate()
+
     let query = { curated: true }
+
+    if (lastElement) {
+      query.curated_at = { $lt: new Date(lastElement) }
+    }
 
     aggregate.match(query).lookup({
       from: 'views',
@@ -754,17 +774,42 @@ router.get('/images/curated', async (req, res, next) => {
       saves: 0
     })
 
-    if (lastElement) {
-      aggregate.match({
-        curated_at: { $lt: new Date(lastElement) }
-      })
-    }
-
     aggregate.sort({
       curated_at: -1
     }).limit(imagesPerfetch)
 
     let imageData = await aggregate.exec()
+
+    imageData.map(image => {
+      image.image_location = `${imageUrlRoute}${image.image_location}`
+      image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+      image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+      image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+      if (req.user) {
+        image.self_like = !!image.self_like
+        image.self_save = !!image.self_save
+      }
+    })
+    res.send(imageData)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/admin/images/pending', async (req, res, next) => {
+  try {
+    let model = await imageModel
+    let lastElement = req.query.last
+
+    let query = { moderation_status: 'PENDING' }
+
+    if (lastElement) {
+      query.uploaded_at = { $lt: new Date(lastElement) }
+    }
+
+    let imageData = await model.find(query).sort({
+      uploaded_at: -1
+    }).limit(imagesPerfetch).exec()
 
     imageData.map(image => {
       image.image_location = `${imageUrlRoute}${image.image_location}`

@@ -18,30 +18,18 @@ import axios from 'axios'
 
 const state = {
   popular: [],
-  popularEnd: false,
   recents: [],
-  recentsEnd: false,
-  curated: [],
-  curatedEnd: false
+  curated: []
 }
 const mutations = {
   setPopular (state, popular) {
     state.popular.push(...popular)
   },
-  setPopularEnd (state, end) {
-    state.popularEnd = end
-  },
   setRecents (state, recents) {
     state.recents.push(...recents)
   },
-  setRecentsEnd (state, end) {
-    state.recentsEnd = end
-  },
   setCurated (state, curated) {
     state.curated.push(...curated)
-  },
-  setCuratedEnd (state, end) {
-    state.curatedEnd = end
   },
   increaseViewCount (state, { imageItem, authenticated }) {
     let index = state.popular ? state.popular.findIndex(image => {
@@ -163,33 +151,18 @@ const actions = {
     let response = await axios.get('/frontend/images/popular', { params: { last } })
     let popular = response.data
     commit('setPopular', popular)
-    if (popular.length === 0) {
-      commit('setPopularEnd', true)
-    } else {
-      commit('setPopularEnd', false)
-    }
     return popular
   },
   async fetchRecents ({ commit }, last) {
     let response = await axios.get('/frontend/images/recents', { params: { last } })
     let recents = response.data
     commit('setRecents', recents)
-    if (recents.length === 0) {
-      commit('setRecentsEnd', true)
-    } else {
-      commit('setRecentsEnd', false)
-    }
     return recents
   },
   async fetchCurated ({ commit }, last) {
     let response = await axios.get('/frontend/images/curated', { params: { last } })
     let curated = response.data
     commit('setCurated', curated)
-    if (curated.length === 0) {
-      commit('setCuratedEnd', true)
-    } else {
-      commit('setCuratedEnd', false)
-    }
     return curated
   },
   async triggerImageViewed ({ commit, rootState }, imageItem) {

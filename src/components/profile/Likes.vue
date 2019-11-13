@@ -17,12 +17,13 @@
 <template>
   <div>
     <h1>Liked Images</h1>
-    <image-gallery :imageItems="likedImages.data" :page="currentPage"
-                   :totalPages=likedImages.pageCount
+    <image-gallery :imageItems="likedImages"
+                   :loading="loadingNewImages"
+                   :end="imagesEnd"
                    @imageViewed="onClickThumbnail"
                    @imageLiked="onClickLike"
                    @imageSaved="onClickSave"
-                   @pageChange="onPageChange"
+                   @fetchImages="onFetchImages"
                    :authenticated="auth.authenticated"></image-gallery>
   </div>
 </template>
@@ -38,7 +39,8 @@ export default {
   },
   data () {
     return {
-      currentPage: 1
+      loadingNewImages: false,
+      imagesEnd: false
     }
   },
   computed: {
@@ -48,18 +50,9 @@ export default {
     })
   },
   created () {
-    if (this.$router.currentRoute.name === 'images-page') {
-      this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
-    }
     this.$store.dispatch('checkAuthenticated')
-    this.$store.dispatch('fetchLikedImages', this.currentPage)
   },
   methods: {
-    onPageChange (page) {
-      this.$router.push({ name: 'likes-page', params: { pageNumber: page } })
-      this.currentPage = page
-      this.$store.dispatch('fetchLikedImages', this.currentPage)
-    },
     onClickThumbnail (image) {
       this.$store.dispatch('triggerUserImageViewed', image)
     },
@@ -68,6 +61,17 @@ export default {
     },
     onClickSave (image) {
       this.$store.dispatch('triggerUserImageSaved', image)
+    },
+    async onFetchImages () {
+      this.loadingNewImages = true
+      let images = []
+      if (this.likedImages && this.likedImages.length > 0) {
+        images = await this.$store.dispatch('fetchLikedImages', this.likedImages[this.likedImages.length - 1].liked_at)
+      } else {
+        images = await this.$store.dispatch('fetchLikedImages', null)
+      }
+      this.imagesEnd = images.length === 0
+      this.loadingNewImages = false
     }
   }
 }

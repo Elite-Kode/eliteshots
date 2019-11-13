@@ -17,12 +17,14 @@
 <template>
   <div>
     <h1>Uploaded Images</h1>
-    <image-gallery :imageItems="myImages.data" :page="currentPage"
-                   :totalPages=myImages.pageCount
+    <image-gallery :imageItems="myImages"
+                   :loading="loadingNewImages"
+                   :end="imagesEnd"
+                   @imageViewed="onClickThumbnail"
                    @imageDeleted="onClickDelete"
                    @imageLiked="onClickLike"
                    @imageSaved="onClickSave"
-                   @pageChange="onPageChange"
+                   @fetchImages="onFetchImages"
                    :authenticated="auth.authenticated" deletable></image-gallery>
   </div>
 </template>
@@ -38,7 +40,8 @@ export default {
   },
   data () {
     return {
-      currentPage: 1
+      loadingNewImages: false,
+      imagesEnd: false
     }
   },
   computed: {
@@ -48,17 +51,11 @@ export default {
     })
   },
   created () {
-    if (this.$router.currentRoute.name === 'images-page') {
-      this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
-    }
     this.$store.dispatch('checkAuthenticated')
-    this.$store.dispatch('fetchImages', this.currentPage)
   },
   methods: {
-    onPageChange (page) {
-      this.$router.push({ name: 'images-page', params: { pageNumber: page } })
-      this.currentPage = page
-      this.$store.dispatch('fetchImages', this.currentPage)
+    onClickThumbnail (image) {
+      this.$store.dispatch('triggerImageViewed', image)
     },
     onClickDelete (image) {
       this.$store.dispatch('triggerUserImageDeleted', image)
@@ -68,6 +65,17 @@ export default {
     },
     onClickSave (image) {
       this.$store.dispatch('triggerUserImageSaved', image)
+    },
+    async onFetchImages () {
+      this.loadingNewImages = true
+      let images = []
+      if (this.myImages && this.myImages.length > 0) {
+        images = await this.$store.dispatch('fetchImages', this.myImages[this.myImages.length - 1].uploaded_at)
+      } else {
+        images = await this.$store.dispatch('fetchImages', null)
+      }
+      this.imagesEnd = images.length === 0
+      this.loadingNewImages = false
     }
   }
 }

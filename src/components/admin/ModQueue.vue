@@ -16,15 +16,45 @@
 
 <template>
   <div>
-    <h1>Saved Images</h1>
-    <image-gallery :imageItems="savedImages"
+    <h1>Moderation Queue</h1>
+    <image-gallery :imageItems="pendingImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
                    @imageViewed="onClickThumbnail"
                    @imageLiked="onClickLike"
                    @imageSaved="onClickSave"
                    @fetchImages="onFetchImages"
-                   :authenticated="auth.authenticated"></image-gallery>
+                   :authenticated="auth.authenticated">
+      <v-card slot="thumbnail" slot-scope="slotProps">
+        <v-img
+          :src="slotProps.imageItem.thumbnail_location"
+          @click="slotProps.clickThumbnail(i)"
+          class="image-thumbnail"
+        ></v-img>
+        <v-card-title primary-title>
+          <div>
+            <div class="headline">{{slotProps.imageItem.title}}</div>
+            <span class="subheading">{{slotProps.imageItem.description}}</span>
+          </div>
+        </v-card-title>
+        <v-card-actions>
+          <v-layout>
+            <v-flex xs-6>
+              <v-btn block color="success">
+                Accept
+                <v-icon right>check</v-icon>
+              </v-btn>
+            </v-flex>
+            <v-flex xs-6>
+              <v-btn block outline color="error">
+                Reject
+                <v-icon right>clear</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card-actions>
+      </v-card>
+    </image-gallery>
   </div>
 </template>
 
@@ -33,7 +63,7 @@ import { mapState } from 'vuex'
 import ImageGallery from '@/components/ImageGallery'
 
 export default {
-  name: 'Like',
+  name: 'ModQueue',
   components: {
     'image-gallery': ImageGallery
   },
@@ -45,7 +75,7 @@ export default {
   },
   computed: {
     ...mapState({
-      savedImages: state => state.users.saved,
+      pendingImages: state => state.admin.pendingImages,
       auth: state => state.auth
     })
   },
@@ -65,10 +95,10 @@ export default {
     async onFetchImages () {
       this.loadingNewImages = true
       let images = []
-      if (this.savedImages && this.savedImages.length > 0) {
-        images = await this.$store.dispatch('fetchSavedImages', this.savedImages[this.savedImages.length - 1].saved_at)
+      if (this.pendingImages && this.pendingImages.length > 0) {
+        images = await this.$store.dispatch('fetchPending', this.pendingImages[this.pendingImages.length - 1].uploaded_at)
       } else {
-        images = await this.$store.dispatch('fetchSavedImages', null)
+        images = await this.$store.dispatch('fetchPending', null)
       }
       this.imagesEnd = images.length === 0
       this.loadingNewImages = false

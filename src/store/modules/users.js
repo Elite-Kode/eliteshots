@@ -11,13 +11,13 @@ const mutations = {
     state.albums = albums
   },
   setImages (state, images) {
-    state.images = images
+    state.images.push(...images)
   },
   setLiked (state, images) {
-    state.liked = images
+    state.liked.push(...images)
   },
   setSaved (state, images) {
-    state.saved = images
+    state.saved.push(...images)
   },
   increaseViewCount (state, { imageItem, authenticated }) {
     let index = state.images.data ? state.images.data.findIndex(image => {
@@ -141,20 +141,20 @@ const actions = {
     commit('setAlbums', albums)
     return albums
   },
-  async fetchImages ({ commit }, page) {
-    let response = await axios.get('/frontend/images/self', { params: { page } })
+  async fetchImages ({ commit }, last) {
+    let response = await axios.get('/frontend/images/self', { params: { last } })
     let images = response.data
     commit('setImages', images)
     return images
   },
-  async fetchLikedImages ({ commit }, page) {
-    let response = await axios.get('/frontend/images/self/liked', { params: { page } })
+  async fetchLikedImages ({ commit }, last) {
+    let response = await axios.get('/frontend/images/self/liked', { params: { last } })
     let images = response.data
     commit('setLiked', images)
     return images
   },
-  async fetchSavedImages ({ commit }, page) {
-    let response = await axios.get('/frontend/images/self/saved', { params: { page } })
+  async fetchSavedImages ({ commit }, last) {
+    let response = await axios.get('/frontend/images/self/saved', { params: { last } })
     let images = response.data
     commit('setSaved', images)
     return images

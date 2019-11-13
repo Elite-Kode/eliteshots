@@ -5,6 +5,7 @@ import themes from '@/store/modules/themes'
 import auth from '@/store/modules/auth'
 import users from '@/store/modules/users'
 import images from '@/store/modules/images'
+import admin from '@/store/modules/admin'
 
 Vue.use(Vuex)
 
@@ -13,6 +14,7 @@ export default new Vuex.Store({
     themes,
     auth,
     users,
-    images
+    images,
+    admin
   }
 })
