@@ -29,7 +29,7 @@ let users = new Schema({
   commander: String,
   email: String,
   trusted: Boolean,
-  access: Number
+  access: { type: String, enum: ['NORMAL', 'ADMIN', 'BANNED', 'SUPERADMIN'], uppercase: true },
 }, { runSettersOnQuery: true })
 
 module.exports = new mongoose.model('users', users)

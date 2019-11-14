@@ -27,7 +27,8 @@
       <login-card></login-card>
     </v-dialog>
 
-    <v-dialog v-model="uploadDialog" v-if="auth.authenticated && auth.user.access !== 2" fullscreen hide-overlay
+    <v-dialog v-model="uploadDialog" v-if="auth.authenticated && auth.user.access !== bannedAccess" fullscreen
+              hide-overlay
               transition="dialog-bottom-transition">
       <!--<v-dialog v-model="uploadDialog" fullscreen hide-overlay-->
       <!--transition="dialog-bottom-transition">-->
@@ -40,7 +41,8 @@
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
     </v-btn>
-    <v-btn v-if="auth.authenticated && auth.user.access === 0" icon :to="{name: 'mod-queue'}" exact>
+    <v-btn v-if="auth.authenticated && (auth.user.access === adminAccess || auth.user.access === superAdminAccess)"
+           icon :to="{name: 'mod-queue'}" exact>
       <v-icon>fas fa-user-secret</v-icon>
     </v-btn>
     <v-btn icon to="/about" exact>
@@ -70,7 +72,11 @@ export default {
   },
   data () {
     return {
-      uploadDialog: false
+      uploadDialog: false,
+      bannedAccess: 'BANNED',
+      normalAccess: 'NORMAL',
+      adminAccess: 'ADMIN',
+      superAdminAccess: 'SUPERADMIN'
     }
   },
   computed: {

@@ -30,6 +30,26 @@ const mutations = {
   },
   setRejectedImages (state, images) {
     state.rejectedImages.push(...images)
+  },
+  acceptImage (state, imageItem) {
+    let index = state.pendingImages.findIndex(image => image._id === imageItem._id)
+    if (index >= 0) {
+      state.pendingImages.splice(index, 1)
+    }
+    index = state.rejectedImages.findIndex(image => image._id === imageItem._id)
+    if (index >= 0) {
+      state.rejectedImages.splice(index, 1)
+    }
+  },
+  rejectImage (state, imageItem) {
+    let index = state.pendingImages.findIndex(image => image._id === imageItem._id)
+    if (index >= 0) {
+      state.pendingImages.splice(index, 1)
+    }
+    index = state.acceptedImages.findIndex(image => image._id === imageItem._id)
+    if (index >= 0) {
+      state.acceptedImages.splice(index, 1)
+    }
   }
 }
 const actions = {
@@ -50,6 +70,14 @@ const actions = {
     let images = response.data
     commit('setRejectedImages', images)
     return images
+  },
+  async acceptImage ({ commit }, imageItem) {
+    await axios.put(`/frontend/admin/images/${imageItem._id}/accept`)
+    commit('acceptImage', imageItem)
+  },
+  async rejectImage ({ commit }, imageItem) {
+    await axios.put(`/frontend/admin/images/${imageItem._id}/reject`)
+    commit('rejectImage', imageItem)
   }
 }
 

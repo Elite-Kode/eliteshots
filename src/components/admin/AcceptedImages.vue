@@ -17,7 +17,7 @@
 <template>
   <div>
     <h1>Moderation Queue</h1>
-    <image-gallery :imageItems="pendingImages"
+    <image-gallery :imageItems="acceptedImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
                    @imageViewed="onClickThumbnail"
@@ -39,13 +39,7 @@
         </v-card-title>
         <v-card-actions>
           <v-layout>
-            <v-flex xs-6>
-              <v-btn block color="success" @click="acceptImage(slotProps.imageItem)">
-                Accept
-                <v-icon right>check</v-icon>
-              </v-btn>
-            </v-flex>
-            <v-flex xs-6>
+            <v-flex xs-12>
               <v-btn block outline color="error" @click="rejectImage(slotProps.imageItem)">
                 Reject
                 <v-icon right>clear</v-icon>
@@ -63,7 +57,7 @@ import { mapState } from 'vuex'
 import ImageGallery from '@/components/ImageGallery'
 
 export default {
-  name: 'ModQueue',
+  name: 'AcceptedImages',
   components: {
     'image-gallery': ImageGallery
   },
@@ -75,7 +69,7 @@ export default {
   },
   computed: {
     ...mapState({
-      pendingImages: state => state.admin.pendingImages,
+      acceptedImages: state => state.admin.acceptedImages,
       auth: state => state.auth
     })
   },
@@ -95,16 +89,13 @@ export default {
     async onFetchImages () {
       this.loadingNewImages = true
       let images = []
-      if (this.pendingImages && this.pendingImages.length > 0) {
-        images = await this.$store.dispatch('fetchPending', this.pendingImages[this.pendingImages.length - 1].uploaded_at)
+      if (this.acceptedImages && this.acceptedImages.length > 0) {
+        images = await this.$store.dispatch('fetchAccepted', this.acceptedImages[this.acceptedImages.length - 1].uploaded_at)
       } else {
-        images = await this.$store.dispatch('fetchPending', null)
+        images = await this.$store.dispatch('fetchAccepted', null)
       }
       this.imagesEnd = images.length === 0
       this.loadingNewImages = false
-    },
-    acceptImage (image) {
-      this.$store.dispatch('acceptImage', image)
     },
     rejectImage (image) {
       this.$store.dispatch('rejectImage', image)

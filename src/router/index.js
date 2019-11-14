@@ -15,6 +15,8 @@ import Likes from '@/components/profile/Likes'
 import Saves from '@/components/profile/Saves'
 import Views from '@/components/profile/Views'
 import ModQueue from '@/components/admin/ModQueue'
+import AcceptedImages from '@/components/admin/AcceptedImages'
+import RejectedImages from '@/components/admin/RejectedImages'
 
 Vue.use(Router)
 
@@ -59,12 +61,12 @@ export default new Router({
             },
             {
               path: 'accepted',
-              component: ModQueue,
+              component: AcceptedImages,
               name: 'accepted'
             },
             {
               path: 'rejected',
-              component: ModQueue,
+              component: RejectedImages,
               name: 'rejected'
             },
             {

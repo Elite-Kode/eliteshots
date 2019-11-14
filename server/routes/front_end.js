@@ -37,10 +37,18 @@ let router = express.Router()
 
 let imagesPerfetch = 4
 
+let bannedAccess = 'BANNED'
+let adminAccess = 'ADMIN'
+let superAdminAccess = 'SUPERADMIN'
+
+let pendingStatus = 'PENDING'
+let acceptedStatus = 'ACCEPTED'
+let rejectedStatus = 'REJECTED'
+
 router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access !== 2) {
+      if (req.user.access !== bannedAccess) {
         let createdDate = new Date()
         let album
         if (req.body.albumTitle) {
@@ -146,7 +154,7 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
 router.get('/albums/self', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access !== 2) {
+      if (req.user.access !== bannedAccess) {
         let model = await albumModel
         let aggregate = model.aggregate()
         let query = { user_id: req.user._id }
@@ -189,7 +197,7 @@ router.get('/albums/self', async (req, res, next) => {
 router.get('/images/self', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access !== 2) {
+      if (req.user.access !== bannedAccess) {
         let model = await imageModel
         let lastElement = req.query.last
         let aggregate = model.aggregate()
@@ -287,7 +295,7 @@ router.get('/images/self', async (req, res, next) => {
 router.get('/images/self/liked', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access !== 2) {
+      if (req.user.access !== bannedAccess) {
         let model = await likesModel
         let lastElement = req.query.last
         let aggregate = model.aggregate()
@@ -395,7 +403,7 @@ router.get('/images/self/liked', async (req, res, next) => {
 router.get('/images/self/saved', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access !== 2) {
+      if (req.user.access !== bannedAccess) {
         let model = await savesModel
         let lastElement = req.query.last
         let aggregate = model.aggregate()
@@ -506,7 +514,11 @@ router.get('/images/popular', async (req, res, next) => {
     let lastElement = req.query.last
     let aggregate = model.aggregate()
 
-    aggregate.lookup({
+    let query = {
+      moderation_status: acceptedStatus
+    }
+
+    aggregate.match(query).lookup({
       from: 'views',
       localField: '_id',
       foreignField: 'image_id',
@@ -616,13 +628,15 @@ router.get('/images/recents', async (req, res, next) => {
     let lastElement = req.query.last
     let aggregate = model.aggregate()
 
-    if (lastElement) {
-      aggregate.match({
-        uploaded_at: { $lt: new Date(lastElement) }
-      })
+    let query = {
+      moderation_status: acceptedStatus
     }
 
-    aggregate.lookup({
+    if (lastElement) {
+      query.uploaded_at = { $lt: new Date(lastElement) }
+    }
+
+    aggregate.match(query).lookup({
       from: 'views',
       localField: '_id',
       foreignField: 'image_id',
@@ -709,7 +723,10 @@ router.get('/images/curated', async (req, res, next) => {
     let lastElement = req.query.last
     let aggregate = model.aggregate()
 
-    let query = { curated: true }
+    let query = {
+      curated: true,
+      moderation_status: acceptedStatus
+    }
 
     if (lastElement) {
       query.curated_at = { $lt: new Date(lastElement) }
@@ -798,30 +815,116 @@ router.get('/images/curated', async (req, res, next) => {
 
 router.get('/admin/images/pending', async (req, res, next) => {
   try {
-    let model = await imageModel
-    let lastElement = req.query.last
+    if (req.user) {
+      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
+        let model = await imageModel
+        let lastElement = req.query.last
 
-    let query = { moderation_status: 'PENDING' }
+        let query = { moderation_status: pendingStatus }
 
-    if (lastElement) {
-      query.uploaded_at = { $lt: new Date(lastElement) }
-    }
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
 
-    let imageData = await model.find(query).sort({
-      uploaded_at: -1
-    }).limit(imagesPerfetch).exec()
+        let imageData = await model.find(query).sort({
+          uploaded_at: -1
+        }).limit(imagesPerfetch).exec()
 
-    imageData.map(image => {
-      image.image_location = `${imageUrlRoute}${image.image_location}`
-      image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
-      image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
-      image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-      if (req.user) {
-        image.self_like = !!image.self_like
-        image.self_save = !!image.self_save
+        imageData.map(image => {
+          image.image_location = `${imageUrlRoute}${image.image_location}`
+          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+          if (req.user) {
+            image.self_like = !!image.self_like
+            image.self_save = !!image.self_save
+          }
+        })
+        res.send(imageData)
+      } else {
+        res.status(403).send({})
       }
-    })
-    res.send(imageData)
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/admin/images/accepted', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
+        let model = await imageModel
+        let lastElement = req.query.last
+
+        let query = { moderation_status: acceptedStatus }
+
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
+
+        let imageData = await model.find(query).sort({
+          uploaded_at: -1
+        }).limit(imagesPerfetch).exec()
+
+        imageData.map(image => {
+          image.image_location = `${imageUrlRoute}${image.image_location}`
+          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+          if (req.user) {
+            image.self_like = !!image.self_like
+            image.self_save = !!image.self_save
+          }
+        })
+        res.send(imageData)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/admin/images/rejected', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
+        let model = await imageModel
+        let lastElement = req.query.last
+
+        let query = { moderation_status: rejectedStatus }
+
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
+
+        let imageData = await model.find(query).sort({
+          uploaded_at: -1
+        }).limit(imagesPerfetch).exec()
+
+        imageData.map(image => {
+          image.image_location = `${imageUrlRoute}${image.image_location}`
+          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+          if (req.user) {
+            image.self_like = !!image.self_like
+            image.self_save = !!image.self_save
+          }
+        })
+        res.send(imageData)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
   } catch (err) {
     next(err)
   }
@@ -829,7 +932,7 @@ router.get('/admin/images/pending', async (req, res, next) => {
 
 router.put('/images/:imageId/view', async (req, res, next) => {
   try {
-    if (req.user && req.user.access !== 2) {
+    if (req.user && req.user.access !== bannedAccess) {
       let model = await viewsModel
       let viewDocument = new model({
         image_id: req.params.imageId,
@@ -854,7 +957,7 @@ router.put('/images/:imageId/view', async (req, res, next) => {
 router.put('/images/:imageId/like', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access !== 2) {
+      if (req.user.access !== bannedAccess) {
         let model = await likesModel
         let liked = await model.findOne({
           image_id: req.params.imageId,
@@ -888,7 +991,7 @@ router.put('/images/:imageId/like', async (req, res, next) => {
 router.put('/images/:imageId/save', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access !== 2) {
+      if (req.user.access !== bannedAccess) {
         let model = await savesModel
         let saves = await model.findOne({
           image_id: req.params.imageId,
@@ -907,6 +1010,52 @@ router.put('/images/:imageId/save', async (req, res, next) => {
           })
           await savesDocument.save()
         }
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/images/:imageId/accept', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
+        let model = await imageModel
+        await model.findOneAndUpdate({
+          _id: req.params.imageId,
+          moderation_status: { $ne: acceptedStatus }
+        }, {
+          moderation_status: acceptedStatus
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/images/:imageId/reject', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
+        let model = await imageModel
+        await model.findOneAndUpdate({
+          _id: req.params.imageId,
+          moderation_status: { $ne: rejectedStatus }
+        }, {
+          moderation_status: rejectedStatus
+        })
         res.status(200).send({})
       } else {
         res.status(403).send({})
