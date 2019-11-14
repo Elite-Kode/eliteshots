@@ -11,12 +11,21 @@ const mutations = {
     state.albums = albums
   },
   setImages (state, images) {
-    state.images.push(...images)
+    state.images = images
   },
   setLiked (state, images) {
-    state.liked.push(...images)
+    state.liked = images
   },
   setSaved (state, images) {
+    state.saved = images
+  },
+  addImages (state, images) {
+    state.images.push(...images)
+  },
+  addLiked (state, images) {
+    state.liked.push(...images)
+  },
+  addSaved (state, images) {
     state.saved.push(...images)
   },
   increaseViewCount (state, { imageItem, authenticated }) {
@@ -144,19 +153,31 @@ const actions = {
   async fetchImages ({ commit }, last) {
     let response = await axios.get('/frontend/images/self', { params: { last } })
     let images = response.data
-    commit('setImages', images)
+    if (last) {
+      commit('addImages', images)
+    } else {
+      commit('setImages', images)
+    }
     return images
   },
   async fetchLikedImages ({ commit }, last) {
     let response = await axios.get('/frontend/images/self/liked', { params: { last } })
     let images = response.data
-    commit('setLiked', images)
+    if (last) {
+      commit('addLiked', images)
+    } else {
+      commit('setLiked', images)
+    }
     return images
   },
   async fetchSavedImages ({ commit }, last) {
     let response = await axios.get('/frontend/images/self/saved', { params: { last } })
     let images = response.data
-    commit('setSaved', images)
+    if (last) {
+      commit('addSaved', images)
+    } else {
+      commit('setSaved', images)
+    }
     return images
   },
   async triggerUserImageViewed ({ commit, rootState }, imageItem) {

@@ -23,12 +23,21 @@ const state = {
 }
 const mutations = {
   setPopular (state, popular) {
-    state.popular.push(...popular)
+    state.popular = popular
   },
   setRecents (state, recents) {
-    state.recents.push(...recents)
+    state.recents = recents
   },
   setCurated (state, curated) {
+    state.curated = curated
+  },
+  addPopular (state, popular) {
+    state.popular.push(...popular)
+  },
+  addRecents (state, recents) {
+    state.recents.push(...recents)
+  },
+  addCurated (state, curated) {
     state.curated.push(...curated)
   },
   increaseViewCount (state, { imageItem, authenticated }) {
@@ -150,19 +159,31 @@ const actions = {
   async fetchPopular ({ commit }, last) {
     let response = await axios.get('/frontend/images/popular', { params: { last } })
     let popular = response.data
-    commit('setPopular', popular)
+    if (last) {
+      commit('addPopular', popular)
+    } else {
+      commit('setPopular', popular)
+    }
     return popular
   },
   async fetchRecents ({ commit }, last) {
     let response = await axios.get('/frontend/images/recents', { params: { last } })
     let recents = response.data
-    commit('setRecents', recents)
+    if (last) {
+      commit('addRecents', recents)
+    } else {
+      commit('setRecents', recents)
+    }
     return recents
   },
   async fetchCurated ({ commit }, last) {
     let response = await axios.get('/frontend/images/curated', { params: { last } })
     let curated = response.data
-    commit('setCurated', curated)
+    if (last) {
+      commit('addCurated', curated)
+    } else {
+      commit('setCurated', curated)
+    }
     return curated
   },
   async triggerImageViewed ({ commit, rootState }, imageItem) {

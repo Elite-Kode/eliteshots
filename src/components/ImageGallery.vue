@@ -26,6 +26,7 @@
                 :src="imageItem.thumbnail_location"
                 @click="clickThumbnail(i)"
                 class="image-thumbnail"
+                min-height="200px"
               >
                 <v-expand-transition>
                   <v-layout v-if="hover" ma-0 primary class="image-title-background">
@@ -67,7 +68,7 @@
         <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
       </slot>
     </v-layout>
-    <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end">
+    <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end" handle-on-mount="false">
       <div v-if="end">
         No more images
       </div>

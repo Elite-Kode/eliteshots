@@ -23,12 +23,21 @@ const state = {
 }
 const mutations = {
   setPendingImages (state, images) {
-    state.pendingImages.push(...images)
+    state.pendingImages = images
   },
   setAcceptedImages (state, images) {
-    state.acceptedImages.push(...images)
+    state.acceptedImages = images
   },
   setRejectedImages (state, images) {
+    state.rejectedImages = images
+  },
+  addPendingImages (state, images) {
+    state.pendingImages.push(...images)
+  },
+  addAcceptedImages (state, images) {
+    state.acceptedImages.push(...images)
+  },
+  addRejectedImages (state, images) {
     state.rejectedImages.push(...images)
   },
   acceptImage (state, imageItem) {
@@ -56,19 +65,31 @@ const actions = {
   async fetchPending ({ commit }, last) {
     let response = await axios.get('/frontend/admin/images/pending', { params: { last } })
     let images = response.data
-    commit('setPendingImages', images)
+    if (last) {
+      commit('addPendingImages', images)
+    } else {
+      commit('setPendingImages', images)
+    }
     return images
   },
   async fetchAccepted ({ commit }, last) {
     let response = await axios.get('/frontend/admin/images/accepted', { params: { last } })
     let images = response.data
-    commit('setAcceptedImages', images)
+    if (last) {
+      commit('addAcceptedImages', images)
+    } else {
+      commit('setAcceptedImages', images)
+    }
     return images
   },
   async fetchRejected ({ commit }, last) {
     let response = await axios.get('/frontend/admin/images/rejected', { params: { last } })
     let images = response.data
-    commit('setRejectedImages', images)
+    if (last) {
+      commit('addRejectedImages', images)
+    } else {
+      commit('setRejectedImages', images)
+    }
     return images
   },
   async acceptImage ({ commit }, imageItem) {

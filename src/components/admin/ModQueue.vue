@@ -30,6 +30,7 @@
           :src="slotProps.imageItem.thumbnail_location"
           @click="slotProps.clickThumbnail(i)"
           class="image-thumbnail"
+          min-height="200px"
         ></v-img>
         <v-card-title primary-title>
           <div>
