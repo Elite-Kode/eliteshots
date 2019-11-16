@@ -40,6 +40,15 @@ const mutations = {
   addCurated (state, curated) {
     state.curated.push(...curated)
   },
+  terminatePopular (state) {
+    state.popular = []
+  },
+  terminateRecents (state) {
+    state.recents = []
+  },
+  terminateCurated (state) {
+    state.curated = []
+  },
   increaseViewCount (state, { imageItem, authenticated }) {
     let index = state.popular ? state.popular.findIndex(image => {
       return image._id === imageItem._id

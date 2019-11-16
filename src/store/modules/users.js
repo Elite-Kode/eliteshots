@@ -28,6 +28,15 @@ const mutations = {
   addSaved (state, images) {
     state.saved.push(...images)
   },
+  terminateImages (state) {
+    state.images = []
+  },
+  terminateLiked (state) {
+    state.liked = []
+  },
+  terminateSaved (state) {
+    state.saved = []
+  },
   increaseViewCount (state, { imageItem, authenticated }) {
     let index = state.images.data ? state.images.data.findIndex(image => {
       return image._id === imageItem._id

@@ -32,6 +32,7 @@ export default {
   },
   created () {
     this.$store.dispatch('checkAuthenticated')
+    this.$store.commit('terminateRecents')
   },
   methods: {
     onClickThumbnail (image) {

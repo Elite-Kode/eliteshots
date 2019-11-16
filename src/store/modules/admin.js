@@ -40,6 +40,15 @@ const mutations = {
   addRejectedImages (state, images) {
     state.rejectedImages.push(...images)
   },
+  terminatePendingImages (state) {
+    state.pendingImages = []
+  },
+  terminateAcceptedImages (state) {
+    state.acceptedImages = []
+  },
+  terminateRejectedImages (state) {
+    state.rejectedImages = []
+  },
   acceptImage (state, imageItem) {
     let index = state.pendingImages.findIndex(image => image._id === imageItem._id)
     if (index >= 0) {
