@@ -41,7 +41,7 @@
               <v-icon class="mr-1">photo</v-icon>
               {{albumItem.no_of_images}}
               <v-spacer></v-spacer>
-              <v-btn v-if="deletable" icon @click="clickDelete(i)">
+              <v-btn v-if="deletable && albumItem.title!==defaultAlbumTitle" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
               </v-btn>
             </v-card-actions>
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import { defaultAlbumTitle } from '../../processVars'
+
 export default {
   name: 'AlbumGallery',
   props: {
@@ -73,7 +75,8 @@ export default {
   },
   data () {
     return {
-      selectedAlbumIndex: null
+      selectedAlbumIndex: null,
+      defaultAlbumTitle: defaultAlbumTitle
     }
   },
   methods: {

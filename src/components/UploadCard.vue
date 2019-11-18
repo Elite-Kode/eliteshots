@@ -41,6 +41,7 @@
 <script>
 import vue2Dropzone from 'vue2-dropzone'
 import { mapState } from 'vuex'
+import { defaultAlbumTitle } from '../../processVars'
 
 export default {
   name: 'UploadCard',
@@ -71,9 +72,9 @@ export default {
       albums: state => state.users.albums
     }),
     albumTitles () {
-      return this.albums.map(album => {
+      return [defaultAlbumTitle].concat(this.albums.map(album => {
         return album.title
-      })
+      }))
     }
   },
   watch: {
@@ -104,7 +105,9 @@ export default {
       formData.append('imageTitle', title)
       formData.append('imageDescription', description)
       formData.append('isPublic', isPublic)
-      formData.append('albumTitle', this.currentAlbumTitle)
+      if (this.currentAlbumTitle !== '' && this.currentAlbumTitle.toLowerCase() !== defaultAlbumTitle.toLowerCase()) {
+        formData.append('albumTitle', this.currentAlbumTitle)
+      }
     },
     template: function () {
       return `<div class="dz-preview dz-file-preview">

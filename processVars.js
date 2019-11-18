@@ -10,6 +10,8 @@ if (process.env.NODE_ENV === 'development') {
 
 let version = require('./version');
 
+let defaultAlbumTitle = 'Default'
+
 module.exports = {
-  host, protocol, version
+  host, protocol, version, defaultAlbumTitle
 }

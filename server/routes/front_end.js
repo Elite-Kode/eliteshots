@@ -23,6 +23,7 @@ const jimp = require('jimp')
 
 const backblaze = require('../modules/backblaze')
 const secrets = require('../../secrets')
+const processVars = require('../../processVars')
 const upload = multer()
 
 let albumModel = require('../models/albums')
@@ -51,7 +52,9 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
       if (req.user.access !== bannedAccess) {
         let createdDate = new Date()
         let album
-        if (req.body.albumTitle) {
+        if (!req.body.albumTitle || req.body.albumTitle.toLowerCase() === processVars.defaultAlbumTitle.toLowerCase()) {
+          album = null
+        } else {
           let albumModelResolved = await albumModel
           album = await albumModelResolved.findOne({
             user_id: req.user._id,
@@ -134,6 +137,7 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
           description_lower: req.body.imageDescription.toLowerCase(),
           public: req.body.isPublic === 'true',
           album_id: album ? album._id : undefined,
+          moderation_status: 'PENDING',
           uploaded_at: createdDate,
           last_modified_at: createdDate,
           user_id: req.user._id
@@ -181,6 +185,25 @@ router.get('/albums/self', async (req, res, next) => {
 
         albums.map(album => {
           album.thumbnail_location = `${imageUrlRoute}${album.thumbnail_location}`
+        })
+
+        model = await imageModel
+        query = {
+          user_id: req.user._id,
+          album_id: null
+        }
+
+        let imageCount = await model.find(query).countDocuments().exec()
+
+        let imageThumbnailLocation = (await model.find(query).sort({
+          uploaded_at: -1
+        }).lean().limit(1).exec())[0].thumbnail_location
+
+        albums.push({
+          title: processVars.defaultAlbumTitle,
+          title_lower: processVars.defaultAlbumTitle.toLowerCase(),
+          no_of_images: imageCount,
+          thumbnail_location: `${imageUrlRoute}${imageThumbnailLocation}`
         })
         res.send(albums)
       } else {
@@ -828,7 +851,7 @@ router.get('/admin/images/pending', async (req, res, next) => {
 
         let imageData = await model.find(query).sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch).exec()
+        }).limit(imagesPerfetch).lean().exec()
 
         imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
@@ -867,7 +890,7 @@ router.get('/admin/images/accepted', async (req, res, next) => {
 
         let imageData = await model.find(query).sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch).exec()
+        }).limit(imagesPerfetch).lean().exec()
 
         imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
@@ -906,7 +929,7 @@ router.get('/admin/images/rejected', async (req, res, next) => {
 
         let imageData = await model.find(query).sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch).exec()
+        }).limit(imagesPerfetch).lean().exec()
 
         imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
