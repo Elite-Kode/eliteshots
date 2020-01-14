@@ -556,6 +556,11 @@ router.get('/images/popular', async (req, res, next) => {
       localField: '_id',
       foreignField: 'image_id',
       as: 'saves'
+    }).lookup({
+      from: 'users',
+      localField: 'user_id',
+      foreignField: '_id',
+      as: 'user'
     }).addFields({
       no_of_views: {
         $size: '$views'
@@ -565,6 +570,9 @@ router.get('/images/popular', async (req, res, next) => {
       },
       no_of_saves: {
         $size: '$saves'
+      },
+      cmdr_name: {
+        '$arrayElemAt': ['$user.commander', 0]
       }
     })
 
@@ -674,6 +682,11 @@ router.get('/images/recents', async (req, res, next) => {
       localField: '_id',
       foreignField: 'image_id',
       as: 'saves'
+    }).lookup({
+      from: 'users',
+      localField: 'user_id',
+      foreignField: '_id',
+      as: 'user'
     }).addFields({
       no_of_views: {
         $size: '$views'
@@ -683,6 +696,9 @@ router.get('/images/recents', async (req, res, next) => {
       },
       no_of_saves: {
         $size: '$saves'
+      },
+      cmdr_name: {
+        '$arrayElemAt': ['$user.commander', 0]
       }
     })
 
@@ -770,6 +786,11 @@ router.get('/images/curated', async (req, res, next) => {
       localField: '_id',
       foreignField: 'image_id',
       as: 'saves'
+    }).lookup({
+      from: 'users',
+      localField: 'user_id',
+      foreignField: '_id',
+      as: 'user'
     }).addFields({
       no_of_views: {
         $size: '$views'
@@ -779,6 +800,9 @@ router.get('/images/curated', async (req, res, next) => {
       },
       no_of_saves: {
         $size: '$saves'
+      },
+      cmdr_name: {
+        '$arrayElemAt': ['$user.commander', 0]
       }
     })
 
