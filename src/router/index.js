@@ -17,6 +17,7 @@ import Views from '@/components/profile/Views'
 import ModQueue from '@/components/admin/ModQueue'
 import AcceptedImages from '@/components/admin/AcceptedImages'
 import RejectedImages from '@/components/admin/RejectedImages'
+import ImageItem from '@/components/ImageItem'
 
 Vue.use(Router)
 
@@ -117,6 +118,12 @@ export default new Router({
           path: '/about',
           component: About,
           name: 'about'
+        },
+        {
+          path: '/image/:imageId',
+          component: ImageItem,
+          name: 'image-item',
+          props: true
         }
       ]
     }

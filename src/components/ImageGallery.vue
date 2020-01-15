@@ -18,7 +18,7 @@
   <div>
     <v-layout row wrap ref="imageContainer">
       <v-flex xs3 v-for="(imageItem, i) in imageItems" :key="i">
-        <slot name="thumbnail" :imageItem="imageItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
+        <slot name="thumbnail" :imageItem="imageItem" :itemIndex="i" :clickThumbnail="clickThumbnail">
           <v-card>
             <v-hover>
               <v-img
@@ -39,7 +39,7 @@
                     </v-flex>
                   </v-layout>
                 </v-expand-transition>
-                <v-expand-transition>
+                <v-expand-transition v-if="!noUser">
                   <v-layout v-if="hover" ma-0 primary class="image-title-background">
                     <v-flex class="text-truncate">
                       CMDR {{imageItem.cmdr_name}}
@@ -53,9 +53,11 @@
               </v-img>
             </v-hover>
             <v-card-actions>
-              <v-btn icon @click.stop="clickDialog(i)">
-                <v-icon>launch</v-icon>
-              </v-btn>
+              <router-link :to="{ name: 'image-item', params:{imageId: imageItem._id}}" target="_blank">
+                <v-btn icon>
+                  <v-icon>launch</v-icon>
+                </v-btn>
+              </router-link>
               <v-spacer></v-spacer>
               <v-btn v-if="deletable" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
@@ -75,20 +77,6 @@
           </v-card>
         </slot>
       </v-flex>
-      <v-dialog v-model="openImageModel" fullscreen hide-overlay transition="dialog-bottom-transition">
-        <v-card v-if="imageItems[dialogSelectedImageIndex]">
-          <v-btn icon @click="closeDialog" class="back-to-list">
-            <v-icon>view_module</v-icon>
-          </v-btn>
-          <v-img :src="imageItems[dialogSelectedImageIndex].image_location"/>
-          <v-card-title primary-title>
-            <div>
-              <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
-              <div> {{ card_text }}</div>
-            </div>
-          </v-card-title>
-        </v-card>
-      </v-dialog>
       <slot name="lightbox" :imageLinks="imageLinks" :selectedImageIndex="selectedImageIndex"
             :closeGallery="closeGallery">
         <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
@@ -137,12 +125,15 @@ export default {
     end: {
       type: Boolean,
       default: false
+    },
+    noUser: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
       selectedImageIndex: null,
-      dialogSelectedImageIndex: null,
       openImageModel: false
     }
   },
@@ -165,11 +156,6 @@ export default {
       this.selectedImageIndex = index
       this.$emit('imageViewed', this.imageItems[index])
     },
-    clickDialog (index) {
-      this.dialogSelectedImageIndex = index
-      this.openImageModel = true
-      this.$emit('imageViewed', this.imageItems[index])
-    },
     clickDelete (index) {
       this.$emit('imageDeleted', this.imageItems[index])
     },
@@ -181,10 +167,6 @@ export default {
     },
     closeGallery () {
       this.selectedImageIndex = null
-    },
-    closeDialog () {
-      this.dialogSelectedImageIndex = null
-      this.openImageModel = false
     },
     fetchImages () {
       this.$emit('fetchImages')
@@ -208,5 +190,9 @@ export default {
     opacity: 0.2;
     margin-left: 10px;
     margin-top: 10px;
+  }
+
+  .back-to-list:hover {
+    opacity: 1;
   }
 </style>

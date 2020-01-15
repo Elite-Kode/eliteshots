@@ -4,6 +4,8 @@
     :color="toolbarColor"
     dark
     tabs
+    :scroll-off-screen="scrollOfScreen"
+    :scroll-threshold="scrollThreshold"
     :class="{'custom-dark': theme === themes[1]}">
     <v-toolbar-title class="headline text-uppercase">
       <v-btn icon large to="/" exact>
@@ -66,6 +68,16 @@ import UploadCard from '@/components/UploadCard'
 
 export default {
   name: 'Toolbar',
+  props: {
+    scrollOfScreen: {
+      type: Boolean,
+      default: false
+    },
+    scrollThreshold: {
+      type: Number,
+      default: 300
+    }
+  },
   components: {
     'login-card': LoginCard,
     'upload-card': UploadCard

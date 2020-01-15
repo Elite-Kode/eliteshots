@@ -108,6 +108,9 @@ const actions = {
   async rejectImage ({ commit }, imageItem) {
     await axios.put(`/frontend/admin/images/${imageItem._id}/reject`)
     commit('rejectImage', imageItem)
+  },
+  async banUser ({ commit }, userId) {
+    await axios.put(`/frontend/admin/ban/${userId}`)
   }
 }
 

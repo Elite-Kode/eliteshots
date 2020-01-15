@@ -195,6 +195,10 @@ const actions = {
     }
     return curated
   },
+  async fetchImage ({ commit }, imageId) {
+    let response = await axios.get(`/frontend/images/${imageId}`)
+    return response.data
+  },
   async triggerImageViewed ({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/images/${imageItem._id}/view`)
     commit('increaseViewCount', { imageItem, authenticated: rootState.auth.authenticated })

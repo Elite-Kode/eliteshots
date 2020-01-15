@@ -18,6 +18,7 @@
 
 const express = require('express')
 const path = require('path')
+const mongoose = require('mongoose')
 const multer = require('multer')
 const jimp = require('jimp')
 
@@ -31,12 +32,14 @@ let imageModel = require('../models/images')
 let likesModel = require('../models/likes')
 let savesModel = require('../models/saves')
 let viewsModel = require('../models/views')
+let usersModel = require('../models/users')
 
 let imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots/'
 
 let router = express.Router()
 
 let imagesPerfetch = 4
+let ObjectId = mongoose.Types.ObjectId
 
 let bannedAccess = 'BANNED'
 let adminAccess = 'ADMIN'
@@ -354,6 +357,11 @@ router.get('/images/self/liked', async (req, res, next) => {
           localField: '_id',
           foreignField: 'image_id',
           as: 'saves'
+        }).lookup({
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
         }).addFields({
           no_of_views: {
             $size: '$views'
@@ -363,6 +371,9 @@ router.get('/images/self/liked', async (req, res, next) => {
           },
           no_of_saves: {
             $size: '$saves'
+          },
+          cmdr_name: {
+            '$arrayElemAt': ['$user.commander', 0]
           }
         })
 
@@ -462,6 +473,11 @@ router.get('/images/self/saved', async (req, res, next) => {
           localField: '_id',
           foreignField: 'image_id',
           as: 'saves'
+        }).lookup({
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
         }).addFields({
           no_of_views: {
             $size: '$views'
@@ -471,6 +487,9 @@ router.get('/images/self/saved', async (req, res, next) => {
           },
           no_of_saves: {
             $size: '$saves'
+          },
+          cmdr_name: {
+            '$arrayElemAt': ['$user.commander', 0]
           }
         })
 
@@ -860,12 +879,108 @@ router.get('/images/curated', async (req, res, next) => {
   }
 })
 
+router.get('/images/:imageId', async (req, res, next) => {
+  try {
+    let model = await imageModel
+    let aggregate = model.aggregate()
+
+    let query = {
+      _id: ObjectId(req.params.imageId)
+    }
+
+    aggregate.match(query).lookup({
+      from: 'views',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'views'
+    }).lookup({
+      from: 'likes',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'likes'
+    }).lookup({
+      from: 'saves',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'saves'
+    }).lookup({
+      from: 'users',
+      localField: 'user_id',
+      foreignField: '_id',
+      as: 'user'
+    }).addFields({
+      no_of_views: {
+        $size: '$views'
+      },
+      no_of_likes: {
+        $size: '$likes'
+      },
+      no_of_saves: {
+        $size: '$saves'
+      },
+      cmdr_name: {
+        '$arrayElemAt': ['$user.commander', 0]
+      }
+    })
+
+    if (req.user) {
+      aggregate.addFields({
+        self_like: {
+          $size: {
+            $filter: {
+              input: '$likes',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        },
+        self_save: {
+          $size: {
+            $filter: {
+              input: '$saves',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        }
+      })
+    }
+    aggregate.project({
+      views: 0,
+      likes: 0,
+      saves: 0
+    })
+
+    let imageData = await aggregate.exec()
+
+    imageData.map(image => {
+      image.image_location = `${imageUrlRoute}${image.image_location}`
+      image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+      image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+      image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+      if (req.user) {
+        image.self_like = !!image.self_like
+        image.self_save = !!image.self_save
+      }
+    })
+    imageData = imageData[0]
+    res.send(imageData)
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.get('/admin/images/pending', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
         let model = await imageModel
         let lastElement = req.query.last
+        let aggregate = model.aggregate()
 
         let query = { moderation_status: pendingStatus }
 
@@ -873,9 +988,22 @@ router.get('/admin/images/pending', async (req, res, next) => {
           query.uploaded_at = { $lt: new Date(lastElement) }
         }
 
-        let imageData = await model.find(query).sort({
+        aggregate.match(query).lookup({
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
+        }).addFields({
+          cmdr_name: {
+            '$arrayElemAt': ['$user.commander', 0]
+          }
+        })
+
+        aggregate.sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch).lean().exec()
+        }).limit(imagesPerfetch)
+
+        let imageData = await aggregate.exec()
 
         imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
@@ -905,6 +1033,7 @@ router.get('/admin/images/accepted', async (req, res, next) => {
       if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
         let model = await imageModel
         let lastElement = req.query.last
+        let aggregate = model.aggregate()
 
         let query = { moderation_status: acceptedStatus }
 
@@ -912,9 +1041,22 @@ router.get('/admin/images/accepted', async (req, res, next) => {
           query.uploaded_at = { $lt: new Date(lastElement) }
         }
 
-        let imageData = await model.find(query).sort({
+        aggregate.match(query).lookup({
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
+        }).addFields({
+          cmdr_name: {
+            '$arrayElemAt': ['$user.commander', 0]
+          }
+        })
+
+        aggregate.sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch).lean().exec()
+        }).limit(imagesPerfetch)
+
+        let imageData = await aggregate.exec()
 
         imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
@@ -944,6 +1086,7 @@ router.get('/admin/images/rejected', async (req, res, next) => {
       if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
         let model = await imageModel
         let lastElement = req.query.last
+        let aggregate = model.aggregate()
 
         let query = { moderation_status: rejectedStatus }
 
@@ -951,9 +1094,22 @@ router.get('/admin/images/rejected', async (req, res, next) => {
           query.uploaded_at = { $lt: new Date(lastElement) }
         }
 
-        let imageData = await model.find(query).sort({
+        aggregate.match(query).lookup({
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
+        }).addFields({
+          cmdr_name: {
+            '$arrayElemAt': ['$user.commander', 0]
+          }
+        })
+
+        aggregate.sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch).lean().exec()
+        }).limit(imagesPerfetch)
+
+        let imageData = await aggregate.exec()
 
         imageData.map(image => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
@@ -1102,6 +1258,29 @@ router.put('/admin/images/:imageId/reject', async (req, res, next) => {
           moderation_status: { $ne: rejectedStatus }
         }, {
           moderation_status: rejectedStatus
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/ban/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
+        let model = await usersModel
+        await model.findOneAndUpdate({
+          _id: req.params.userId
+        }, {
+          trusted: false,
+          access: bannedAccess
         })
         res.status(200).send({})
       } else {

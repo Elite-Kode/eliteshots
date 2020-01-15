@@ -28,19 +28,32 @@
       <v-card slot="thumbnail" slot-scope="slotProps">
         <v-img
           :src="slotProps.imageItem.thumbnail_location"
-          @click="slotProps.clickThumbnail(i)"
+          @click="slotProps.clickThumbnail(slotProps.itemIndex)"
           class="image-thumbnail"
           min-height="200px"
-        ></v-img>
-        <v-card-title primary-title>
-          <div>
-            <div class="headline">{{slotProps.imageItem.title}}</div>
-            <span class="subheading">{{slotProps.imageItem.description}}</span>
-          </div>
+        >
+          <router-link :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" target="_blank">
+            <v-btn icon @click.stop="">
+              <v-icon>launch</v-icon>
+            </v-btn>
+          </router-link>
+        </v-img>
+        <v-card-title class="px-2" style="width: 100%">
+          <v-layout wrap>
+            <v-flex grow xs12 class="headline">{{slotProps.imageItem.title}}</v-flex>
+            <v-flex grow xs12 class="subheading">{{slotProps.imageItem.description}}</v-flex>
+            <v-flex grow xs6 class="subheading">CMDR {{slotProps.imageItem.cmdr_name}}</v-flex>
+            <v-flex xs6>
+              <v-btn block color="error" @click="banUser(slotProps.imageItem.user_id)">
+                Ban User
+                <v-icon right>gavel</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-layout>
         </v-card-title>
         <v-card-actions>
           <v-layout>
-            <v-flex xs-12>
+            <v-flex xs12>
               <v-btn block outline color="error" @click="rejectImage(slotProps.imageItem)">
                 Reject
                 <v-icon right>clear</v-icon>
@@ -101,6 +114,9 @@ export default {
     },
     rejectImage (image) {
       this.$store.dispatch('rejectImage', image)
+    },
+    banUser (userID) {
+      this.$store.dispatch('banUser', userID)
     }
   }
 }
