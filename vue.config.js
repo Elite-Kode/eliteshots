@@ -19,5 +19,8 @@ if (secrets.bugsnag_sourcemap_send) {
 module.exports = {
   configureWebpack: {
     plugins: plugins
-  }
+  },
+  'transpileDependencies': [
+    'vuetify'
+  ]
 }

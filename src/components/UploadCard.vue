@@ -134,7 +134,7 @@ export default {
 }
 </script>
 
-<style scoped lang="stylus">
+<!--<style scoped lang="stylus">
   @import '~vuetify/src/stylus/theme';
 
   .dark
@@ -157,7 +157,7 @@ export default {
 
   .message
     align-self center
-</style>
+</style>-->
 <style>
   #uploadDropzone.dropzone .dz-message {
     flex-grow: 1;
