@@ -16,7 +16,13 @@
 
 <template>
   <div>
-    <h1>Moderation Queue</h1>
+    <h1>Rejected Images</h1>
+    <mod-action :open-dialog="modActionDialog"
+                :mod-action="modActionType"
+                :target-type="modActionTargetType"
+                :action-target="modActionTarget"
+                @cancelled="onCancelled"
+                @confirmed="onConfirmed"/>
     <image-gallery :imageItems="rejectedImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
@@ -44,7 +50,7 @@
             <v-flex grow xs12 class="subheading">{{slotProps.imageItem.description}}</v-flex>
             <v-flex grow xs6 class="subheading">CMDR {{slotProps.imageItem.cmdr_name}}</v-flex>
             <v-flex xs6>
-              <v-btn block color="error" @click="banUser(slotProps.imageItem.user_id)">
+              <v-btn block color="error" @click.stop="banUser(slotProps.imageItem.user_id)">
                 Ban User
                 <v-icon right>gavel</v-icon>
               </v-btn>
@@ -54,7 +60,7 @@
         <v-card-actions>
           <v-layout>
             <v-flex xs12>
-              <v-btn block color="success" @click="acceptImage(slotProps.imageItem)">
+              <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)">
                 Accept
                 <v-icon right>check</v-icon>
               </v-btn>
@@ -69,16 +75,23 @@
 <script>
 import { mapState } from 'vuex'
 import ImageGallery from '@/components/ImageGallery'
+import ModActionConfirmation from '@/components/admin/ModActionConfirmation'
 
 export default {
   name: 'RejectedImages',
   components: {
-    'image-gallery': ImageGallery
+    'image-gallery': ImageGallery,
+    'mod-action': ModActionConfirmation
   },
   data () {
     return {
       loadingNewImages: false,
-      imagesEnd: false
+      imagesEnd: false,
+      modActionDialog: false,
+      modActionType: '',
+      modActionTargetType: '',
+      modActionTarget: '',
+      modActionComment: ''
     }
   },
   computed: {
@@ -113,10 +126,36 @@ export default {
       this.loadingNewImages = false
     },
     acceptImage (image) {
-      this.$store.dispatch('acceptImage', image)
+      this.modActionType = 'ACCEPT'
+      this.modActionTargetType = 'IMAGE'
+      this.modActionTarget = image._id
+      this.modActionDialog = true
     },
     banUser (userID) {
-      this.$store.dispatch('banUser', userID)
+      this.modActionType = 'BAN'
+      this.modActionTargetType = 'USER'
+      this.modActionTarget = userID
+      this.modActionDialog = true
+    },
+    onCancelled () {
+      this.modActionDialog = false
+    },
+    onConfirmed (comment) {
+      this.modActionDialog = false
+      this.modActionComment = comment
+      if (this.modActionTargetType === 'IMAGE') {
+        if (this.modActionType === 'ACCEPT') {
+          this.$store.dispatch('acceptImage', this.modActionTarget)
+        }
+      } else if (this.modActionTargetType === 'USER') {
+        if (this.modActionType === 'BAN') {
+          this.$store.dispatch('banUser', this.modActionTarget)
+        } else if (this.modActionType === 'UNBAN') {
+          this.$store.dispatch('unban', this.modActionTarget)
+        }
+      }
+
+      this.modActionComment = ''
     }
   }
 }

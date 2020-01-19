@@ -82,7 +82,7 @@
         <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
       </slot>
     </v-layout>
-    <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end" handle-on-mount="false">
+    <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end">
       <div v-if="end">
         No more images
       </div>

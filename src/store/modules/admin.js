@@ -49,22 +49,22 @@ const mutations = {
   terminateRejectedImages (state) {
     state.rejectedImages = []
   },
-  acceptImage (state, imageItem) {
-    let index = state.pendingImages.findIndex(image => image._id === imageItem._id)
+  acceptImage (state, imageId) {
+    let index = state.pendingImages.findIndex(image => image._id === imageId)
     if (index >= 0) {
       state.pendingImages.splice(index, 1)
     }
-    index = state.rejectedImages.findIndex(image => image._id === imageItem._id)
+    index = state.rejectedImages.findIndex(image => image._id === imageId)
     if (index >= 0) {
       state.rejectedImages.splice(index, 1)
     }
   },
-  rejectImage (state, imageItem) {
-    let index = state.pendingImages.findIndex(image => image._id === imageItem._id)
+  rejectImage (state, imageId) {
+    let index = state.pendingImages.findIndex(image => image._id === imageId)
     if (index >= 0) {
       state.pendingImages.splice(index, 1)
     }
-    index = state.acceptedImages.findIndex(image => image._id === imageItem._id)
+    index = state.acceptedImages.findIndex(image => image._id === imageId)
     if (index >= 0) {
       state.acceptedImages.splice(index, 1)
     }
@@ -101,16 +101,19 @@ const actions = {
     }
     return images
   },
-  async acceptImage ({ commit }, imageItem) {
-    await axios.put(`/frontend/admin/images/${imageItem._id}/accept`)
-    commit('acceptImage', imageItem)
+  async acceptImage ({ commit }, imageId) {
+    await axios.put(`/frontend/admin/images/${imageId}/accept`)
+    commit('acceptImage', imageId)
   },
-  async rejectImage ({ commit }, imageItem) {
-    await axios.put(`/frontend/admin/images/${imageItem._id}/reject`)
-    commit('rejectImage', imageItem)
+  async rejectImage ({ commit }, imageId) {
+    await axios.put(`/frontend/admin/images/${imageId}/reject`)
+    commit('rejectImage', imageId)
   },
   async banUser ({ commit }, userId) {
     await axios.put(`/frontend/admin/ban/${userId}`)
+  },
+  async unbanUser ({ commit }, userId) {
+    await axios.put(`/frontend/admin/unban/${userId}`)
   }
 }
 

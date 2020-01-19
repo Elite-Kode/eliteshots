@@ -17,6 +17,7 @@ import Views from '@/components/profile/Views'
 import ModQueue from '@/components/admin/ModQueue'
 import AcceptedImages from '@/components/admin/AcceptedImages'
 import RejectedImages from '@/components/admin/RejectedImages'
+import UsersManagement from '@/components/admin/UsersManagement'
 import ImageItem from '@/components/ImageItem'
 
 Vue.use(Router)
@@ -72,7 +73,7 @@ export default new Router({
             },
             {
               path: 'users',
-              component: ModQueue,
+              component: UsersManagement,
               name: 'users'
             }
           ]

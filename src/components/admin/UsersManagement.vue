@@ -17,12 +17,6 @@
 <template>
   <div>
     <h1>Moderation Queue</h1>
-    <mod-action :open-dialog="modActionDialog"
-                :mod-action="modActionType"
-                :target-type="modActionTargetType"
-                :action-target="modActionTarget"
-                @cancelled="onCancelled"
-                @confirmed="onConfirmed"/>
     <image-gallery :imageItems="pendingImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
@@ -50,7 +44,7 @@
             <v-flex grow xs12 class="subheading">{{slotProps.imageItem.description}}</v-flex>
             <v-flex grow xs6 class="subheading">CMDR {{slotProps.imageItem.cmdr_name}}</v-flex>
             <v-flex xs6>
-              <v-btn block color="error" @click.stop="banUser(slotProps.imageItem.user_id)">
+              <v-btn block color="error" @click="banUser(slotProps.imageItem.user_id)">
                 Ban User
                 <v-icon right>gavel</v-icon>
               </v-btn>
@@ -60,13 +54,13 @@
         <v-card-actions>
           <v-layout>
             <v-flex xs6>
-              <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)">
+              <v-btn block color="success" @click="acceptImage(slotProps.imageItem)">
                 Accept
                 <v-icon right>check</v-icon>
               </v-btn>
             </v-flex>
             <v-flex xs6>
-              <v-btn block outline color="error" @click.stop="rejectImage(slotProps.imageItem)">
+              <v-btn block outline color="error" @click="rejectImage(slotProps.imageItem)">
                 Reject
                 <v-icon right>clear</v-icon>
               </v-btn>
@@ -81,23 +75,16 @@
 <script>
 import { mapState } from 'vuex'
 import ImageGallery from '@/components/ImageGallery'
-import ModActionConfirmation from '@/components/admin/ModActionConfirmation'
 
 export default {
-  name: 'ModQueue',
+  name: 'UsersManagement',
   components: {
-    'image-gallery': ImageGallery,
-    'mod-action': ModActionConfirmation
+    'image-gallery': ImageGallery
   },
   data () {
     return {
       loadingNewImages: false,
-      imagesEnd: false,
-      modActionDialog: false,
-      modActionType: '',
-      modActionTargetType: '',
-      modActionTarget: '',
-      modActionComment: ''
+      imagesEnd: false
     }
   },
   computed: {
@@ -132,44 +119,16 @@ export default {
       this.loadingNewImages = false
     },
     acceptImage (image) {
-      this.modActionType = 'ACCEPT'
-      this.modActionTargetType = 'IMAGE'
-      this.modActionTarget = image._id
-      this.modActionDialog = true
+      this.$store.dispatch('acceptImage', image)
     },
     rejectImage (image) {
-      this.modActionType = 'REJECT'
-      this.modActionTargetType = 'IMAGE'
-      this.modActionTarget = image._id
-      this.modActionDialog = true
+      this.$store.dispatch('rejectImage', image)
     },
     banUser (userID) {
-      this.modActionType = 'BAN'
-      this.modActionTargetType = 'USER'
-      this.modActionTarget = userID
-      this.modActionDialog = true
+      this.$store.dispatch('banUser', userID)
     },
-    onCancelled () {
-      this.modActionDialog = false
-    },
-    onConfirmed (comment) {
-      this.modActionDialog = false
-      this.modActionComment = comment
-      if (this.modActionTargetType === 'IMAGE') {
-        if (this.modActionType === 'ACCEPT') {
-          this.$store.dispatch('acceptImage', this.modActionTarget)
-        } else if (this.modActionType === 'REJECT') {
-          this.$store.dispatch('rejectImage', this.modActionTarget)
-        }
-      } else if (this.modActionTargetType === 'USER') {
-        if (this.modActionType === 'BAN') {
-          this.$store.dispatch('banUser', this.modActionTarget)
-        } else if (this.modActionType === 'UNBAN') {
-          this.$store.dispatch('unban', this.modActionTarget)
-        }
-      }
-
-      this.modActionComment = ''
+    unbanUser (userID) {
+      this.$store.dispatch('unbanUser', userID)
     }
   }
 }
