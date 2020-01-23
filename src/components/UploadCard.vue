@@ -1,12 +1,12 @@
 <template>
-  <v-layout column fill-height>
-    <v-flex shrink>
+  <v-row class="flex-column mx-0 fill-height">
+    <v-col class="flex-grow-0 pa-0">
       <v-toolbar dark dense color="primary">
         <v-btn icon @click="closeDialog">
           <v-icon>close</v-icon>
         </v-btn>
         <v-toolbar-title>Upload</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer/>
         <v-toolbar-items>
           <v-combobox
             v-model="currentAlbumTitle"
@@ -14,8 +14,8 @@
             clearable
             solo-inverted
             label="Select or Make a new Album"
-            @input.native="currentAlbumTitle=$event.srcElement.value"
-          ></v-combobox>
+            @input.native="currentAlbumTitle=$event.target.value"
+          />
           <v-btn icon @click="removeUploads">
             <v-icon>delete</v-icon>
           </v-btn>
@@ -24,8 +24,8 @@
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
-    </v-flex>
-    <v-flex grow>
+    </v-col>
+    <v-col class="flex-grow-1 pa-0">
       <vue-dropzone ref="uploadDropzone" id="uploadDropzone" :options="dropzoneOptions" @vdropzone-sending="uploadEvent"
                     :class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
                     class="fill-height outline d-flex justify-center" useCustomSlot>
@@ -34,14 +34,13 @@
           <div class="subtitle">...or click to select a file from your computer</div>
         </div>
       </vue-dropzone>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import vue2Dropzone from 'vue2-dropzone'
 import { mapState } from 'vuex'
-import { defaultAlbumTitle } from '../../processVars'
 
 export default {
   name: 'UploadCard',
@@ -69,10 +68,11 @@ export default {
     ...mapState({
       theme: state => state.themes.theme,
       themes: state => state.themes.themes,
-      albums: state => state.users.albums
+      albums: state => state.users.albums,
+      defaultAlbum: state => state.albums.defaultAlbum
     }),
     albumTitles () {
-      return [defaultAlbumTitle].concat(this.albums.map(album => {
+      return [this.defaultAlbum].concat(this.albums.map(album => {
         return album.title
       }))
     }
@@ -105,7 +105,7 @@ export default {
       formData.append('imageTitle', title)
       formData.append('imageDescription', description)
       formData.append('isPublic', isPublic)
-      if (this.currentAlbumTitle !== '' && this.currentAlbumTitle.toLowerCase() !== defaultAlbumTitle.toLowerCase()) {
+      if (this.currentAlbumTitle !== '' && this.currentAlbumTitle.toLowerCase() !== this.defaultAlbum.toLowerCase()) {
         formData.append('albumTitle', this.currentAlbumTitle)
       }
     },
@@ -134,30 +134,31 @@ export default {
 }
 </script>
 
-<!--<style scoped lang="stylus">
-  @import '~vuetify/src/stylus/theme';
+<style scoped lang="sass">
+  $color-pack: false
+  @import '~vuetify/src/styles/main.sass'
 
   .dark
-    background $body-bg-dark
-    color $body-color-light
-    outline-color $body-color-light
+    background: map-get($material-dark, 'bg-color')
+    color:  map-get($material-dark, 'fg-color')
+    outline-color: map-get($material-dark, 'fg-color')
 
   .light
-    background $body-bg-light
-    color $body-color-dark
-    outline-color $body-color-dark
+    background: map-get($material-light, 'bg-color')
+    color:  map-get($material-light, 'fg-color')
+    outline-color: map-get($material-light, 'fg-color')
 
   .vue-dropzone
-    border unset
-    flex-wrap wrap
+    border: unset
+    flex-wrap: wrap
 
   .outline
-    outline 5px dashed
-    outline-offset -20px
+    outline: 5px dashed
+    outline-offset: -20px
 
   .message
-    align-self center
-</style>-->
+    align-self: center
+</style>
 <style>
   #uploadDropzone.dropzone .dz-message {
     flex-grow: 1;

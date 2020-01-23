@@ -16,44 +16,43 @@
 
 <template>
   <div>
-    <v-layout row wrap>
-      <v-flex xs2 v-for="(albumItem, i) in albumItems" :key="i">
+    <v-row dense class="mx-0">
+      <v-col cols="2" v-for="(albumItem, i) in albumItems" :key="i">
         <slot name="thumbnail" :albumItem="albumItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
           <v-card>
-            <v-hover>
+            <v-hover v-slot="{ hover }">
               <v-img
-                slot-scope="{ hover }"
                 :src="albumItem.thumbnail_location"
                 @click="clickThumbnail(i)"
                 class="album-thumbnail"
                 aspect-ratio="1"
               >
                 <v-expand-transition>
-                  <v-layout v-if="hover" ma-0 primary class="album-title-background">
-                    <v-flex class="text-truncate">
+                  <v-row v-if="hover" class="mx-0 album-title-background">
+                    <v-col class="text-truncate">
                       {{albumItem.title}}
-                    </v-flex>
-                  </v-layout>
+                    </v-col>
+                  </v-row>
                 </v-expand-transition>
               </v-img>
             </v-hover>
             <v-card-actions>
               <v-icon class="mr-1">photo</v-icon>
               {{albumItem.no_of_images}}
-              <v-spacer></v-spacer>
-              <v-btn v-if="deletable && albumItem.title!==defaultAlbumTitle" icon @click="clickDelete(i)">
+              <v-spacer/>
+              <v-btn v-if="deletable && albumItem.title!==defaultAlbum" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
         </slot>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
-import { defaultAlbumTitle } from '../../processVars'
+import { mapState } from 'vuex'
 
 export default {
   name: 'AlbumGallery',
@@ -75,9 +74,13 @@ export default {
   },
   data () {
     return {
-      selectedAlbumIndex: null,
-      defaultAlbumTitle: defaultAlbumTitle
+      selectedAlbumIndex: null
     }
+  },
+  computed: {
+    ...mapState({
+      defaultAlbum: state => state.albums.defaultAlbum
+    })
   },
   methods: {
     clickThumbnail (index) {
@@ -93,6 +96,7 @@ export default {
 
 <style scoped>
   .album-title-background {
+    background-color: var(--v-primary-base);
     opacity: 0.85;
   }
 

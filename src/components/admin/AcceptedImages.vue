@@ -31,43 +31,45 @@
                    @imageSaved="onClickSave"
                    @fetchImages="onFetchImages"
                    :authenticated="auth.authenticated">
-      <v-card slot="thumbnail" slot-scope="slotProps">
-        <v-img
-          :src="slotProps.imageItem.thumbnail_location"
-          @click="slotProps.clickThumbnail(slotProps.itemIndex)"
-          class="image-thumbnail"
-          min-height="200px"
-        >
-          <router-link :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" target="_blank">
-            <v-btn icon @click.stop="">
-              <v-icon>launch</v-icon>
-            </v-btn>
-          </router-link>
-        </v-img>
-        <v-card-title class="px-2" style="width: 100%">
-          <v-layout wrap>
-            <v-flex grow xs12 class="headline">{{slotProps.imageItem.title}}</v-flex>
-            <v-flex grow xs12 class="subheading">{{slotProps.imageItem.description}}</v-flex>
-            <v-flex grow xs6 class="subheading">CMDR {{slotProps.imageItem.cmdr_name}}</v-flex>
-            <v-flex xs6>
-              <v-btn block color="error" @click.stop="banUser(slotProps.imageItem.user_id)">
-                Ban User
-                <v-icon right>gavel</v-icon>
+      <template v-slot:thumbnail="slotProps">
+        <v-card>
+          <v-img
+            :src="slotProps.imageItem.thumbnail_location"
+            @click="slotProps.clickThumbnail(slotProps.itemIndex)"
+            class="image-thumbnail"
+            min-height="200px"
+          >
+            <router-link :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" target="_blank">
+              <v-btn icon @click.stop="">
+                <v-icon>launch</v-icon>
               </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-card-title>
-        <v-card-actions>
-          <v-layout>
-            <v-flex xs12>
-              <v-btn block outline color="error" @click.stop="rejectImage(slotProps.imageItem)">
-                Reject
-                <v-icon right>clear</v-icon>
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-card-actions>
-      </v-card>
+            </router-link>
+          </v-img>
+          <v-card-title class="px-2" style="width: 100%">
+            <v-row dense>
+              <v-col cols="12" class="headline py-0">{{slotProps.imageItem.title}}</v-col>
+              <v-col cols="12" class="subheading py-0">{{slotProps.imageItem.description}}</v-col>
+              <v-col cols="6" class="subheading py-0">CMDR {{slotProps.imageItem.cmdr_name}}</v-col>
+              <v-col cols="6" class="py-0">
+                <v-btn block color="error" @click.stop="banUser(slotProps.imageItem.user_id)">
+                  Ban User
+                  <v-icon right>gavel</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-title>
+          <v-card-actions>
+            <v-row dense>
+              <v-col cols="12">
+                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)">
+                  Reject
+                  <v-icon right>clear</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </template>
     </image-gallery>
   </div>
 </template>

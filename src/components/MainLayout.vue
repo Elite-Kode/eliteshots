@@ -1,6 +1,8 @@
 <template>
-  <v-app :dark="theme === themes[1]">
-    <router-view></router-view>
+  <v-app>
+    <v-theme-provider root>
+      <router-view/>
+    </v-theme-provider>
   </v-app>
 </template>
 
@@ -15,9 +17,15 @@ export default {
       themes: state => state.themes.themes
     })
   },
+  watch: {
+    theme () {
+      this.$vuetify.theme.dark = this.theme === this.themes[1]
+    }
+  },
   created () {
     this.$store.dispatch('checkAuthenticated')
     this.$store.dispatch('fetchAuthUser')
+    this.$vuetify.theme.dark = this.theme === this.themes[1]
   }
 }
 </script>

@@ -1,21 +1,22 @@
 <template>
   <div>
     <ed-toolbar>
-      <v-tabs
-        slot="toolbar-tabs"
-        color="accent"
-        align-with-title
-        slider-color="secondary"
-        light
-      >
-        <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link" exact>
-          {{tabItem.name}}
-        </v-tab>
-      </v-tabs>
+      <template v-slot:toolbar-tabs>
+        <v-tabs
+          background-color="accent"
+          align-with-title
+          slider-color="secondary"
+          light
+        >
+          <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link" exact>
+            {{tabItem.name}}
+          </v-tab>
+        </v-tabs>
+      </template>
     </ed-toolbar>
     <v-content>
-      <v-container fluid grid-list-lg>
-        <router-view></router-view>
+      <v-container fluid>
+        <router-view/>
       </v-container>
     </v-content>
   </div>
@@ -54,3 +55,10 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="sass">
+  @import '~vuetify/src/styles/styles.sass'
+
+  a.v-tab--active.v-tab
+    color: map-deep-get($material-light, 'text', 'primary')
+</style>

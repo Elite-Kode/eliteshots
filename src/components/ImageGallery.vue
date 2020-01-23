@@ -16,39 +16,38 @@
 
 <template>
   <div>
-    <v-layout row wrap ref="imageContainer">
-      <v-flex xs3 v-for="(imageItem, i) in imageItems" :key="i">
+    <v-row dense ref="imageContainer" class="mx-0">
+      <v-col cols=12 lg="3" md="4" sm="6" v-for="(imageItem, i) in imageItems" :key="i">
         <slot name="thumbnail" :imageItem="imageItem" :itemIndex="i" :clickThumbnail="clickThumbnail">
           <v-card>
-            <v-hover>
+            <v-hover v-slot="{ hover }">
               <v-img
-                slot-scope="{ hover }"
                 :src="imageItem.thumbnail_location"
                 @click="clickThumbnail(i)"
                 class="image-thumbnail"
                 min-height="200px"
               >
                 <v-expand-transition>
-                  <v-layout v-if="hover" ma-0 primary class="image-title-background">
-                    <v-flex class="text-truncate">
+                  <v-row v-if="hover" class="mx-0 image-title-background">
+                    <v-col class="text-truncate">
                       {{imageItem.title}}
-                    </v-flex>
-                    <v-flex shrink d-inline-flex>
+                    </v-col>
+                    <v-col class="flex-shrink-1 flex-grow-0 d-inline-flex">
                       <v-icon class="mr-1">favorite</v-icon>
                       {{imageItem.no_of_likes}}
-                    </v-flex>
-                  </v-layout>
+                    </v-col>
+                  </v-row>
                 </v-expand-transition>
                 <v-expand-transition v-if="!noUser">
-                  <v-layout v-if="hover" ma-0 primary class="image-title-background">
-                    <v-flex class="text-truncate">
+                  <v-row v-if="hover" class="mx-0 image-title-background">
+                    <v-col class="text-truncate">
                       CMDR {{imageItem.cmdr_name}}
-                    </v-flex>
-                    <v-flex shrink d-inline-flex>
+                    </v-col>
+                    <v-col class="flex-shrink-1 flex-grow-0 d-inline-flex">
                       <v-icon class="mr-1">remove_red_eye</v-icon>
                       {{imageItem.no_of_views + imageItem.anonymous_views}}
-                    </v-flex>
-                  </v-layout>
+                    </v-col>
+                  </v-row>
                 </v-expand-transition>
               </v-img>
             </v-hover>
@@ -58,7 +57,7 @@
                   <v-icon>launch</v-icon>
                 </v-btn>
               </router-link>
-              <v-spacer></v-spacer>
+              <v-spacer/>
               <v-btn v-if="deletable" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -76,12 +75,12 @@
             </v-card-actions>
           </v-card>
         </slot>
-      </v-flex>
+      </v-col>
       <slot name="lightbox" :imageLinks="imageLinks" :selectedImageIndex="selectedImageIndex"
             :closeGallery="closeGallery">
-        <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"></gallery>
+        <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"/>
       </slot>
-    </v-layout>
+    </v-row>
     <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end">
       <div v-if="end">
         No more images
@@ -176,7 +175,8 @@ export default {
 </script>
 
 <style scoped>
-  .image-title-background {
+    .image-title-background {
+      background-color: var(--v-primary-base);
     opacity: 0.85;
   }
 

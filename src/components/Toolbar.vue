@@ -1,43 +1,46 @@
 <template>
-  <v-toolbar
+  <v-app-bar
     app
-    :color="toolbarColor"
+    color="toolbar"
     dark
-    tabs
     :scroll-off-screen="scrollOfScreen"
     :scroll-threshold="scrollThreshold"
     :class="{'custom-dark': theme === themes[1]}">
-    <v-toolbar-title class="headline text-uppercase">
-      <v-btn icon large to="/" exact>
+    <v-btn icon large to="/" exact class="ml-4">
+      <v-avatar>
         <v-img
           :src="require('@/assets/EliteShotsv1.png')"
           alt="Elite Shots"
-        ></v-img>
-      </v-btn>
+        />
+      </v-avatar>
+    </v-btn>
+    <v-toolbar-title class="headline text-uppercase">
       <span>Elite </span>
       <span class="font-weight-light">Shots</span>
     </v-toolbar-title>
-    <v-spacer></v-spacer>
+    <v-spacer/>
 
     <v-btn v-if="auth.authenticated" href="/auth/logout" icon>
       <v-icon>fas fa-sign-out-alt</v-icon>
     </v-btn>
     <v-dialog v-else width="360">
-      <v-btn slot="activator" icon>
-        <v-icon>fas fa-sign-in-alt</v-icon>
-      </v-btn>
-      <login-card></login-card>
+      <template v-slot:activator="{on}">
+        <v-btn icon v-on="on">
+          <v-icon>fas fa-sign-in-alt</v-icon>
+        </v-btn>
+      </template>
+      <login-card/>
     </v-dialog>
 
     <v-dialog v-model="uploadDialog" v-if="auth.authenticated && auth.user.access !== bannedAccess" fullscreen
               hide-overlay
               transition="dialog-bottom-transition">
-      <!--<v-dialog v-model="uploadDialog" fullscreen hide-overlay-->
-      <!--transition="dialog-bottom-transition">-->
-      <v-btn slot="activator" icon>
-        <v-icon>fas fa-upload</v-icon>
-      </v-btn>
-      <upload-card v-model="uploadDialog"></upload-card>
+      <template v-slot:activator="{on}">
+        <v-btn icon v-on="on">
+          <v-icon>fas fa-upload</v-icon>
+        </v-btn>
+      </template>
+      <upload-card v-model="uploadDialog"/>
     </v-dialog>
     <v-btn icon @click="switchTheme()">
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
@@ -51,14 +54,12 @@
       <v-icon>info</v-icon>
     </v-btn>
     <v-btn v-if="auth.authenticated" icon to="/profile">
-      <!--<v-img
-        :src="require('@/assets/ED Avatar v2-inverse.png')"
-        alt="User Icon"
-      ></v-img>-->
       <v-icon>person</v-icon>
     </v-btn>
-    <slot name="toolbar-tabs" slot="extension"></slot>
-  </v-toolbar>
+    <template v-slot:extension v-if="hasToolbarTabs">
+      <slot name="toolbar-tabs"/>
+    </template>
+  </v-app-bar>
 </template>
 
 <script>
@@ -104,8 +105,8 @@ export default {
         this.$store.commit('setTheme', newTheme)
       }
     },
-    toolbarColor () {
-      return this.theme === this.themes[0] ? 'primary' : ''
+    hasToolbarTabs () {
+      return this.$slots['toolbar-tabs']
     }
   },
   created () {

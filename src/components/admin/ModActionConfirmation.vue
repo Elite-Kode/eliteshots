@@ -21,18 +21,18 @@
         <span class="headline">{{modAction}} {{targetType}} {{actionTarget}}</span>
       </v-card-title>
       <v-card-text>
-        <v-container grid-list-md>
-          <v-layout wrap>
-            <v-flex>
+        <v-container>
+          <v-row dense>
+            <v-col>
               <v-text-field label="Comments (optional)" v-model="comment"/>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer/>
-        <v-btn color="error" flat @click="clickCancel">Cancel</v-btn>
-        <v-btn color="success" flat @click="clickConfirm">Confirm</v-btn>
+        <v-btn color="error" text @click="clickCancel">Cancel</v-btn>
+        <v-btn color="success" text @click="clickConfirm">Confirm</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

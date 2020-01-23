@@ -21,11 +21,8 @@
     <v-content>
       <v-container fluid class="pa-0">
         <v-card>
-          <!--          <v-btn icon @click="closeDialog" class="back-to-list">-->
-          <!--            <v-icon>view_module</v-icon>-->
-          <!--          </v-btn>-->
           <v-img :src="imageItem.image_location"/>
-          <v-card-title primary-title>
+          <v-card-title>
             <div>
               <h3 class="headline">{{ imageItem.title }}</h3>
               <div>{{ imageItem.description }}</div>

@@ -25,7 +25,7 @@
                    @imageLiked="onClickLike"
                    @imageSaved="onClickSave"
                    @fetchImages="onFetchImages"
-                   :authenticated="auth.authenticated" deletable no-user></image-gallery>
+                   :authenticated="auth.authenticated" deletable no-user/>
   </div>
 </template>
 

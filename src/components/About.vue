@@ -3,7 +3,7 @@
     <ed-toolbar>
     </ed-toolbar>
     <v-content>
-      <v-container fluid grid-list-lg>
+      <v-container fluid>
         <h1>About</h1>
       </v-container>
     </v-content>

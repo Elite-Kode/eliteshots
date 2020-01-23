@@ -20,7 +20,7 @@
     <album-gallery :albumItems="albums"
                    @albumOpened="onClickThumbnail"
                    @albumDeleted="onClickDelete"
-                   :authenticated="auth.authenticated" deletable></album-gallery>
+                   :authenticated="auth.authenticated" deletable/>
   </div>
 </template>
 

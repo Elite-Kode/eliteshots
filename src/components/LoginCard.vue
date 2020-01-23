@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title primary-title class="title text-uppercase">
+    <v-card-title class="title text-uppercase">
       Login
     </v-card-title>
 
@@ -10,7 +10,8 @@
 
     <v-card-actions>
       <v-btn block color="primary" href="/auth/frontier" class="login-button">
-        Login with <img :src="require('@/assets/Frontier-invert.svg')">
+        Login with
+        <img :src="require('@/assets/Frontier-invert.svg')" alt="Frontier Logo"/>
       </v-btn>
     </v-card-actions>
   </v-card>
