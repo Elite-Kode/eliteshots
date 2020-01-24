@@ -101,19 +101,19 @@ const actions = {
     }
     return images
   },
-  async acceptImage ({ commit }, imageId) {
-    await axios.put(`/frontend/admin/images/${imageId}/accept`)
-    commit('acceptImage', imageId)
+  async acceptImage ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/images/${target}/accept`, { comment })
+    commit('acceptImage', target)
   },
-  async rejectImage ({ commit }, imageId) {
-    await axios.put(`/frontend/admin/images/${imageId}/reject`)
-    commit('rejectImage', imageId)
+  async rejectImage ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/images/${target}/reject`, { comment })
+    commit('rejectImage', target)
   },
-  async banUser ({ commit }, userId) {
-    await axios.put(`/frontend/admin/ban/${userId}`)
+  async banUser ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/ban/${target}`, { comment })
   },
-  async unbanUser ({ commit }, userId) {
-    await axios.put(`/frontend/admin/unban/${userId}`)
+  async unbanUser ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/unban/${target}`, { comment })
   }
 }
 

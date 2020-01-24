@@ -92,8 +92,7 @@ export default {
       modActionDialog: false,
       modActionType: '',
       modActionTargetType: '',
-      modActionTarget: '',
-      modActionComment: ''
+      modActionTarget: ''
     }
   },
   computed: {
@@ -144,20 +143,21 @@ export default {
     },
     onConfirmed (comment) {
       this.modActionDialog = false
-      this.modActionComment = comment
+      let payload = {
+        target: this.modActionTarget,
+        comment: comment
+      }
       if (this.modActionTargetType === 'IMAGE') {
         if (this.modActionType === 'ACCEPT') {
-          this.$store.dispatch('acceptImage', this.modActionTarget)
+          this.$store.dispatch('acceptImage', payload)
         }
       } else if (this.modActionTargetType === 'USER') {
         if (this.modActionType === 'BAN') {
-          this.$store.dispatch('banUser', this.modActionTarget)
+          this.$store.dispatch('banUser', payload)
         } else if (this.modActionType === 'UNBAN') {
-          this.$store.dispatch('unban', this.modActionTarget)
+          this.$store.dispatch('unban', payload)
         }
       }
-
-      this.modActionComment = ''
     }
   }
 }

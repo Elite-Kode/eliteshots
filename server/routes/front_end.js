@@ -33,6 +33,7 @@ let likesModel = require('../models/likes')
 let savesModel = require('../models/saves')
 let viewsModel = require('../models/views')
 let usersModel = require('../models/users')
+let modActionsModel = require('../models/mod_actions')
 
 let imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots/'
 
@@ -42,12 +43,18 @@ let imagesPerfetch = 4
 let ObjectId = mongoose.Types.ObjectId
 
 let bannedAccess = 'BANNED'
+let normalAccess = 'NORMAL'
 let adminAccess = 'ADMIN'
 let superAdminAccess = 'SUPERADMIN'
 
 let pendingStatus = 'PENDING'
 let acceptedStatus = 'ACCEPTED'
 let rejectedStatus = 'REJECTED'
+
+let modActionBan = 'BAN'
+let modActionUnban = 'UNBAN'
+let modActionAccept = 'ACCEPT'
+let modActionReject = 'REJECT'
 
 router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
   try {
@@ -1229,12 +1236,26 @@ router.put('/admin/images/:imageId/accept', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let model = await imageModel
-        await model.findOneAndUpdate({
-          _id: req.params.imageId,
-          moderation_status: { $ne: acceptedStatus }
-        }, {
-          moderation_status: acceptedStatus
+        let imageModelResolved = await imageModel
+        let modActionsModelResolved = await modActionsModel
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await imageModelResolved.findOneAndUpdate({
+            _id: req.params.imageId,
+            moderation_status: { $ne: acceptedStatus }
+          }, {
+            moderation_status: acceptedStatus
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModelResolved({
+            action: modActionAccept,
+            target_user: null,
+            target_image: req.params.imageId,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
         })
         res.status(200).send({})
       } else {
@@ -1252,12 +1273,26 @@ router.put('/admin/images/:imageId/reject', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let model = await imageModel
-        await model.findOneAndUpdate({
-          _id: req.params.imageId,
-          moderation_status: { $ne: rejectedStatus }
-        }, {
-          moderation_status: rejectedStatus
+        let imageModelResolved = await imageModel
+        let modActionsModelResolved = await modActionsModel
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await imageModelResolved.findOneAndUpdate({
+            _id: req.params.imageId,
+            moderation_status: { $ne: rejectedStatus }
+          }, {
+            moderation_status: rejectedStatus
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModelResolved({
+            action: modActionReject,
+            target_user: null,
+            target_image: req.params.imageId,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
         })
         res.status(200).send({})
       } else {
@@ -1275,12 +1310,63 @@ router.put('/admin/ban/:userId', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let model = await usersModel
-        await model.findOneAndUpdate({
-          _id: req.params.userId
-        }, {
-          trusted: false,
-          access: bannedAccess
+        let usersModelResolved = await usersModel
+        let modActionsModelResolved = await modActionsModel
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await usersModelResolved.findOneAndUpdate({
+            _id: req.params.userId
+          }, {
+            trusted: false,
+            access: bannedAccess
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModelResolved({
+            action: modActionBan,
+            target_user: req.params.userId,
+            target_image: null,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/unban/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
+        let usersModelResolved = await usersModel
+        let modActionsModelResolved = await modActionsModel
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await usersModelResolved.findOneAndUpdate({
+            _id: req.params.userId
+          }, {
+            trusted: false,
+            access: normalAccess
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModelResolved({
+            action: modActionUnban,
+            target_user: req.params.userId,
+            target_image: null,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
         })
         res.status(200).send({})
       } else {
