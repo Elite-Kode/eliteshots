@@ -19,7 +19,8 @@ import axios from 'axios'
 const state = {
   pendingImages: [],
   acceptedImages: [],
-  rejectedImages: []
+  rejectedImages: [],
+  users: []
 }
 const mutations = {
   setPendingImages (state, images) {
@@ -68,6 +69,9 @@ const mutations = {
     if (index >= 0) {
       state.acceptedImages.splice(index, 1)
     }
+  },
+  setUsers (state, users) {
+    state.users = users
   }
 }
 const actions = {
@@ -114,6 +118,12 @@ const actions = {
   },
   async unbanUser ({ commit }, { target, comment }) {
     await axios.put(`/frontend/admin/unban/${target}`, { comment })
+  },
+  async fetchUsers ({ commit }, { page }) {
+    let response = await axios.get('/frontend/admin/users', { params: { page } })
+    let usersPaginated = response.data
+    commit('setUsers', usersPaginated.docs)
+    return usersPaginated
   }
 }
 

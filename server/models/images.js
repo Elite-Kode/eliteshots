@@ -18,9 +18,6 @@
 
 const mongoose = require('mongoose')
 
-let mongoosePaginate = require('mongoose-paginate')
-let mongooseAggregatePaginate = require('mongoose-aggregate-paginate')
-
 let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId
 
@@ -44,7 +41,4 @@ let images = new Schema({
   user_id: { type: ObjectId, index: true }
 }, { runSettersOnQuery: true })
 
-images.plugin(mongoosePaginate)
-images.plugin(mongooseAggregatePaginate)
-
-module.exports = new mongoose.model('images', images)
+module.exports = mongoose.model('images', images)

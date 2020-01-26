@@ -31,4 +31,4 @@ let albums = new Schema({
   user_id: { type: ObjectId, index: true }
 }, { runSettersOnQuery: true })
 
-module.exports = new mongoose.model('albums', albums)
+module.exports = mongoose.model('albums', albums)

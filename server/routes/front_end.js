@@ -44,8 +44,8 @@ let ObjectId = mongoose.Types.ObjectId
 
 let bannedAccess = 'BANNED'
 let normalAccess = 'NORMAL'
+let modAccess = 'MOD'
 let adminAccess = 'ADMIN'
-let superAdminAccess = 'SUPERADMIN'
 
 let pendingStatus = 'PENDING'
 let acceptedStatus = 'ACCEPTED'
@@ -65,13 +65,12 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
         if (!req.body.albumTitle || req.body.albumTitle.toLowerCase() === processVars.defaultAlbumTitle.toLowerCase()) {
           album = null
         } else {
-          let albumModelResolved = await albumModel
-          album = await albumModelResolved.findOne({
+          album = await albumModel.findOne({
             user_id: req.user._id,
             title_lower: req.body.albumTitle.toLowerCase()
           }).lean()
           if (!album) {
-            let albumDocument = new albumModelResolved({
+            let albumDocument = new albumModel({
               title: req.body.albumTitle,
               title_lower: req.body.albumTitle.toLowerCase(),
               description: '',
@@ -136,8 +135,7 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
           })
         ])
 
-        let imageModelResolved = await imageModel
-        let imageDocument = new imageModelResolved({
+        let imageDocument = new imageModel({
           image_location: originalFileName,
           thumbnail_location: thumbnailFileName,
           low_res_location: lowQualityFileName,
@@ -169,8 +167,7 @@ router.get('/albums/self', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let model = await albumModel
-        let aggregate = model.aggregate()
+        let aggregate = albumModel.aggregate()
         let query = { user_id: req.user._id }
 
         aggregate.match(query).lookup({
@@ -197,15 +194,14 @@ router.get('/albums/self', async (req, res, next) => {
           album.thumbnail_location = `${imageUrlRoute}${album.thumbnail_location}`
         })
 
-        model = await imageModel
         query = {
           user_id: req.user._id,
           album_id: null
         }
 
-        let imageCount = await model.find(query).countDocuments().exec()
+        let imageCount = await imageModel.find(query).countDocuments().exec()
 
-        let imageThumbnailLocation = (await model.find(query).sort({
+        let imageThumbnailLocation = (await imageModel.find(query).sort({
           uploaded_at: -1
         }).lean().limit(1).exec())[0].thumbnail_location
 
@@ -231,9 +227,8 @@ router.get('/images/self', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let model = await imageModel
         let lastElement = req.query.last
-        let aggregate = model.aggregate()
+        let aggregate = imageModel.aggregate()
 
         let query = { user_id: req.user._id }
 
@@ -329,9 +324,8 @@ router.get('/images/self/liked', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let model = await likesModel
         let lastElement = req.query.last
-        let aggregate = model.aggregate()
+        let aggregate = likesModel.aggregate()
 
         let query = { user_id: req.user._id }
 
@@ -445,9 +439,8 @@ router.get('/images/self/saved', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let model = await savesModel
         let lastElement = req.query.last
-        let aggregate = model.aggregate()
+        let aggregate = savesModel.aggregate()
 
         let query = { user_id: req.user._id }
 
@@ -559,9 +552,8 @@ router.get('/images/self/saved', async (req, res, next) => {
 
 router.get('/images/popular', async (req, res, next) => {
   try {
-    let model = await imageModel
     let lastElement = req.query.last
-    let aggregate = model.aggregate()
+    let aggregate = imageModel.aggregate()
 
     let query = {
       moderation_status: acceptedStatus
@@ -681,9 +673,8 @@ router.get('/images/popular', async (req, res, next) => {
 
 router.get('/images/recents', async (req, res, next) => {
   try {
-    let model = await imageModel
     let lastElement = req.query.last
-    let aggregate = model.aggregate()
+    let aggregate = imageModel.aggregate()
 
     let query = {
       moderation_status: acceptedStatus
@@ -784,9 +775,8 @@ router.get('/images/recents', async (req, res, next) => {
 
 router.get('/images/curated', async (req, res, next) => {
   try {
-    let model = await imageModel
     let lastElement = req.query.last
-    let aggregate = model.aggregate()
+    let aggregate = imageModel.aggregate()
 
     let query = {
       curated: true,
@@ -888,8 +878,7 @@ router.get('/images/curated', async (req, res, next) => {
 
 router.get('/images/:imageId', async (req, res, next) => {
   try {
-    let model = await imageModel
-    let aggregate = model.aggregate()
+    let aggregate = imageModel.aggregate()
 
     let query = {
       _id: ObjectId(req.params.imageId)
@@ -984,10 +973,9 @@ router.get('/images/:imageId', async (req, res, next) => {
 router.get('/admin/images/pending', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let model = await imageModel
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
         let lastElement = req.query.last
-        let aggregate = model.aggregate()
+        let aggregate = imageModel.aggregate()
 
         let query = { moderation_status: pendingStatus }
 
@@ -1037,10 +1025,9 @@ router.get('/admin/images/pending', async (req, res, next) => {
 router.get('/admin/images/accepted', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let model = await imageModel
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
         let lastElement = req.query.last
-        let aggregate = model.aggregate()
+        let aggregate = imageModel.aggregate()
 
         let query = { moderation_status: acceptedStatus }
 
@@ -1090,10 +1077,9 @@ router.get('/admin/images/accepted', async (req, res, next) => {
 router.get('/admin/images/rejected', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let model = await imageModel
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
         let lastElement = req.query.last
-        let aggregate = model.aggregate()
+        let aggregate = imageModel.aggregate()
 
         let query = { moderation_status: rejectedStatus }
 
@@ -1143,16 +1129,14 @@ router.get('/admin/images/rejected', async (req, res, next) => {
 router.put('/images/:imageId/view', async (req, res, next) => {
   try {
     if (req.user && req.user.access !== bannedAccess) {
-      let model = await viewsModel
-      let viewDocument = new model({
+      let viewDocument = new viewsModel({
         image_id: req.params.imageId,
         user_id: req.user._id,
         viewed_at: new Date()
       })
       await viewDocument.save()
     } else {
-      let model = await imageModel
-      await model.findOneAndUpdate({
+      await imageModel.findOneAndUpdate({
         _id: req.params.imageId
       }, {
         $inc: { anonymous_views: 1 }
@@ -1168,18 +1152,17 @@ router.put('/images/:imageId/like', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let model = await likesModel
-        let liked = await model.findOne({
+        let liked = await likesModel.findOne({
           image_id: req.params.imageId,
           user_id: req.user._id
         }).lean()
         if (liked) {
-          await model.findOneAndRemove({
+          await likesModel.findOneAndRemove({
             image_id: req.params.imageId,
             user_id: req.user._id
           })
         } else {
-          let likesDocument = new model({
+          let likesDocument = new likesModel({
             image_id: req.params.imageId,
             user_id: req.user._id,
             liked_at: new Date()
@@ -1202,18 +1185,17 @@ router.put('/images/:imageId/save', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let model = await savesModel
-        let saves = await model.findOne({
+        let saves = await savesModel.findOne({
           image_id: req.params.imageId,
           user_id: req.user._id
         }).lean()
         if (saves) {
-          await model.findOneAndRemove({
+          await savesModel.findOneAndRemove({
             image_id: req.params.imageId,
             user_id: req.user._id
           })
         } else {
-          let savesDocument = new model({
+          let savesDocument = new savesModel({
             image_id: req.params.imageId,
             user_id: req.user._id,
             saved_at: new Date()
@@ -1235,18 +1217,16 @@ router.put('/images/:imageId/save', async (req, res, next) => {
 router.put('/admin/images/:imageId/accept', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let imageModelResolved = await imageModel
-        let modActionsModelResolved = await modActionsModel
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
-          await imageModelResolved.findOneAndUpdate({
+          await imageModel.findOneAndUpdate({
             _id: req.params.imageId,
             moderation_status: { $ne: acceptedStatus }
           }, {
             moderation_status: acceptedStatus
           }, { session: mongoSession })
-          let modActionDocument = new modActionsModelResolved({
+          let modActionDocument = new modActionsModel({
             action: modActionAccept,
             target_user: null,
             target_image: req.params.imageId,
@@ -1272,18 +1252,16 @@ router.put('/admin/images/:imageId/accept', async (req, res, next) => {
 router.put('/admin/images/:imageId/reject', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let imageModelResolved = await imageModel
-        let modActionsModelResolved = await modActionsModel
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
-          await imageModelResolved.findOneAndUpdate({
+          await imageModel.findOneAndUpdate({
             _id: req.params.imageId,
             moderation_status: { $ne: rejectedStatus }
           }, {
             moderation_status: rejectedStatus
           }, { session: mongoSession })
-          let modActionDocument = new modActionsModelResolved({
+          let modActionDocument = new modActionsModel({
             action: modActionReject,
             target_user: null,
             target_image: req.params.imageId,
@@ -1309,18 +1287,16 @@ router.put('/admin/images/:imageId/reject', async (req, res, next) => {
 router.put('/admin/ban/:userId', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let usersModelResolved = await usersModel
-        let modActionsModelResolved = await modActionsModel
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
-          await usersModelResolved.findOneAndUpdate({
+          await usersModel.findOneAndUpdate({
             _id: req.params.userId
           }, {
             trusted: false,
             access: bannedAccess
           }, { session: mongoSession })
-          let modActionDocument = new modActionsModelResolved({
+          let modActionDocument = new modActionsModel({
             action: modActionBan,
             target_user: req.params.userId,
             target_image: null,
@@ -1346,18 +1322,16 @@ router.put('/admin/ban/:userId', async (req, res, next) => {
 router.put('/admin/unban/:userId', async (req, res, next) => {
   try {
     if (req.user) {
-      if (req.user.access === adminAccess || req.user.access === superAdminAccess) {
-        let usersModelResolved = await usersModel
-        let modActionsModelResolved = await modActionsModel
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
-          await usersModelResolved.findOneAndUpdate({
+          await usersModel.findOneAndUpdate({
             _id: req.params.userId
           }, {
             trusted: false,
             access: normalAccess
           }, { session: mongoSession })
-          let modActionDocument = new modActionsModelResolved({
+          let modActionDocument = new modActionsModel({
             action: modActionUnban,
             target_user: req.params.userId,
             target_image: null,
@@ -1369,6 +1343,27 @@ router.put('/admin/unban/:userId', async (req, res, next) => {
           return modActionDocument.save()
         })
         res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/admin/users', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let users = await usersModel.paginate({}, {
+          lean: true,
+          page: req.query.page,
+          limit: 10
+        })
+        res.send(users)
       } else {
         res.status(403).send({})
       }

@@ -31,4 +31,4 @@ let modActions = new Schema({
   mod_user_id: { type: ObjectId, index: true }
 }, { runSettersOnQuery: true })
 
-module.exports = new mongoose.model('modActions', modActions)
+module.exports = mongoose.model('modActions', modActions)

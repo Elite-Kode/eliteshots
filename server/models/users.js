@@ -17,6 +17,7 @@
 'use strict'
 
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 let Schema = mongoose.Schema
 
@@ -29,7 +30,9 @@ let users = new Schema({
   commander: String,
   email: String,
   trusted: Boolean,
-  access: { type: String, enum: ['NORMAL', 'ADMIN', 'BANNED', 'SUPERADMIN'], uppercase: true },
+  access: { type: String, enum: ['NORMAL', 'MOD', 'BANNED', 'ADMIN'], uppercase: true },
 }, { runSettersOnQuery: true })
 
-module.exports = new mongoose.model('users', users)
+mongoose.plugin(mongoosePaginate)
+
+module.exports = mongoose.model('users', users)

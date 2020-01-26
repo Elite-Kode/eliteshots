@@ -27,4 +27,4 @@ let views = new Schema({
   viewed_at: Date
 }, { runSettersOnQuery: true })
 
-module.exports = new mongoose.model('views', views)
+module.exports = mongoose.model('views', views)

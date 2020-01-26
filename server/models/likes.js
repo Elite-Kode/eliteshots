@@ -18,9 +18,6 @@
 
 const mongoose = require('mongoose')
 
-let mongoosePaginate = require('mongoose-paginate')
-let mongooseAggregatePaginate = require('mongoose-aggregate-paginate')
-
 let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId
 
@@ -30,7 +27,4 @@ let likes = new Schema({
   liked_at: Date
 }, { runSettersOnQuery: true })
 
-likes.plugin(mongoosePaginate)
-likes.plugin(mongooseAggregatePaginate)
-
-module.exports = new mongoose.model('likes', likes)
+module.exports = mongoose.model('likes', likes)

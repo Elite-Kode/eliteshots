@@ -46,7 +46,7 @@
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
     </v-btn>
-    <v-btn v-if="auth.authenticated && (auth.user.access === adminAccess || auth.user.access === superAdminAccess)"
+    <v-btn v-if="auth.authenticated && (auth.user.access === modAccess || auth.user.access === adminAccess)"
            icon :to="{name: 'mod-queue'}" exact>
       <v-icon>fas fa-user-secret</v-icon>
     </v-btn>
@@ -88,8 +88,8 @@ export default {
       uploadDialog: false,
       bannedAccess: 'BANNED',
       normalAccess: 'NORMAL',
-      adminAccess: 'ADMIN',
-      superAdminAccess: 'SUPERADMIN'
+      modAccess: 'MOD',
+      adminAccess: 'ADMIN'
     }
   },
   computed: {
