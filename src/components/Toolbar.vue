@@ -53,7 +53,7 @@
     <v-btn icon to="/about" exact>
       <v-icon>info</v-icon>
     </v-btn>
-    <v-btn v-if="authenticated" icon to="/profile">
+    <v-btn v-if="authenticated" icon to="/profile" class="mr-4">
       <v-icon>person</v-icon>
     </v-btn>
     <template v-slot:extension v-if="hasToolbarTabs">

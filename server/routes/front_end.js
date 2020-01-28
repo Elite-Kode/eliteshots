@@ -139,6 +139,12 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
           })
         ])
 
+        let moderationStatus = 'PENDING'
+
+        if (req.user.trusted) {
+          moderationStatus = 'ACCEPTED'
+        }
+
         let imageDocument = new imageModel({
           image_location: originalFileName,
           thumbnail_location: thumbnailFileName,
@@ -148,7 +154,7 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
           description: req.body.imageDescription,
           description_lower: req.body.imageDescription.toLowerCase(),
           album_id: album ? album._id : undefined,
-          moderation_status: 'PENDING',
+          moderation_status: moderationStatus,
           uploaded_at: createdDate,
           last_modified_at: createdDate,
           user_id: req.user._id
@@ -1351,6 +1357,31 @@ router.put('/images/:imageId/save', async (req, res, next) => {
           })
           await savesDocument.save()
         }
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/images/:imageId/edit', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access !== bannedAccess) {
+        await imageModel.findOneAndUpdate({
+          _id: req.params.imageId,
+          user_id: req.user._id
+        }, {
+          title: req.body.title,
+          title_lower: req.body.title.toLowerCase(),
+          description: req.body.description,
+          description_lower: req.body.description.toLowerCase()
+        })
         res.status(200).send({})
       } else {
         res.status(403).send({})

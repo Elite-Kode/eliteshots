@@ -17,15 +17,42 @@
 <template>
   <div>
     <h1>Uploaded Images</h1>
+    <v-dialog v-model="editDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Update Image {{editId}}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row dense>
+              <v-col>
+                <v-text-field label="Title (optional)" v-model="editTitle"/>
+              </v-col>
+            </v-row>
+            <v-row dense>
+              <v-col>
+                <v-textarea label="Description (optional)" v-model="editDescription"/>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn color="error" text @click="clickEditCancel">Cancel</v-btn>
+          <v-btn color="success" text @click="clickEditConfirm">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <image-gallery :imageItems="myImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
                    @imageViewed="onClickThumbnail"
+                   @imageEdited="onClickEdit"
                    @imageDeleted="onClickDelete"
                    @imageLiked="onClickLike"
                    @imageSaved="onClickSave"
                    @fetchImages="onFetchImages"
-                   :authenticated="authenticated" deletable no-user/>
+                   :authenticated="authenticated" deletable editable no-user/>
   </div>
 </template>
 
@@ -41,7 +68,11 @@ export default {
   data () {
     return {
       loadingNewImages: false,
-      imagesEnd: false
+      imagesEnd: false,
+      editDialog: false,
+      editId: '',
+      editTitle: '',
+      editDescription: ''
     }
   },
   computed: {
@@ -58,6 +89,12 @@ export default {
     onClickThumbnail (image) {
       this.$store.dispatch('triggerImageViewed', image)
     },
+    onClickEdit (image) {
+      this.editId = image._id
+      this.editTitle = image.title
+      this.editDescription = image.description
+      this.editDialog = true
+    },
     onClickDelete (image) {
       this.$store.dispatch('triggerUserImageDeleted', image)
     },
@@ -66,6 +103,23 @@ export default {
     },
     onClickSave (image) {
       this.$store.dispatch('triggerUserImageSaved', image)
+    },
+    clickEditCancel () {
+      this.editId = ''
+      this.editTitle = ''
+      this.editDescription = ''
+      this.editDialog = false
+    },
+    clickEditConfirm () {
+      this.$store.dispatch('triggerUserImageEdited', {
+        imageId: this.editId,
+        title: this.editTitle,
+        description: this.editDescription
+      })
+      this.editId = ''
+      this.editTitle = ''
+      this.editDescription = ''
+      this.editDialog = false
     },
     async onFetchImages () {
       this.loadingNewImages = true

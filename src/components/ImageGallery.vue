@@ -58,6 +58,9 @@
                 </v-btn>
               </router-link>
               <v-spacer/>
+              <v-btn v-if="editable" icon @click="clickEdit(i)">
+                <v-icon>edit</v-icon>
+              </v-btn>
               <v-btn v-if="deletable" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -117,6 +120,10 @@ export default {
       type: Boolean,
       default: false
     },
+    editable: {
+      type: Boolean,
+      default: false
+    },
     loading: {
       type: Boolean,
       default: false
@@ -153,6 +160,9 @@ export default {
     clickThumbnail (index) {
       this.selectedImageIndex = index
       this.$emit('imageViewed', this.imageItems[index])
+    },
+    clickEdit (index) {
+      this.$emit('imageEdited', this.imageItems[index])
     },
     clickDelete (index) {
       this.$emit('imageDeleted', this.imageItems[index])

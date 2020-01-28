@@ -48,116 +48,151 @@ const mutations = {
     state.viewed = []
   },
   increaseViewCount (state, { imageItem, authenticated }) {
-    let index = state.images.data ? state.images.data.findIndex(image => {
+    let index = state.images ? state.images.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        state.images.data[index].no_of_views = ++state.images.data[index].no_of_views || 1
+        state.images[index].no_of_views = ++state.images[index].no_of_views || 1
       } else {
-        state.images.data[index].anonymous_views = ++state.images.data[index].anonymous_views || 1
+        state.images[index].anonymous_views = ++state.images[index].anonymous_views || 1
       }
     }
-    index = state.liked.data ? state.liked.data.findIndex(image => {
+    index = state.liked ? state.liked.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        state.liked.data[index].no_of_views = ++state.liked.data[index].no_of_views || 1
+        state.liked[index].no_of_views = ++state.liked[index].no_of_views || 1
       } else {
-        state.liked.data[index].anonymous_views = ++state.liked.data[index].anonymous_views || 1
+        state.liked[index].anonymous_views = ++state.liked[index].anonymous_views || 1
       }
     }
-    index = state.saved.data ? state.saved.data.findIndex(image => {
+    index = state.saved ? state.saved.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        state.saved.data[index].no_of_views = ++state.saved.data[index].no_of_views || 1
+        state.saved[index].no_of_views = ++state.saved[index].no_of_views || 1
       } else {
-        state.saved.data[index].anonymous_views = ++state.saved.data[index].anonymous_views || 1
+        state.saved[index].anonymous_views = ++state.saved[index].anonymous_views || 1
       }
     }
   },
   likeImage (state, { imageItem, authenticated }) {
-    let index = state.images.data ? state.images.data.findIndex(image => {
+    let index = state.images ? state.images.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.images.data[index].self_like) {
-          state.images.data[index].no_of_likes = --state.images.data[index].no_of_likes || 0
+        if (state.images[index].self_like) {
+          state.images[index].no_of_likes = --state.images[index].no_of_likes || 0
         } else {
-          state.images.data[index].no_of_likes = ++state.images.data[index].no_of_likes || 1
+          state.images[index].no_of_likes = ++state.images[index].no_of_likes || 1
         }
-        state.images.data[index].self_like = !state.images.data[index].self_like
+        state.images[index].self_like = !state.images[index].self_like
       }
     }
-    index = state.liked.data ? state.liked.data.findIndex(image => {
+    index = state.liked ? state.liked.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.liked.data[index].self_like) {
-          state.liked.data[index].no_of_likes = --state.liked.data[index].no_of_likes || 0
+        if (state.liked[index].self_like) {
+          state.liked[index].no_of_likes = --state.liked[index].no_of_likes || 0
         } else {
-          state.liked.data[index].no_of_likes = ++state.liked.data[index].no_of_likes || 1
+          state.liked[index].no_of_likes = ++state.liked[index].no_of_likes || 1
         }
-        state.liked.data[index].self_like = !state.liked.data[index].self_like
+        state.liked[index].self_like = !state.liked[index].self_like
       }
     }
-    index = state.saved.data ? state.saved.data.findIndex(image => {
+    index = state.saved ? state.saved.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.saved.data[index].self_like) {
-          state.saved.data[index].no_of_likes = --state.saved.data[index].no_of_likes || 0
+        if (state.saved[index].self_like) {
+          state.saved[index].no_of_likes = --state.saved[index].no_of_likes || 0
         } else {
-          state.saved.data[index].no_of_likes = ++state.saved.data[index].no_of_likes || 1
+          state.saved[index].no_of_likes = ++state.saved[index].no_of_likes || 1
         }
-        state.saved.data[index].self_like = !state.saved.data[index].self_like
+        state.saved[index].self_like = !state.saved[index].self_like
       }
     }
   },
   saveImage (state, { imageItem, authenticated }) {
-    let index = state.images.data ? state.images.data.findIndex(image => {
+    let index = state.images ? state.images.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.images.data[index].self_save) {
-          state.images.data[index].no_of_saves = --state.images.data[index].no_of_saves || 0
+        if (state.images[index].self_save) {
+          state.images[index].no_of_saves = --state.images[index].no_of_saves || 0
         } else {
-          state.images.data[index].no_of_saves = ++state.images.data[index].no_of_saves || 1
+          state.images[index].no_of_saves = ++state.images[index].no_of_saves || 1
         }
-        state.images.data[index].self_save = !state.images.data[index].self_save
+        state.images[index].self_save = !state.images[index].self_save
       }
     }
-    index = state.liked.data ? state.liked.data.findIndex(image => {
+    index = state.liked ? state.liked.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.liked.data[index].self_save) {
-          state.liked.data[index].no_of_saves = --state.liked.data[index].no_of_saves || 0
+        if (state.liked[index].self_save) {
+          state.liked[index].no_of_saves = --state.liked[index].no_of_saves || 0
         } else {
-          state.liked.data[index].no_of_saves = ++state.liked.data[index].no_of_saves || 1
+          state.liked[index].no_of_saves = ++state.liked[index].no_of_saves || 1
         }
-        state.liked.data[index].self_save = !state.liked.data[index].self_save
+        state.liked[index].self_save = !state.liked[index].self_save
       }
     }
-    index = state.saved.data ? state.saved.data.findIndex(image => {
+    index = state.saved ? state.saved.findIndex(image => {
       return image._id === imageItem._id
     }) : -1
     if (index !== -1) {
       if (authenticated) {
-        if (state.saved.data[index].self_save) {
-          state.saved.data[index].no_of_saves = --state.saved.data[index].no_of_saves || 0
+        if (state.saved[index].self_save) {
+          state.saved[index].no_of_saves = --state.saved[index].no_of_saves || 0
         } else {
-          state.saved.data[index].no_of_saves = ++state.saved.data[index].no_of_saves || 1
+          state.saved[index].no_of_saves = ++state.saved[index].no_of_saves || 1
         }
-        state.saved.data[index].self_save = !state.saved.data[index].self_save
+        state.saved[index].self_save = !state.saved[index].self_save
+      }
+    }
+  },
+  editImage (state, { imageId, title, description, authenticated }) {
+    let index = state.images ? state.images.findIndex(image => {
+      return image._id === imageId
+    }) : -1
+    if (index !== -1) {
+      if (authenticated) {
+        state.images[index].title = title
+        state.images[index].title_lower = title.toLowerCase()
+        state.images[index].description = description
+        state.images[index].description_lower = description.toLowerCase()
+      }
+    }
+    index = state.liked ? state.liked.findIndex(image => {
+      return image._id === imageId
+    }) : -1
+    if (index !== -1) {
+      if (authenticated) {
+        state.liked[index].title = title
+        state.liked[index].title_lower = title.toLowerCase()
+        state.liked[index].description = description
+        state.liked[index].description_lower = description.toLowerCase()
+      }
+    }
+    index = state.saved ? state.saved.findIndex(image => {
+      return image._id === imageId
+    }) : -1
+    if (index !== -1) {
+      if (authenticated) {
+        state.saved[index].title = title
+        state.saved[index].title_lower = title.toLowerCase()
+        state.saved[index].description = description
+        state.saved[index].description_lower = description.toLowerCase()
       }
     }
   }
@@ -221,9 +256,13 @@ const actions = {
     await axios.put(`/frontend/images/${imageItem._id}/save`)
     commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
+  async triggerUserImageEdited ({ commit, rootState }, { imageId, title, description }) {
+    await axios.put(`/frontend/images/${imageId}/edit`, { title, description })
+    commit('editImage', { imageId, title, description, authenticated: rootState.auth.authenticated })
+  },
   async triggerUserImageDeleted ({ commit, rootState }, imageItem) {
     await axios.delete(`/frontend/images/${imageItem._id}`)
-    commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
+    // commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   }
 }
 
