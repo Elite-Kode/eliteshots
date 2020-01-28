@@ -26,11 +26,8 @@
     <image-gallery :imageItems="pendingImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
-                   @imageViewed="onClickThumbnail"
-                   @imageLiked="onClickLike"
-                   @imageSaved="onClickSave"
                    @fetchImages="onFetchImages"
-                   :authenticated="auth.authenticated">
+                   :authenticated="authenticated">
       <template v-slot:thumbnail="slotProps">
         <v-card>
           <v-img
@@ -104,7 +101,7 @@ export default {
   computed: {
     ...mapState({
       pendingImages: state => state.admin.pendingImages,
-      auth: state => state.auth
+      authenticated: state => state.auth.authenticated
     })
   },
   created () {
@@ -112,15 +109,6 @@ export default {
     this.$store.commit('terminatePendingImages')
   },
   methods: {
-    onClickThumbnail (image) {
-      this.$store.dispatch('triggerUserImageViewed', image)
-    },
-    onClickLike (image) {
-      this.$store.dispatch('triggerUserImageLiked', image)
-    },
-    onClickSave (image) {
-      this.$store.dispatch('triggerUserImageSaved', image)
-    },
     async onFetchImages () {
       this.loadingNewImages = true
       let images = []
@@ -169,7 +157,7 @@ export default {
         if (this.modActionType === 'BAN') {
           this.$store.dispatch('banUser', payload)
         } else if (this.modActionType === 'UNBAN') {
-          this.$store.dispatch('unban', payload)
+          this.$store.dispatch('unbanUser', payload)
         }
       }
     }

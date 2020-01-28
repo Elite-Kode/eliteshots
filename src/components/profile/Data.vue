@@ -6,7 +6,7 @@
         <v-subheader>Frontier ID</v-subheader>
       </v-col>
       <v-col cols="8">
-        <v-text-field :value="auth.user.frontier_id" readonly/>
+        <v-text-field :value="authUser.frontier_id" readonly/>
       </v-col>
     </v-row>
     <v-row>
@@ -14,7 +14,7 @@
         <v-subheader>CMDR Name</v-subheader>
       </v-col>
       <v-col cols="8">
-        <v-text-field :value="auth.user.commander" readonly/>
+        <v-text-field :value="authUser.commander" readonly/>
       </v-col>
     </v-row>
     <v-row>
@@ -22,7 +22,7 @@
         <v-subheader>Email</v-subheader>
       </v-col>
       <v-col cols="8">
-        <v-text-field :value="auth.user.email" readonly/>
+        <v-text-field :value="authUser.email" readonly/>
       </v-col>
     </v-row>
   </div>
@@ -35,7 +35,7 @@ export default {
   name: 'Data',
   computed: {
     ...mapState({
-      auth: state => state.auth
+      authUser: state => state.auth.user
     })
   },
   created () {

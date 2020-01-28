@@ -24,7 +24,7 @@
           slider-color="secondary"
           light
         >
-          <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link" exact>
+          <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link">
             {{tabItem.name}}
           </v-tab>
         </v-tabs>

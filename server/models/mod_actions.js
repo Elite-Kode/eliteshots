@@ -22,7 +22,11 @@ let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId
 
 let modActions = new Schema({
-  action: { type: String, enum: ['BAN', 'UNBAN', 'ACCEPT', 'REJECT'], uppercase: true },
+  action: {
+    type: String,
+    enum: ['BAN', 'UNBAN', 'PROMOTE', 'DEMOTE', 'TRUST', 'UNTRUST', 'ACCEPT', 'REJECT'],
+    uppercase: true
+  },
   target_user: { type: ObjectId, index: true },
   target_image: { type: ObjectId, index: true },
   comments: String,

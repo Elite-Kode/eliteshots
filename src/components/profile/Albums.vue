@@ -20,7 +20,7 @@
     <album-gallery :albumItems="albums"
                    @albumOpened="onClickThumbnail"
                    @albumDeleted="onClickDelete"
-                   :authenticated="auth.authenticated" deletable/>
+                   :authenticated="authenticated" deletable/>
   </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
   computed: {
     ...mapState({
       albums: state => state.users.albums,
-      auth: state => state.auth
+      authenticated: state => state.auth.authenticated
     })
   },
   created () {

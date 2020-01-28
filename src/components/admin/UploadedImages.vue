@@ -16,14 +16,8 @@
 
 <template>
   <div>
-    <h1>Rejected Images</h1>
-    <mod-action :open-dialog="modActionDialog"
-                :mod-action="modActionType"
-                :target-type="modActionTargetType"
-                :action-target="modActionTarget"
-                @cancelled="onCancelled"
-                @confirmed="onConfirmed"/>
-    <image-gallery :imageItems="rejectedImages"
+    <h1>Uploaded Images</h1>
+    <image-gallery :imageItems="uploadedImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
                    @fetchImages="onFetchImages"
@@ -46,21 +40,22 @@
             <v-row dense>
               <v-col cols="12" class="headline py-0">{{slotProps.imageItem.title}}</v-col>
               <v-col cols="12" class="subheading py-0">{{slotProps.imageItem.description}}</v-col>
-              <v-col cols="6" class="subheading py-0">CMDR {{slotProps.imageItem.cmdr_name}}</v-col>
-              <v-col cols="6" class="py-0">
-                <v-btn block color="error" @click.stop="banUser(slotProps.imageItem.user_id)">
-                  Ban User
-                  <v-icon right>gavel</v-icon>
-                </v-btn>
-              </v-col>
             </v-row>
           </v-card-title>
           <v-card-actions>
             <v-row dense>
-              <v-col cols="12">
+              <v-col :cols="slotProps.imageItem.moderation_status !== 'REJECTED' ? 6 : 12"
+                     v-if="slotProps.imageItem.moderation_status !== 'ACCEPTED'">
                 <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)">
                   Accept
                   <v-icon right>check</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col :cols="slotProps.imageItem.moderation_status !== 'ACCEPTED' ? 6 : 12"
+                     v-if="slotProps.imageItem.moderation_status !== 'REJECTED'">
+                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)">
+                  Reject
+                  <v-icon right>clear</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
@@ -74,78 +69,57 @@
 <script>
 import { mapState } from 'vuex'
 import ImageGallery from '@/components/ImageGallery'
-import ModActionConfirmation from '@/components/admin/ModActionConfirmation'
 
 export default {
-  name: 'RejectedImages',
+  name: 'UploadedImages',
   components: {
-    'image-gallery': ImageGallery,
-    'mod-action': ModActionConfirmation
+    'image-gallery': ImageGallery
+  },
+  props: {
+    userId: {
+      type: String,
+      default: ''
+    }
   },
   data () {
     return {
       loadingNewImages: false,
-      imagesEnd: false,
-      modActionDialog: false,
-      modActionType: '',
-      modActionTargetType: '',
-      modActionTarget: ''
+      imagesEnd: false
     }
   },
   computed: {
     ...mapState({
-      rejectedImages: state => state.admin.rejectedImages,
+      uploadedImages: state => state.admin.uploadedImages,
       authenticated: state => state.auth.authenticated
     })
   },
   created () {
     this.$store.dispatch('checkAuthenticated')
-    this.$store.commit('terminateRejectedImages')
+    this.$store.commit('terminateUploadedImages')
   },
   methods: {
     async onFetchImages () {
       this.loadingNewImages = true
       let images = []
-      if (this.rejectedImages && this.rejectedImages.length > 0) {
-        images = await this.$store.dispatch('fetchRejected', this.rejectedImages[this.rejectedImages.length - 1].uploaded_at)
+      if (this.uploadedImages && this.uploadedImages.length > 0) {
+        images = await this.$store.dispatch('fetchUploaded', {
+          last: this.uploadedImages[this.uploadedImages.length - 1].uploaded_at,
+          userId: this.userId
+        })
       } else {
-        images = await this.$store.dispatch('fetchRejected', null)
+        images = await this.$store.dispatch('fetchUploaded', {
+          last: null,
+          userId: this.userId
+        })
       }
       this.imagesEnd = images.length === 0
       this.loadingNewImages = false
     },
     acceptImage (image) {
-      this.modActionType = 'ACCEPT'
-      this.modActionTargetType = 'IMAGE'
-      this.modActionTarget = image._id
-      this.modActionDialog = true
+      this.$emit('accept', image)
     },
-    banUser (userID) {
-      this.modActionType = 'BAN'
-      this.modActionTargetType = 'USER'
-      this.modActionTarget = userID
-      this.modActionDialog = true
-    },
-    onCancelled () {
-      this.modActionDialog = false
-    },
-    onConfirmed (comment) {
-      this.modActionDialog = false
-      let payload = {
-        target: this.modActionTarget,
-        comment: comment
-      }
-      if (this.modActionTargetType === 'IMAGE') {
-        if (this.modActionType === 'ACCEPT') {
-          this.$store.dispatch('acceptImage', payload)
-        }
-      } else if (this.modActionTargetType === 'USER') {
-        if (this.modActionType === 'BAN') {
-          this.$store.dispatch('banUser', payload)
-        } else if (this.modActionType === 'UNBAN') {
-          this.$store.dispatch('unbanUser', payload)
-        }
-      }
+    rejectImage (image) {
+      this.$emit('reject', image)
     }
   }
 }

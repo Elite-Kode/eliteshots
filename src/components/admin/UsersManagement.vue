@@ -25,6 +25,9 @@
       :items-per-page="10"
       :footer-props="tableFooter"
       :loading="loading">
+      <template v-slot:item._id="{item}">
+        <router-link :to="{ name: 'user-detail', params: { userId: item._id }}">{{ item._id }}</router-link>
+      </template>
       <template v-slot:item.trusted="{ item }">
         <v-checkbox
           v-model="item.trusted"
@@ -42,19 +45,6 @@ export default {
   name: 'UsersManagement',
   data () {
     return {
-      headers: [{
-        text: 'User Id',
-        value: '_id'
-      }, {
-        text: 'CMDR Name',
-        value: 'commander'
-      }, {
-        text: 'Trust',
-        value: 'trusted'
-      }, {
-        text: 'Access Level',
-        value: 'access'
-      }],
       tableFooter: {
         disableItemsPerPage: true,
         showFirstLastPage: true,
@@ -67,8 +57,34 @@ export default {
   },
   computed: {
     ...mapState({
+      authUser: state => state.auth.user,
       users: state => state.admin.users
-    })
+    }),
+    headers () {
+      let normalHeaders = [{
+        text: 'User Id',
+        value: '_id'
+      }, {
+        text: 'CMDR Name',
+        value: 'commander'
+      }, {
+        text: 'Trust',
+        value: 'trusted'
+      }, {
+        text: 'Access Level',
+        value: 'access'
+      }]
+      if (this.authUser.access === 'ADMIN') {
+        normalHeaders.splice(2, 0, {
+          text: 'Frontier Id',
+          value: 'frontier_id'
+        }, {
+          text: 'Email',
+          value: 'email'
+        })
+      }
+      return normalHeaders
+    }
   },
   watch: {
     page () {
@@ -76,6 +92,7 @@ export default {
     }
   },
   created () {
+    this.$store.dispatch('checkAuthenticated')
     this.fetchUsers()
   },
   methods: {

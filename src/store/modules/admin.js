@@ -20,6 +20,7 @@ const state = {
   pendingImages: [],
   acceptedImages: [],
   rejectedImages: [],
+  uploadedImages: [],
   users: []
 }
 const mutations = {
@@ -32,6 +33,9 @@ const mutations = {
   setRejectedImages (state, images) {
     state.rejectedImages = images
   },
+  setUploadedImages (state, images) {
+    state.uploadedImages = images
+  },
   addPendingImages (state, images) {
     state.pendingImages.push(...images)
   },
@@ -40,6 +44,9 @@ const mutations = {
   },
   addRejectedImages (state, images) {
     state.rejectedImages.push(...images)
+  },
+  addUploadedImages (state, images) {
+    state.uploadedImages.push(...images)
   },
   terminatePendingImages (state) {
     state.pendingImages = []
@@ -50,6 +57,9 @@ const mutations = {
   terminateRejectedImages (state) {
     state.rejectedImages = []
   },
+  terminateUploadedImages (state) {
+    state.uploadedImages = []
+  },
   acceptImage (state, imageId) {
     let index = state.pendingImages.findIndex(image => image._id === imageId)
     if (index >= 0) {
@@ -58,6 +68,10 @@ const mutations = {
     index = state.rejectedImages.findIndex(image => image._id === imageId)
     if (index >= 0) {
       state.rejectedImages.splice(index, 1)
+    }
+    index = state.uploadedImages.findIndex(image => image._id === imageId)
+    if (index >= 0) {
+      state.uploadedImages[index].moderation_status = 'ACCEPTED'
     }
   },
   rejectImage (state, imageId) {
@@ -68,6 +82,10 @@ const mutations = {
     index = state.acceptedImages.findIndex(image => image._id === imageId)
     if (index >= 0) {
       state.acceptedImages.splice(index, 1)
+    }
+    index = state.uploadedImages.findIndex(image => image._id === imageId)
+    if (index >= 0) {
+      state.uploadedImages[index].moderation_status = 'REJECTED'
     }
   },
   setUsers (state, users) {
@@ -105,6 +123,16 @@ const actions = {
     }
     return images
   },
+  async fetchUploaded ({ commit }, { last, userId }) {
+    let response = await axios.get(`/frontend/admin/images/uploaded/${userId}`, { params: { last } })
+    let images = response.data
+    if (last) {
+      commit('addUploadedImages', images)
+    } else {
+      commit('setUploadedImages', images)
+    }
+    return images
+  },
   async acceptImage ({ commit }, { target, comment }) {
     await axios.put(`/frontend/admin/images/${target}/accept`, { comment })
     commit('acceptImage', target)
@@ -119,11 +147,27 @@ const actions = {
   async unbanUser ({ commit }, { target, comment }) {
     await axios.put(`/frontend/admin/unban/${target}`, { comment })
   },
+  async demoteUser ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/demote/${target}`, { comment })
+  },
+  async promoteUser ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/promote/${target}`, { comment })
+  },
+  async trustUser ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/trust/${target}`, { comment })
+  },
+  async untrustUser ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/untrust/${target}`, { comment })
+  },
   async fetchUsers ({ commit }, { page }) {
     let response = await axios.get('/frontend/admin/users', { params: { page } })
     let usersPaginated = response.data
     commit('setUsers', usersPaginated.docs)
     return usersPaginated
+  },
+  async fetchUser ({ commit }, userId) {
+    let response = await axios.get(`/frontend/admin/users/${userId}`)
+    return response.data
   }
 }
 

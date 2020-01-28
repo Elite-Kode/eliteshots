@@ -175,8 +175,8 @@ export default {
 </script>
 
 <style scoped>
-    .image-title-background {
-      background-color: var(--v-primary-base);
+  .image-title-background {
+    background-color: var(--v-primary-base);
     opacity: 0.85;
   }
 

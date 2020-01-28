@@ -20,7 +20,7 @@
     </v-toolbar-title>
     <v-spacer/>
 
-    <v-btn v-if="auth.authenticated" href="/auth/logout" icon>
+    <v-btn v-if="authenticated" href="/auth/logout" icon>
       <v-icon>fas fa-sign-out-alt</v-icon>
     </v-btn>
     <v-dialog v-else width="360">
@@ -32,7 +32,7 @@
       <login-card/>
     </v-dialog>
 
-    <v-dialog v-model="uploadDialog" v-if="auth.authenticated && auth.user.access !== bannedAccess" fullscreen
+    <v-dialog v-model="uploadDialog" v-if="authenticated && authUser.access !== bannedAccess" fullscreen
               hide-overlay
               transition="dialog-bottom-transition">
       <template v-slot:activator="{on}">
@@ -46,14 +46,14 @@
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
     </v-btn>
-    <v-btn v-if="auth.authenticated && (auth.user.access === modAccess || auth.user.access === adminAccess)"
+    <v-btn v-if="authenticated && (authUser.access === modAccess || authUser.access === adminAccess)"
            icon :to="{name: 'mod-queue'}" exact>
       <v-icon>fas fa-user-secret</v-icon>
     </v-btn>
     <v-btn icon to="/about" exact>
       <v-icon>info</v-icon>
     </v-btn>
-    <v-btn v-if="auth.authenticated" icon to="/profile">
+    <v-btn v-if="authenticated" icon to="/profile">
       <v-icon>person</v-icon>
     </v-btn>
     <template v-slot:extension v-if="hasToolbarTabs">
@@ -95,7 +95,8 @@ export default {
   computed: {
     ...mapState({
       themes: state => state.themes.themes,
-      auth: state => state.auth
+      authenticated: state => state.auth.authenticated,
+      authUser: state => state.auth.user
     }),
     theme: {
       get () {

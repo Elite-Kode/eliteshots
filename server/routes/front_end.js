@@ -39,7 +39,7 @@ let imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots/'
 
 let router = express.Router()
 
-let imagesPerfetch = 4
+let imagesPerFetch = 4
 let ObjectId = mongoose.Types.ObjectId
 
 let bannedAccess = 'BANNED'
@@ -53,6 +53,10 @@ let rejectedStatus = 'REJECTED'
 
 let modActionBan = 'BAN'
 let modActionUnban = 'UNBAN'
+let modActionPromote = 'PROMOTE'
+let modActionDemote = 'DEMOTE'
+let modActionTrust = 'TRUST'
+let modActionUntrust = 'UNTRUST'
 let modActionAccept = 'ACCEPT'
 let modActionReject = 'REJECT'
 
@@ -294,7 +298,7 @@ router.get('/images/self', async (req, res, next) => {
 
         aggregate.sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch)
+        }).limit(imagesPerFetch)
 
         let imageData = await aggregate.exec()
 
@@ -404,12 +408,13 @@ router.get('/images/self/liked', async (req, res, next) => {
         }).project({
           views: 0,
           likes: 0,
-          saves: 0
+          saves: 0,
+          user: 0
         })
 
         aggregate.sort({
           liked_at: -1
-        }).limit(imagesPerfetch)
+        }).limit(imagesPerFetch)
 
         let imageData = await aggregate.exec()
 
@@ -519,12 +524,13 @@ router.get('/images/self/saved', async (req, res, next) => {
         }).project({
           views: 0,
           likes: 0,
-          saves: 0
+          saves: 0,
+          user: 0
         })
 
         aggregate.sort({
           saved_at: -1
-        }).limit(imagesPerfetch)
+        }).limit(imagesPerFetch)
 
         let imageData = await aggregate.exec()
 
@@ -640,7 +646,8 @@ router.get('/images/popular', async (req, res, next) => {
     }).project({
       views: 0,
       likes: 0,
-      saves: 0
+      saves: 0,
+      user: 0
     })
 
     if (lastElement) {
@@ -651,7 +658,7 @@ router.get('/images/popular', async (req, res, next) => {
 
     aggregate.sort({
       score: -1
-    }).limit(imagesPerfetch)
+    }).limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
@@ -748,12 +755,13 @@ router.get('/images/recents', async (req, res, next) => {
     aggregate.project({
       views: 0,
       likes: 0,
-      saves: 0
+      saves: 0,
+      user: 0
     })
 
     aggregate.sort({
       uploaded_at: -1
-    }).limit(imagesPerfetch)
+    }).limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
@@ -851,12 +859,13 @@ router.get('/images/curated', async (req, res, next) => {
     aggregate.project({
       views: 0,
       likes: 0,
-      saves: 0
+      saves: 0,
+      user: 0
     })
 
     aggregate.sort({
       curated_at: -1
-    }).limit(imagesPerfetch)
+    }).limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
@@ -948,7 +957,8 @@ router.get('/images/:imageId', async (req, res, next) => {
     aggregate.project({
       views: 0,
       likes: 0,
-      saves: 0
+      saves: 0,
+      user: 0
     })
 
     let imageData = await aggregate.exec()
@@ -992,11 +1002,13 @@ router.get('/admin/images/pending', async (req, res, next) => {
           cmdr_name: {
             '$arrayElemAt': ['$user.commander', 0]
           }
+        }).project({
+          user: 0
         })
 
         aggregate.sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch)
+        }).limit(imagesPerFetch)
 
         let imageData = await aggregate.exec()
 
@@ -1004,11 +1016,6 @@ router.get('/admin/images/pending', async (req, res, next) => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
-          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-          if (req.user) {
-            image.self_like = !!image.self_like
-            image.self_save = !!image.self_save
-          }
         })
         res.send(imageData)
       } else {
@@ -1044,11 +1051,13 @@ router.get('/admin/images/accepted', async (req, res, next) => {
           cmdr_name: {
             '$arrayElemAt': ['$user.commander', 0]
           }
+        }).project({
+          user: 0
         })
 
         aggregate.sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch)
+        }).limit(imagesPerFetch)
 
         let imageData = await aggregate.exec()
 
@@ -1056,11 +1065,6 @@ router.get('/admin/images/accepted', async (req, res, next) => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
-          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-          if (req.user) {
-            image.self_like = !!image.self_like
-            image.self_save = !!image.self_save
-          }
         })
         res.send(imageData)
       } else {
@@ -1096,11 +1100,13 @@ router.get('/admin/images/rejected', async (req, res, next) => {
           cmdr_name: {
             '$arrayElemAt': ['$user.commander', 0]
           }
+        }).project({
+          user: 0
         })
 
         aggregate.sort({
           uploaded_at: -1
-        }).limit(imagesPerfetch)
+        }).limit(imagesPerFetch)
 
         let imageData = await aggregate.exec()
 
@@ -1108,13 +1114,41 @@ router.get('/admin/images/rejected', async (req, res, next) => {
           image.image_location = `${imageUrlRoute}${image.image_location}`
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
-          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-          if (req.user) {
-            image.self_like = !!image.self_like
-            image.self_save = !!image.self_save
-          }
         })
         res.send(imageData)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/admin/images/uploaded/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let lastElement = req.query.last
+
+        let query = { user_id: req.params.userId }
+
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
+
+        let images = await imageModel.find(query).sort({
+          uploaded_at: -1
+        }).limit(imagesPerFetch).lean()
+
+        images.map(image => {
+          image.image_location = `${imageUrlRoute}${image.image_location}`
+          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+        })
+        res.send(images)
       } else {
         res.status(403).send({})
       }
@@ -1218,6 +1252,13 @@ router.put('/admin/images/:imageId/accept', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let targetImage = await imageModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (req.user._id === targetImage.user_id) {
+          res.status(403).send({})
+          return
+        }
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
           await imageModel.findOneAndUpdate({
@@ -1253,6 +1294,13 @@ router.put('/admin/images/:imageId/reject', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let targetImage = await imageModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (req.user._id === targetImage.user_id) {
+          res.status(403).send({})
+          return
+        }
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
           await imageModel.findOneAndUpdate({
@@ -1288,6 +1336,17 @@ router.put('/admin/ban/:userId', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let targetUser = await usersModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (targetUser.access === bannedAccess) {
+          res.status(304).send({ message: 'User already banned' })
+          return
+        }
+        if (req.user._id === req.params.userId || targetUser.access === adminAccess || (targetUser.access === modAccess) && (req.user.access !== adminAccess)) {
+          res.status(403).send({})
+          return
+        }
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
           await usersModel.findOneAndUpdate({
@@ -1323,6 +1382,13 @@ router.put('/admin/unban/:userId', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let targetUser = await usersModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (targetUser.access !== bannedAccess) {
+          res.status(304).send({ message: 'User not banned' })
+          return
+        }
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
           await usersModel.findOneAndUpdate({
@@ -1354,16 +1420,215 @@ router.put('/admin/unban/:userId', async (req, res, next) => {
   }
 })
 
+router.put('/admin/demote/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess) {
+        let targetUser = await usersModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (targetUser.access !== modAccess) {
+          res.status(304).send({ message: 'User cannot be demoted anymore' })
+          return
+        }
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await usersModel.findOneAndUpdate({
+            _id: req.params.userId
+          }, {
+            access: normalAccess
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModel({
+            action: modActionDemote,
+            target_user: req.params.userId,
+            target_image: null,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/promote/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === adminAccess) {
+        let targetUser = await usersModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (targetUser.access !== normalAccess) {
+          res.status(304).send({ message: 'User cannot be promoted anymore' })
+          return
+        }
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await usersModel.findOneAndUpdate({
+            _id: req.params.userId
+          }, {
+            access: modAccess
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModel({
+            action: modActionPromote,
+            target_user: req.params.userId,
+            target_image: null,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/trust/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let targetUser = await usersModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (targetUser.trusted) {
+          res.status(304).send({ message: 'User is already trusted' })
+          return
+        }
+        if (targetUser._id === req.params.userId || targetUser.access === bannedAccess || targetUser.access === adminAccess || (targetUser.access === modAccess) && (req.user.access !== adminAccess)) {
+          res.status(403).send({})
+          return
+        }
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await usersModel.findOneAndUpdate({
+            _id: req.params.userId
+          }, {
+            trusted: true
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModel({
+            action: modActionTrust,
+            target_user: req.params.userId,
+            target_image: null,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/untrust/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let targetUser = await usersModel.findOne({
+          _id: req.params.userId
+        }).lean()
+        if (!targetUser.trusted) {
+          res.status(304).send({ message: 'User is already not trusted' })
+          return
+        }
+        if (req.user._id === req.params.userId || targetUser.access === bannedAccess || targetUser.access === adminAccess || (targetUser.access === modAccess) && (req.user.access !== adminAccess)) {
+          res.status(403).send({})
+          return
+        }
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await usersModel.findOneAndUpdate({
+            _id: req.params.userId
+          }, {
+            trusted: false
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModel({
+            action: modActionUntrust,
+            target_user: req.params.userId,
+            target_image: null,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.get('/admin/users', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let select = 'commander trusted access'
+        if (req.user.access === adminAccess) {
+          select = ''
+        }
         let users = await usersModel.paginate({}, {
+          select,
           lean: true,
+          leanWithId: false,
           page: req.query.page,
           limit: 10
         })
         res.send(users)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/admin/users/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let select = 'commander trusted access'
+        if (req.user.access === adminAccess) {
+          select = ''
+        }
+        let user = await usersModel.findById(req.params.userId).select(select).lean()
+        res.send(user)
       } else {
         res.status(403).send({})
       }

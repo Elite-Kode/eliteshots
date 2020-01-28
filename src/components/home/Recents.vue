@@ -6,7 +6,7 @@
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
                  @fetchImages="onFetchImages"
-                 :authenticated="auth.authenticated"/>
+                 :authenticated="authenticated"/>
 </template>
 
 <script>
@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapState({
       recentImages: state => state.images.recents,
-      auth: state => state.auth
+      authenticated: state => state.auth.authenticated
     })
   },
   created () {
