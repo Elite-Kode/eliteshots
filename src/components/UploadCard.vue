@@ -101,10 +101,8 @@ export default {
     uploadEvent (file, xhr, formData) {
       let title = file.previewElement.querySelector('input#image-title').value
       let description = file.previewElement.querySelector('input#image-description').value
-      let isPublic = file.previewElement.querySelector('input#image-public').checked
       formData.append('imageTitle', title)
       formData.append('imageDescription', description)
-      formData.append('isPublic', isPublic)
       if (this.currentAlbumTitle !== '' && this.currentAlbumTitle.toLowerCase() !== this.defaultAlbum.toLowerCase()) {
         formData.append('albumTitle', this.currentAlbumTitle)
       }
@@ -119,9 +117,6 @@ export default {
                     <div class="dz-filename"><span data-dz-name></span></div>
                     <input class="preview-input" type="text" id="image-title" placeholder="Image Title">
                     <input class="preview-input" type="text" id="image-description" placeholder="Image Description">
-                    <div class="preview-input">
-                       <label><input class="preview-input-checkbox" type="checkbox" id="image-public" value="true"> Public?</label>
-                    </div>
                 </div>
                 <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
                 <div class="dz-error-message"><span data-dz-errormessage></span></div>

@@ -30,7 +30,6 @@ let images = new Schema({
   title_lower: { type: String, lowercase: true, index: true },
   description: String,
   description_lower: { type: String, lowercase: true, index: true },
-  public: { type: Boolean, index: true },
   anonymous_views: Number,
   album_id: { type: ObjectId, index: true },
   curated: { type: Boolean, index: true },

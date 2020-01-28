@@ -147,7 +147,6 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
           title_lower: req.body.imageTitle.toLowerCase(),
           description: req.body.imageDescription,
           description_lower: req.body.imageDescription.toLowerCase(),
-          public: req.body.isPublic === 'true',
           album_id: album ? album._id : undefined,
           moderation_status: 'PENDING',
           uploaded_at: createdDate,
@@ -1256,7 +1255,7 @@ router.put('/admin/images/:imageId/accept', async (req, res, next) => {
           _id: req.params.userId
         }).lean()
         if (req.user._id === targetImage.user_id) {
-          res.status(403).send({})
+          res.status(403).send({ message: 'You cannot accept your own images' })
           return
         }
         let mongoSession = await mongoose.startSession()
@@ -1298,7 +1297,7 @@ router.put('/admin/images/:imageId/reject', async (req, res, next) => {
           _id: req.params.userId
         }).lean()
         if (req.user._id === targetImage.user_id) {
-          res.status(403).send({})
+          res.status(403).send({ message: 'You cannot reject your own images' })
           return
         }
         let mongoSession = await mongoose.startSession()
