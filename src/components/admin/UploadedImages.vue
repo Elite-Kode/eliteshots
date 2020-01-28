@@ -46,14 +46,14 @@
             <v-row dense>
               <v-col :cols="slotProps.imageItem.moderation_status !== 'REJECTED' ? 6 : 12"
                      v-if="slotProps.imageItem.moderation_status !== 'ACCEPTED'">
-                <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)">
+                <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)" :disabled="disableModActions">
                   Accept
                   <v-icon right>check</v-icon>
                 </v-btn>
               </v-col>
               <v-col :cols="slotProps.imageItem.moderation_status !== 'ACCEPTED' ? 6 : 12"
                      v-if="slotProps.imageItem.moderation_status !== 'REJECTED'">
-                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)">
+                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)" :disabled="disableModActions">
                   Reject
                   <v-icon right>clear</v-icon>
                 </v-btn>
@@ -79,6 +79,10 @@ export default {
     userId: {
       type: String,
       default: ''
+    },
+    disableModActions: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

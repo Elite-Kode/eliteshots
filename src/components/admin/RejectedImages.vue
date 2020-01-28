@@ -46,19 +46,18 @@
             <v-row dense>
               <v-col cols="12" class="headline py-0">{{slotProps.imageItem.title}}</v-col>
               <v-col cols="12" class="subheading py-0">{{slotProps.imageItem.description}}</v-col>
-              <v-col cols="6" class="subheading py-0">CMDR {{slotProps.imageItem.cmdr_name}}</v-col>
-              <v-col cols="6" class="py-0">
-                <v-btn block color="error" @click.stop="banUser(slotProps.imageItem.user_id)">
-                  Ban User
-                  <v-icon right>gavel</v-icon>
-                </v-btn>
+              <v-col cols="12" class="subheading py-0">
+                <router-link :to="{ name: 'user-detail', params: { userId: slotProps.imageItem.user_id }}">
+                  CMDR {{slotProps.imageItem.cmdr_name}}
+                </router-link>
               </v-col>
             </v-row>
           </v-card-title>
           <v-card-actions>
             <v-row dense>
               <v-col cols="12">
-                <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)">
+                <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)"
+                       :disabled="!canAccept(slotProps.imageItem.user_id)">
                   Accept
                   <v-icon right>check</v-icon>
                 </v-btn>
@@ -95,7 +94,8 @@ export default {
   computed: {
     ...mapState({
       rejectedImages: state => state.admin.rejectedImages,
-      authenticated: state => state.auth.authenticated
+      authenticated: state => state.auth.authenticated,
+      authUser: state => state.auth.user
     })
   },
   created () {
@@ -114,16 +114,13 @@ export default {
       this.imagesEnd = images.length === 0
       this.loadingNewImages = false
     },
+    canAccept (userId) {
+      return this.authUser._id !== userId
+    },
     acceptImage (image) {
       this.modActionType = 'ACCEPT'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = image._id
-      this.modActionDialog = true
-    },
-    banUser (userID) {
-      this.modActionType = 'BAN'
-      this.modActionTargetType = 'USER'
-      this.modActionTarget = userID
       this.modActionDialog = true
     },
     onCancelled () {
@@ -138,12 +135,6 @@ export default {
       if (this.modActionTargetType === 'IMAGE') {
         if (this.modActionType === 'ACCEPT') {
           this.$store.dispatch('acceptImage', payload)
-        }
-      } else if (this.modActionTargetType === 'USER') {
-        if (this.modActionType === 'BAN') {
-          this.$store.dispatch('banUser', payload)
-        } else if (this.modActionType === 'UNBAN') {
-          this.$store.dispatch('unbanUser', payload)
         }
       }
     }

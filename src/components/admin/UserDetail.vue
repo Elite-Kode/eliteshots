@@ -116,6 +116,7 @@
       </v-row>
     </v-form>
     <uploaded-images :user-id="userId"
+                     :disable-mod-actions="!canModImages"
                      @accept="onAcceptImage"
                      @reject="onRejectImage"/>
   </div>
@@ -194,6 +195,9 @@ export default {
       } else {
         return false
       }
+    },
+    canModImages () {
+      return this.authUser._id !== this.userData._id
     }
   },
   created () {
@@ -286,9 +290,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .custom-dark, .custom-dark .theme--dark.v-btn {
-    color: var(--v-primary-base);
-  }
-</style>
