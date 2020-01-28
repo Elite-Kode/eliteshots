@@ -132,8 +132,7 @@ export default {
   },
   data () {
     return {
-      selectedImageIndex: null,
-      openImageModel: false
+      selectedImageIndex: null
     }
   },
   computed: {

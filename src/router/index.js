@@ -13,7 +13,7 @@ import Images from '@/components/profile/Images'
 import Albums from '@/components/profile/Albums'
 import Likes from '@/components/profile/Likes'
 import Saves from '@/components/profile/Saves'
-import Views from '@/components/profile/Views'
+import ViewsHistory from '@/components/profile/ViewsHistory'
 import ModQueue from '@/components/admin/ModQueue'
 import AcceptedImages from '@/components/admin/AcceptedImages'
 import RejectedImages from '@/components/admin/RejectedImages'
@@ -98,8 +98,8 @@ export default new Router({
           name: 'saves'
         }, {
           path: 'views',
-          component: Views,
-          name: 'views'
+          component: ViewsHistory,
+          name: 'views-history'
         }]
       }, {
         path: '/about',

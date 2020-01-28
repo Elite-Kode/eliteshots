@@ -555,6 +555,122 @@ router.get('/images/self/saved', async (req, res, next) => {
   }
 })
 
+router.get('/images/self/viewed', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access !== bannedAccess) {
+        let lastElement = req.query.last
+        let aggregate = viewsModel.aggregate()
+
+        let query = { user_id: req.user._id }
+
+        if (lastElement) {
+          query.viewed_at = { $lt: new Date(lastElement) }
+        }
+
+        aggregate.match(query).lookup({
+          from: 'images',
+          localField: 'image_id',
+          foreignField: '_id',
+          as: 'images'
+        }).unwind('$images')
+          .addFields({
+            'images.viewed_at': '$viewed_at'
+          })
+          .replaceRoot('$images')
+          .lookup({
+            from: 'views',
+            localField: '_id',
+            foreignField: 'image_id',
+            as: 'views'
+          }).lookup({
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'image_id',
+          as: 'likes'
+        }).lookup({
+          from: 'saves',
+          localField: '_id',
+          foreignField: 'image_id',
+          as: 'saves'
+        }).lookup({
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
+        }).addFields({
+          no_of_views: {
+            $size: '$views'
+          },
+          no_of_likes: {
+            $size: '$likes'
+          },
+          no_of_saves: {
+            $size: '$saves'
+          },
+          cmdr_name: {
+            '$arrayElemAt': ['$user.commander', 0]
+          }
+        })
+
+        aggregate.addFields({
+          self_like: {
+            $size: {
+              $filter: {
+                input: '$likes',
+                as: 'el',
+                cond: {
+                  $eq: ['$$el.user_id', req.user._id]
+                }
+              }
+            }
+          },
+          self_save: {
+            $size: {
+              $filter: {
+                input: '$saves',
+                as: 'el',
+                cond: {
+                  $eq: ['$$el.user_id', req.user._id]
+                }
+              }
+            }
+          }
+        }).project({
+          views: 0,
+          likes: 0,
+          saves: 0,
+          user: 0
+        })
+
+        aggregate.sort({
+          viewed_at: -1
+        }).limit(imagesPerFetch)
+
+        let imageData = await aggregate.exec()
+
+        imageData.map(image => {
+          image.image_location = `${imageUrlRoute}${image.image_location}`
+          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+          if (req.user) {
+            image.self_like = !!image.self_like
+            image.self_save = !!image.self_save
+          }
+        })
+        res.send(imageData)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.get('/images/popular', async (req, res, next) => {
   try {
     let lastElement = req.query.last

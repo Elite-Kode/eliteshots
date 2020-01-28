@@ -4,7 +4,8 @@ const state = {
   albums: [],
   images: [],
   liked: [],
-  saved: []
+  saved: [],
+  viewed: []
 }
 const mutations = {
   setAlbums (state, albums) {
@@ -19,6 +20,9 @@ const mutations = {
   setSaved (state, images) {
     state.saved = images
   },
+  setViewed (state, images) {
+    state.viewed = images
+  },
   addImages (state, images) {
     state.images.push(...images)
   },
@@ -28,6 +32,9 @@ const mutations = {
   addSaved (state, images) {
     state.saved.push(...images)
   },
+  addViewed (state, images) {
+    state.viewed.push(...images)
+  },
   terminateImages (state) {
     state.images = []
   },
@@ -36,6 +43,9 @@ const mutations = {
   },
   terminateSaved (state) {
     state.saved = []
+  },
+  terminateViewed (state) {
+    state.viewed = []
   },
   increaseViewCount (state, { imageItem, authenticated }) {
     let index = state.images.data ? state.images.data.findIndex(image => {
@@ -186,6 +196,16 @@ const actions = {
       commit('addSaved', images)
     } else {
       commit('setSaved', images)
+    }
+    return images
+  },
+  async fetchViewedImages ({ commit }, last) {
+    let response = await axios.get('/frontend/images/self/viewed', { params: { last } })
+    let images = response.data
+    if (last) {
+      commit('addViewed', images)
+    } else {
+      commit('setViewed', images)
     }
     return images
   },
