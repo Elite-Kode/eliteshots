@@ -195,6 +195,32 @@ const mutations = {
         state.saved[index].description_lower = description.toLowerCase()
       }
     }
+  },
+  deleteImage (state, { imageItem, authenticated }) {
+    let index = state.images ? state.images.findIndex(image => {
+      return image._id === imageItem._id
+    }) : -1
+    if (index !== -1) {
+      if (authenticated) {
+        state.images.splice(index, 1)
+      }
+    }
+    index = state.liked ? state.liked.findIndex(image => {
+      return image._id === imageItem._id
+    }) : -1
+    if (index !== -1) {
+      if (authenticated) {
+        state.liked.splice(index, 1)
+      }
+    }
+    index = state.saved ? state.saved.findIndex(image => {
+      return image._id === imageItem._id
+    }) : -1
+    if (index !== -1) {
+      if (authenticated) {
+        state.saved.splice(index, 1)
+      }
+    }
   }
 }
 const actions = {
@@ -262,7 +288,7 @@ const actions = {
   },
   async triggerUserImageDeleted ({ commit, rootState }, imageItem) {
     await axios.delete(`/frontend/images/${imageItem._id}`)
-    // commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
+    commit('deleteImage', { imageItem, authenticated: rootState.auth.authenticated })
   }
 }
 

@@ -21,7 +21,7 @@ const path = require('path')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 const session = require('express-session')
-const mongoStore = require('connect-mongo')(session);
+const mongoStore = require('connect-mongo')(session)
 const request = require('request-promise-native')
 const passport = require('passport')
 const FrontierStrategy = require('passport-frontier').Strategy
@@ -43,7 +43,6 @@ require('./server/modules/backblaze')
 const app = express()
 
 app.use(bugsnagClientMiddleware.requestHandler)
-app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'dist')))
@@ -74,11 +73,12 @@ app.use(bugsnagClientMiddleware.errorHandler)
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
+  app.use(logger('dev'))
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     res.send({
       message: err.message,
-      error: err
+      error: JSON.parse(JSON.stringify(err, getCircularReplacer()))
     })
     console.log(err)
   })
@@ -87,6 +87,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 if (app.get('env') === 'production') {
+  app.use(logger('combined'))
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     res.send({
@@ -162,6 +163,19 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
     done(err)
   }
 }
+
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
 
 let onAuthenticationIdentify = (accessToken, refreshToken, profile, done) => {
   onAuthentication(accessToken, refreshToken, profile, done, 'identify')

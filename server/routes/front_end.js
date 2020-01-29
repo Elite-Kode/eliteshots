@@ -112,16 +112,13 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
         let lowQualityFileName = `${req.user._id}/${createdDate.getTime()}-${fileName}_lq.jpeg`
         let thumbnailFileName = `${req.user._id}/${createdDate.getTime()}-${fileName}_thumb.jpeg`
 
-        await Promise.all([
+        let uploadedImages = (await Promise.all([
           backblaze.uploadFile({
             uploadUrl: urlParams[0].uploadUrl,
             uploadAuthToken: urlParams[0].authorizationToken,
             fileName: originalFileName,
             data: req.file.buffer,
-            mime: req.file.mimetype,
-            onUploadProgress: event => {
-              console.log(event)
-            }
+            mime: req.file.mimetype
           }),
           backblaze.uploadFile({
             uploadUrl: urlParams[1].uploadUrl,
@@ -137,7 +134,9 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
             data: thumbnailImage,
             mime: jimp.MIME_JPEG
           })
-        ])
+        ])).map(response => {
+          return response.data
+        })
 
         let moderationStatus = 'PENDING'
 
@@ -147,8 +146,11 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
 
         let imageDocument = new imageModel({
           image_location: originalFileName,
-          thumbnail_location: thumbnailFileName,
           low_res_location: lowQualityFileName,
+          thumbnail_location: thumbnailFileName,
+          image_fileId: uploadedImages[0].fileId,
+          low_res_fileId: uploadedImages[1].fileId,
+          thumbnail_fileId: uploadedImages[2].fileId,
           title: req.body.imageTitle,
           title_lower: req.body.imageTitle.toLowerCase(),
           description: req.body.imageDescription,
@@ -1382,6 +1384,38 @@ router.put('/images/:imageId/edit', async (req, res, next) => {
           description: req.body.description,
           description_lower: req.body.description.toLowerCase()
         })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.delete('/images/:imageId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access !== bannedAccess) {
+        let image = await imageModel.findByIdAndDelete(req.params.imageId).lean()
+
+        await Promise.all([
+          backblaze.deleteFileVersion({
+            fileId: image.image_fileId,
+            fileName: image.image_location
+          }),
+          backblaze.deleteFileVersion({
+            fileId: image.thumbnail_fileId,
+            fileName: image.thumbnail_location
+          }),
+          backblaze.deleteFileVersion({
+            fileId: image.low_res_fileId,
+            fileName: image.low_res_location
+          })
+        ])
         res.status(200).send({})
       } else {
         res.status(403).send({})
