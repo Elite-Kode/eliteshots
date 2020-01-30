@@ -30,11 +30,9 @@
             class="image-thumbnail"
             min-height="200px"
           >
-            <router-link :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" target="_blank">
-              <v-btn icon @click.stop="">
-                <v-icon>launch</v-icon>
-              </v-btn>
-            </router-link>
+            <v-btn icon :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" target="_blank">
+              <v-icon>launch</v-icon>
+            </v-btn>
           </v-img>
           <v-card-title class="px-2" style="width: 100%">
             <v-row dense>
@@ -46,14 +44,16 @@
             <v-row dense>
               <v-col :cols="slotProps.imageItem.moderation_status !== 'REJECTED' ? 6 : 12"
                      v-if="slotProps.imageItem.moderation_status !== 'ACCEPTED'">
-                <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)" :disabled="disableModActions">
+                <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)"
+                       :disabled="disableModActions">
                   Accept
                   <v-icon right>check</v-icon>
                 </v-btn>
               </v-col>
               <v-col :cols="slotProps.imageItem.moderation_status !== 'ACCEPTED' ? 6 : 12"
                      v-if="slotProps.imageItem.moderation_status !== 'REJECTED'">
-                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)" :disabled="disableModActions">
+                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)"
+                       :disabled="disableModActions">
                   Reject
                   <v-icon right>clear</v-icon>
                 </v-btn>

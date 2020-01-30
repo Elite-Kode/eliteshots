@@ -27,11 +27,9 @@
               @click="clickThumbnail(i)"
               class="image-thumbnail"
               min-height="200px">
-              <router-link :to="{ name: 'image-item', params:{imageId: view._id}}" target="_blank">
-                <v-btn icon @click.stop="">
-                  <v-icon>launch</v-icon>
-                </v-btn>
-              </router-link>
+              <v-btn icon :to="{ name: 'image-item', params:{imageId: view._id}}" target="_blank">
+                <v-icon>launch</v-icon>
+              </v-btn>
             </v-img>
           </v-card>
         </template>

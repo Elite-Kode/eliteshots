@@ -52,11 +52,9 @@
               </v-img>
             </v-hover>
             <v-card-actions>
-              <router-link :to="{ name: 'image-item', params:{imageId: imageItem._id}}" target="_blank">
-                <v-btn icon>
-                  <v-icon>launch</v-icon>
-                </v-btn>
-              </router-link>
+              <v-btn icon :to="{ name: 'image-item', params:{imageId: imageItem._id}}" target="_blank">
+                <v-icon>launch</v-icon>
+              </v-btn>
               <v-spacer/>
               <v-btn v-if="editable" icon @click="clickEdit(i)">
                 <v-icon>edit</v-icon>
@@ -85,7 +83,7 @@
       </slot>
     </v-row>
     <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end">
-      <div v-if="end">
+      <div v-if="end" class="my-2">
         No more images
       </div>
       <div v-else>
