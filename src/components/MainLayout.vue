@@ -1,5 +1,5 @@
 <template>
-  <v-app v-scroll="onScroll">>
+  <v-app v-scroll="onScroll">
     <v-theme-provider root>
       <router-view/>
     </v-theme-provider>

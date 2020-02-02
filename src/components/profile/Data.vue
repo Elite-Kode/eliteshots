@@ -22,8 +22,7 @@
           <v-text-field
             :value="authUser._id"
             dense
-            readonly>
-          </v-text-field>
+            readonly/>
         </v-col>
         <v-col cols="3">
           <v-subheader>Frontier ID</v-subheader>
@@ -32,8 +31,7 @@
           <v-text-field
             :value="authUser.frontier_id"
             dense
-            readonly>
-          </v-text-field>
+            readonly/>
         </v-col>
       </v-row>
       <v-row align="center">
@@ -64,8 +62,7 @@
           <v-text-field
             :value="authUser.email"
             dense
-            readonly>
-          </v-text-field>
+            readonly/>
         </v-col>
       </v-row>
     </v-form>

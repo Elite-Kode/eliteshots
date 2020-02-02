@@ -31,6 +31,7 @@ let users = new Schema({
   email: String,
   trusted: Boolean,
   access: { type: String, enum: ['NORMAL', 'MOD', 'BANNED', 'ADMIN'], uppercase: true },
+  joined_at: { type: Date, index: true }
 }, { runSettersOnQuery: true })
 
 mongoose.plugin(mongoosePaginate)

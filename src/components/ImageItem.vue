@@ -16,8 +16,7 @@
 
 <template>
   <div>
-    <ed-toolbar scroll-of-screen scroll-threshold="64">
-    </ed-toolbar>
+    <ed-toolbar scroll-of-screen scroll-threshold="64"/>
     <v-content>
       <v-container fluid class="pa-0">
         <v-card>

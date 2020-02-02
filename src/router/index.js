@@ -20,6 +20,7 @@ import RejectedImages from '@/components/admin/RejectedImages'
 import UsersManagement from '@/components/admin/UsersManagement'
 import ImageItem from '@/components/ImageItem'
 import UserDetail from '@/components/admin/UserDetail'
+import UploadCard from '@/components/UploadCard'
 
 Vue.use(Router)
 
@@ -101,6 +102,10 @@ export default new Router({
           component: ViewsHistory,
           name: 'views-history'
         }]
+      }, {
+        path: '/upload',
+        component: UploadCard,
+        name: 'upload-card'
       }, {
         path: '/about',
         component: About,

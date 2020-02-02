@@ -1,51 +1,105 @@
 <template>
-  <v-row class="flex-column mx-0 fill-height">
-    <v-col class="flex-grow-0 pa-0">
-      <v-toolbar dark dense color="primary">
-        <v-btn icon @click="closeDialog">
-          <v-icon>close</v-icon>
-        </v-btn>
-        <v-toolbar-title>Upload</v-toolbar-title>
-        <v-spacer/>
-        <v-toolbar-items>
-          <v-combobox
-            v-model="currentAlbumTitle"
-            :items="albumTitles"
-            clearable
-            solo-inverted
-            label="Select or Make a new Album"
-            @input.native="currentAlbumTitle=$event.target.value"
-          />
-          <v-btn icon @click="removeUploads">
-            <v-icon>delete</v-icon>
-          </v-btn>
-          <v-btn icon @click="startUpload">
-            <v-icon>save</v-icon>
-          </v-btn>
-        </v-toolbar-items>
-      </v-toolbar>
-    </v-col>
-    <v-col class="flex-grow-1 pa-0">
-      <vue-dropzone ref="uploadDropzone" id="uploadDropzone" :options="dropzoneOptions" @vdropzone-sending="uploadEvent"
-                    :class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
-                    class="fill-height outline d-flex justify-center" useCustomSlot>
-        <div class="message">
-          <h3 class="title">Drag and drop to upload content!</h3>
-          <div class="subtitle">...or click to select a file from your computer</div>
-        </div>
-      </vue-dropzone>
-    </v-col>
-  </v-row>
+  <div class="fill-height">
+    <ed-toolbar>
+      <template v-slot:toolbar-tabs>
+        <v-toolbar light dense color="accent">
+          <v-spacer/>
+          <v-toolbar-items>
+            <v-combobox
+              v-model="currentAlbumTitle"
+              :items="albumTitles"
+              clearable
+              solo-inverted
+              label="Select or Make a new Album"
+              @input.native="currentAlbumTitle=$event.target.value"
+            />
+            <v-btn icon @click="removeUploads">
+              <v-icon>delete</v-icon>
+            </v-btn>
+            <v-btn icon @click="startUpload">
+              <v-icon>save</v-icon>
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+      </template>
+    </ed-toolbar>
+    <v-content class="fill-height">
+      <v-container fluid class="fill-height pa-0">
+        <v-row class="flex-column mx-0 fill-height flex-nowrap">
+          <v-col class="flex-grow-1 pa-0 uploaderColumn">
+            <vue-dropzone ref="uploadDropzone" id="uploadDropzone" :options="dropzoneOptions"
+                          @vdropzone-sending="onImageSending"
+                          @vdropzone-thumbnail="onImageUploaded"
+                          @vdropzone-success="onImageUploadSuccess"
+                          @vdropzone-error="onImageUploadError"
+                          :class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
+                          class="fill-height outline d-flex justify-center" useCustomSlot>
+              <div class="message">
+                <h3 class="title">Drag and drop to upload content!</h3>
+                <div class="subtitle">...or click to select a file from your computer</div>
+              </div>
+            </vue-dropzone>
+          </v-col>
+          <v-col class="flex-grow-0" v-if="uploadedImages.length">
+            <v-card v-for="(uploadImage, i) in uploadedImages" :key="i" class="my-2">
+              <v-row class="mx-0">
+                <v-col cols="6" class="d-flex" align-self="center">
+                  <v-img :src="uploadImage.thumbnail">
+                    <div class="d-flex fill-height justify-center align-center image-overlay">
+                      <v-btn icon @click="removeImage(i)" v-if="uploadImage.file.status === 'queued'">
+                        <v-icon x-large>cancel</v-icon>
+                      </v-btn>
+                      <v-icon x-large v-else-if="uploadImage.file.status === 'success'">check</v-icon>
+                      <v-btn icon @click="retryUpload(i)"
+                             v-else-if="uploadImage.file.status === 'error' || uploadImage.file.status === 'canceled'">
+                        <v-icon x-large>refresh</v-icon>
+                      </v-btn>
+                    </div>
+                  </v-img>
+                </v-col>
+                <v-col cols="6">
+                  <v-form>
+                    <v-row align="center">
+                      <v-col cols="3">
+                        <v-subheader>Title</v-subheader>
+                      </v-col>
+                      <v-col cols="9">
+                        <v-text-field
+                          v-model="uploadImage.title"
+                          dense/>
+                      </v-col>
+                    </v-row>
+                    <v-row align="center">
+                      <v-col cols="3">
+                        <v-subheader>Description</v-subheader>
+                      </v-col>
+                      <v-col cols="9">
+                        <v-textarea
+                          v-model="uploadImage.description"
+                          dense/>
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+  </div>
 </template>
 
 <script>
 import vue2Dropzone from 'vue2-dropzone'
+import Toolbar from '@/components/Toolbar'
 import { mapState } from 'vuex'
 
 export default {
   name: 'UploadCard',
   components: {
-    'vue-dropzone': vue2Dropzone
+    'vue-dropzone': vue2Dropzone,
+    'ed-toolbar': Toolbar
   },
   props: {
     'value': Boolean
@@ -59,9 +113,10 @@ export default {
         acceptedFiles: 'image/jpeg,image/png,image.bmp',
         paramName: 'screenshot',
         autoProcessQueue: false,
-        previewTemplate: this.template()
+        previewsContainer: false
       },
-      currentAlbumTitle: ''
+      currentAlbumTitle: '',
+      uploadedImages: []
     }
   },
   computed: {
@@ -88,64 +143,108 @@ export default {
     this.$store.dispatch('fetchAlbums')
   },
   methods: {
-    closeDialog () {
-      this.value = false
-      this.$emit('input', this.value)
-    },
     removeUploads () {
       this.$refs.uploadDropzone.removeAllFiles()
+      this.uploadedImages = []
     },
     startUpload () {
       this.$refs.uploadDropzone.processQueue()
     },
-    uploadEvent (file, xhr, formData) {
-      let title = file.previewElement.querySelector('input#image-title').value
-      let description = file.previewElement.querySelector('input#image-description').value
-      formData.append('imageTitle', title)
-      formData.append('imageDescription', description)
+    onImageUploaded (file, thumbnail) {
+      this.uploadedImages.push({ file, thumbnail })
+    },
+    removeImage (index) {
+      let removedImages = this.uploadedImages.splice(index, 1)
+      for (let removedImage of removedImages) {
+        this.$refs.uploadDropzone.removeFile(removedImage.file)
+      }
+    },
+    async retryUpload (index) {
+      let image = this.uploadedImages[index]
+      try {
+        let uploadBody = {
+          title: image.title,
+          description: image.description,
+          file: image.file
+        }
+        if (this.currentAlbumTitle !== '' && this.currentAlbumTitle.toLowerCase() !== this.defaultAlbum.toLowerCase()) {
+          uploadBody.album = this.currentAlbumTitle
+        }
+        try {
+          await this.$store.dispatch('retryUpload', uploadBody)
+          this.onImageUploadSuccess(image.file)
+        } catch (e) {
+          this.onImageUploadError(image.file, e.message, e)
+        }
+      } catch (e) {
+        this.onImageUploadError(image.file, e.message)
+      }
+    },
+    onImageSending (file, xhr, formData) {
+      let index = this.uploadedImages.findIndex(image => {
+        return image.file === file
+      })
+      let image = this.uploadedImages[index]
+      this.uploadedImages.splice(index, 1, {
+        ...image,
+        status: 'SENDING'
+      })
+      formData.append('imageTitle', image.title)
+      formData.append('imageDescription', image.description)
       if (this.currentAlbumTitle !== '' && this.currentAlbumTitle.toLowerCase() !== this.defaultAlbum.toLowerCase()) {
         formData.append('albumTitle', this.currentAlbumTitle)
       }
     },
-    template: function () {
-      return `<div class="dz-preview dz-file-preview">
-                <div class="dz-image">
-                    <img data-dz-thumbnail />
-                </div>
-                <div class="dz-details">
-                    <div class="dz-size"><span data-dz-size></span></div>
-                    <div class="dz-filename"><span data-dz-name></span></div>
-                    <input class="preview-input" type="text" id="image-title" placeholder="Image Title">
-                    <input class="preview-input" type="text" id="image-description" placeholder="Image Description">
-                </div>
-                <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-                <div class="dz-error-message"><span data-dz-errormessage></span></div>
-                <div class="dz-success-mark"><i class="material-icons">check</i></div>
-                <div class="dz-error-mark"><i class="material-icons">close</i></div>
-                <a class="dz-remove" href="javascript:undefined;" data-dz-remove><i class="material-icons">close</i></a>
-            </div>`
+    onImageUploadSuccess (file) {
+      let index = this.uploadedImages.findIndex(image => {
+        return image.file === file
+      })
+      let image = this.uploadedImages[index]
+      this.uploadedImages.splice(index, 1, {
+        ...image,
+        status: 'SUCCESS'
+      })
+    },
+    onImageUploadError (file, message, xhr) {
+      let index = this.uploadedImages.findIndex(image => {
+        return image.file === file
+      })
+      let image = this.uploadedImages[index]
+      if (xhr) {
+        this.uploadedImages.splice(index, 1, {
+          ...image,
+          status: 'FAILED'
+        })
+      } else {
+        this.uploadedImages.splice(index, 1, {
+          ...image,
+          status: 'ERROR'
+        })
+      }
     }
   }
 }
 </script>
 
 <style scoped lang="sass">
-  $color-pack: false
-  @import '~vuetify/src/styles/main.sass'
+  @import '~vuetify/src/styles/styles.sass'
 
   .dark
     background: map-get($material-dark, 'bg-color')
-    color:  map-get($material-dark, 'fg-color')
+    color: map-get($material-dark, 'fg-color')
     outline-color: map-get($material-dark, 'fg-color')
 
   .light
     background: map-get($material-light, 'bg-color')
-    color:  map-get($material-light, 'fg-color')
+    color: map-get($material-light, 'fg-color')
     outline-color: map-get($material-light, 'fg-color')
 
   .vue-dropzone
     border: unset
     flex-wrap: wrap
+
+  .uploaderColumn
+    min-height: 300px
 
   .outline
     outline: 5px dashed
@@ -153,6 +252,14 @@ export default {
 
   .message
     align-self: center
+
+  .image-overlay
+    transition: 500ms
+
+  .image-overlay:hover
+    background-color: var(--v-primary-base)
+    opacity: 0.85
+    transition: 500ms
 </style>
 <style>
   #uploadDropzone.dropzone .dz-message {

@@ -32,16 +32,9 @@
       <login-card/>
     </v-dialog>
 
-    <v-dialog v-model="uploadDialog" v-if="authenticated && authUser.access !== bannedAccess" fullscreen
-              hide-overlay
-              transition="dialog-bottom-transition">
-      <template v-slot:activator="{on}">
-        <v-btn icon v-on="on">
-          <v-icon>fas fa-upload</v-icon>
-        </v-btn>
-      </template>
-      <upload-card v-model="uploadDialog"/>
-    </v-dialog>
+    <v-btn icon to="/upload">
+      <v-icon>fas fa-upload</v-icon>
+    </v-btn>
     <v-btn icon @click="switchTheme()">
       <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
       <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
@@ -50,7 +43,7 @@
            icon :to="{name: 'mod-queue'}" exact>
       <v-icon>fas fa-user-secret</v-icon>
     </v-btn>
-    <v-btn icon to="/about" exact>
+    <v-btn icon to="/about" exact :class="{'mr-4':!authenticated}">
       <v-icon>info</v-icon>
     </v-btn>
     <v-btn v-if="authenticated" icon to="/profile" class="mr-4">
@@ -65,7 +58,6 @@
 <script>
 import { mapState } from 'vuex'
 import LoginCard from '@/components/LoginCard'
-import UploadCard from '@/components/UploadCard'
 
 export default {
   name: 'Toolbar',
@@ -75,17 +67,14 @@ export default {
       default: false
     },
     scrollThreshold: {
-      type: Number,
       default: 300
     }
   },
   components: {
-    'login-card': LoginCard,
-    'upload-card': UploadCard
+    'login-card': LoginCard
   },
   data () {
     return {
-      uploadDialog: false,
       bannedAccess: 'BANNED',
       normalAccess: 'NORMAL',
       modAccess: 'MOD',
@@ -129,5 +118,11 @@ export default {
 <style scoped>
   .custom-dark, .custom-dark .theme--dark.v-btn {
     color: var(--v-primary-base);
+  }
+</style>
+
+<style>
+  .v-toolbar__content, .v-toolbar__extension {
+    padding: 0 !important;
   }
 </style>

@@ -224,6 +224,21 @@ const mutations = {
   }
 }
 const actions = {
+  async retryUpload (context, { title, description, album, file }) {
+    let formData = new FormData()
+    formData.append('screenshot', file)
+    formData.append('imageTitle', title)
+    formData.append('imageDescription', description)
+
+    if (album) {
+      formData.append('albumTitle', album)
+    }
+    return axios.post('/frontend/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  },
   async fetchAlbums ({ commit }) {
     let response = await axios.get('/frontend/albums/self')
     let albums = response.data

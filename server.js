@@ -145,6 +145,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
           email: profile.email,
           trusted: false,
           access: 1,
+          joined_at: new Date()
         }
         await model.findOneAndUpdate(
           { frontier_id: profile.customer_id },
@@ -165,17 +166,17 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
 }
 
 const getCircularReplacer = () => {
-  const seen = new WeakSet();
+  const seen = new WeakSet()
   return (key, value) => {
-    if (typeof value === "object" && value !== null) {
+    if (typeof value === 'object' && value !== null) {
       if (seen.has(value)) {
-        return;
+        return
       }
-      seen.add(value);
+      seen.add(value)
     }
-    return value;
-  };
-};
+    return value
+  }
+}
 
 let onAuthenticationIdentify = (accessToken, refreshToken, profile, done) => {
   onAuthentication(accessToken, refreshToken, profile, done, 'identify')

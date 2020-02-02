@@ -26,8 +26,8 @@ let albums = new Schema({
   title_lower: { type: String, lowercase: true, index: true },
   description: String,
   description_lower: { type: String, lowercase: true, index: true },
-  created_at: Date,
-  last_modified_at: Date,
+  created_at: { type: Date, index: true },
+  last_modified_at: { type: Date, index: true },
   user_id: { type: ObjectId, index: true }
 }, { runSettersOnQuery: true })
 

@@ -24,7 +24,7 @@ let ObjectId = mongoose.Schema.Types.ObjectId
 let views = new Schema({
   image_id: { type: ObjectId, index: true },
   user_id: { type: ObjectId, index: true },
-  viewed_at: Date
+  viewed_at: { type: Date, index: true }
 }, { runSettersOnQuery: true })
 
 module.exports = mongoose.model('views', views)

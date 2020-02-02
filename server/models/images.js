@@ -39,7 +39,7 @@ let images = new Schema({
   curated_by: { type: ObjectId, index: true },
   curated_at: { type: Date, index: true },
   uploaded_at: { type: Date, index: true },
-  last_modified_at: Date,
+  last_modified_at: { type: Date, index: true },
   user_id: { type: ObjectId, index: true }
 }, { runSettersOnQuery: true })
 

@@ -31,7 +31,7 @@ let modActions = new Schema({
   target_image: { type: ObjectId, index: true },
   comments: String,
   comments_lower: { type: String, lowercase: true, index: true },
-  action_at: Date,
+  action_at: { type: Date, index: true },
   mod_user_id: { type: ObjectId, index: true }
 }, { runSettersOnQuery: true })
 
