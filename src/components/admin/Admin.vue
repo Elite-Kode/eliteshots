@@ -55,8 +55,8 @@ export default {
         name: 'Rejected',
         link: '/admin/rejected'
       }, {
-        name: 'Users',
-        link: '/admin/users'
+        name: 'Mod Actions',
+        link: '/admin/mod-actions'
       }]
     }
   },

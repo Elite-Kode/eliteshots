@@ -22,6 +22,7 @@ import ImageItem from '@/components/ImageItem'
 import UserDetail from '@/components/admin/UserDetail'
 import UploadCard from '@/components/UploadCard'
 import AlbumImages from '@/components/profile/AlbumImages'
+import ModActionHistory from '@/components/home/ModActionHistory'
 
 Vue.use(Router)
 
@@ -73,6 +74,10 @@ export default new Router({
           component: UserDetail,
           name: 'user-detail',
           props: true
+        }, {
+          path: 'mod-actions',
+          component: ModActionHistory,
+          name: 'mod-actions'
         }]
       }, {
         path: '/profile',

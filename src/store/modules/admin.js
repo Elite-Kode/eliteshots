@@ -21,7 +21,8 @@ const state = {
   acceptedImages: [],
   rejectedImages: [],
   uploadedImages: [],
-  users: []
+  users: [],
+  modActions: []
 }
 const mutations = {
   setPendingImages (state, images) {
@@ -36,6 +37,9 @@ const mutations = {
   setUploadedImages (state, images) {
     state.uploadedImages = images
   },
+  setModActions (state, modActions) {
+    state.modActions = modActions
+  },
   addPendingImages (state, images) {
     state.pendingImages.push(...images)
   },
@@ -48,6 +52,9 @@ const mutations = {
   addUploadedImages (state, images) {
     state.uploadedImages.push(...images)
   },
+  addModActions (state, modActions) {
+    state.modActions.push(...modActions)
+  },
   terminatePendingImages (state) {
     state.pendingImages = []
   },
@@ -59,6 +66,9 @@ const mutations = {
   },
   terminateUploadedImages (state) {
     state.uploadedImages = []
+  },
+  terminateModActions (state) {
+    state.modActions = []
   },
   acceptImage (state, imageId) {
     let index = state.pendingImages.findIndex(image => image._id === imageId)
@@ -171,6 +181,16 @@ const actions = {
   async fetchUser ({ commit }, userId) {
     let response = await axios.get(`/frontend/admin/users/${userId}`)
     return response.data
+  },
+  async fetchModActions ({ commit }, last) {
+    let response = await axios.get('/frontend/admin/modActions', { params: { last } })
+    let modActions = response.data
+    if (last) {
+      commit('addModActions', modActions)
+    } else {
+      commit('setModActions', modActions)
+    }
+    return modActions
   }
 }
 

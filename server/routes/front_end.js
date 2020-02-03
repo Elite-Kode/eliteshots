@@ -2016,4 +2016,60 @@ router.get('/admin/users/:userId', async (req, res, next) => {
   }
 })
 
+router.get('/admin/modActions', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let lastElement = req.query.last
+        let aggregate = modActionsModel.aggregate()
+
+        let query = {}
+
+        if (lastElement) {
+          query.action_at = { $lt: new Date(lastElement) }
+        }
+
+        aggregate.match(query).lookup({
+          from: 'images',
+          localField: 'target_image',
+          foreignField: '_id',
+          as: 'images'
+        }).lookup({
+          from: 'users',
+          localField: 'target_user',
+          foreignField: '_id',
+          as: 'users'
+        }).unwind({
+          path: '$images',
+          preserveNullAndEmptyArrays: true
+        }).unwind({
+          path: '$users',
+          preserveNullAndEmptyArrays: true
+        })
+
+        aggregate.sort({
+          action_at: -1
+        }).limit(imagesPerFetch)
+
+        let modActionData = await aggregate.exec()
+
+        modActionData.map(modAction => {
+          if (modAction.images) {
+            modAction.images.image_location = `${imageUrlRoute}${modAction.images.image_location}`
+            modAction.images.thumbnail_location = `${imageUrlRoute}${modAction.images.thumbnail_location}`
+            modAction.images.low_res_location = `${imageUrlRoute}${modAction.images.low_res_location}`
+          }
+        })
+        res.send(modActionData)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 module.exports = router
