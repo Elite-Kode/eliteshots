@@ -221,6 +221,14 @@ const mutations = {
         state.saved.splice(index, 1)
       }
     }
+  },
+  deleteAlbum (state, albumId) {
+    let index = state.albums ? state.albums.findIndex(album => {
+      return album._id === albumId
+    }) : -1
+    if (index !== -1) {
+      state.albums.splice(index, 1)
+    }
   }
 }
 const actions = {
@@ -245,6 +253,10 @@ const actions = {
     commit('setAlbums', albums)
     return albums
   },
+  async deleteAlbum ({ commit }, albumId) {
+    await axios.delete(`/frontend/albums/${albumId}`)
+    commit('deleteAlbum', albumId)
+  },
   async fetchImages ({ commit }, last) {
     let response = await axios.get('/frontend/images/self', { params: { last } })
     let images = response.data
@@ -253,6 +265,11 @@ const actions = {
     } else {
       commit('setImages', images)
     }
+    return images
+  },
+  async fetchAlbumImages ({ commit }, { last, albumId }) {
+    let response = await axios.get(`/frontend/images/album/${albumId}`, { params: { last } })
+    let images = response.data
     return images
   },
   async fetchLikedImages ({ commit }, last) {

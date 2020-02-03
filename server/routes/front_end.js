@@ -334,6 +334,119 @@ router.get('/images/self', async (req, res, next) => {
   }
 })
 
+router.get('/images/album/:albumId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access !== bannedAccess) {
+        let lastElement = req.query.last
+        let aggregate = imageModel.aggregate()
+
+        let albumId
+
+        if (req.params.albumId === processVars.defaultAlbumTitle.toLowerCase()) {
+          albumId = null
+        } else {
+          albumId = ObjectId(req.params.albumId)
+        }
+
+        let query = {
+          album_id: albumId,
+          user_id: req.user._id
+        }
+
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
+
+        aggregate.match(query).lookup({
+          from: 'views',
+          localField: '_id',
+          foreignField: 'image_id',
+          as: 'views'
+        }).lookup({
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'image_id',
+          as: 'likes'
+        }).lookup({
+          from: 'saves',
+          localField: '_id',
+          foreignField: 'image_id',
+          as: 'saves'
+        }).lookup({
+          from: 'albums',
+          localField: '_id',
+          foreignField: 'album_id',
+          as: 'album'
+        }).addFields({
+          no_of_views: {
+            $size: '$views'
+          },
+          no_of_likes: {
+            $size: '$likes'
+          },
+          no_of_saves: {
+            $size: '$saves'
+          }
+        })
+
+        aggregate.addFields({
+          self_like: {
+            $size: {
+              $filter: {
+                input: '$likes',
+                as: 'el',
+                cond: {
+                  $eq: ['$$el.user_id', req.user._id]
+                }
+              }
+            }
+          },
+          self_save: {
+            $size: {
+              $filter: {
+                input: '$saves',
+                as: 'el',
+                cond: {
+                  $eq: ['$$el.user_id', req.user._id]
+                }
+              }
+            }
+          }
+        }).project({
+          views: 0,
+          likes: 0,
+          saves: 0
+        })
+
+        aggregate.sort({
+          uploaded_at: -1
+        }).limit(imagesPerFetch)
+
+        let imageData = await aggregate.exec()
+
+        imageData.map(image => {
+          image.image_location = `${imageUrlRoute}${image.image_location}`
+          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+          image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+          if (req.user) {
+            image.self_like = !!image.self_like
+            image.self_save = !!image.self_save
+          }
+        })
+        res.send(imageData)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.get('/images/self/liked', async (req, res, next) => {
   try {
     if (req.user) {
@@ -1437,6 +1550,35 @@ router.delete('/images/:imageId', async (req, res, next) => {
   }
 })
 
+router.delete('/albums/:albumId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access !== bannedAccess) {
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await albumModel.findOneAndDelete({
+            _id: req.params.albumId,
+            user_id: req.user._id
+          }, { session: mongoSession })
+          await imageModel.updateMany({
+            album_id: req.params.albumId,
+            user_id: req.user._id
+          }, {
+            $unset: { album_id: 1 }
+          })
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.put('/admin/images/:imageId/accept', async (req, res, next) => {
   try {
     if (req.user) {
@@ -1532,12 +1674,12 @@ router.put('/admin/images/:imageId/curate', async (req, res, next) => {
           res.status(403).send({ message: 'You cannot curate your own images' })
           return
         }
-      let actionDate = new Date()
+        let actionDate = new Date()
         let mongoSession = await mongoose.startSession()
         await mongoSession.withTransaction(async () => {
           await imageModel.findOneAndUpdate({
             _id: req.params.imageId,
-            curated:  { $ne: true }
+            curated: { $ne: true }
           }, {
             curated: true,
             curated_by: req.user._id,

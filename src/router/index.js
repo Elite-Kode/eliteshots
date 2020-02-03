@@ -21,6 +21,7 @@ import UsersManagement from '@/components/admin/UsersManagement'
 import ImageItem from '@/components/ImageItem'
 import UserDetail from '@/components/admin/UserDetail'
 import UploadCard from '@/components/UploadCard'
+import AlbumImages from '@/components/profile/AlbumImages'
 
 Vue.use(Router)
 
@@ -89,6 +90,11 @@ export default new Router({
           path: 'albums',
           component: Albums,
           name: 'albums'
+        }, {
+          path: 'albums/:albumId',
+          component: AlbumImages,
+          name: 'album-images',
+          props: true
         }, {
           path: 'likes',
           component: Likes,

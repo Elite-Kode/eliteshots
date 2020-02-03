@@ -18,6 +18,8 @@
   <div>
     <h1>My Albums</h1>
     <album-gallery :albumItems="albums"
+                   @albumOpened="albumOpened"
+                   @albumDeleted="albumDeleted"
                    :authenticated="authenticated" deletable/>
   </div>
 </template>
@@ -45,6 +47,18 @@ export default {
     this.$store.dispatch('fetchAlbums', this.currentPage)
   },
   methods: {
+    albumOpened (albumItem) {
+      let params = {}
+      if (albumItem._id) {
+        params = { albumId: albumItem._id }
+      } else {
+        params = { albumId: 'default' }
+      }
+      this.$router.push({ name: 'album-images', params })
+    },
+    albumDeleted (albumItem) {
+      this.$store.dispatch('deleteAlbum', albumItem._id)
+    }
   }
 }
 </script>
