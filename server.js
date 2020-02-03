@@ -102,7 +102,7 @@ passport.serializeUser(function (user, done) {
 })
 passport.deserializeUser(async (id, done) => {
   try {
-    let model = await require('./server/models/users')
+    let model = require('./server/models/users')
     let user = await model.findOne({ frontier_id: id })
     done(null, user)
   } catch (err) {
@@ -122,7 +122,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
       let responseObject = JSON.parse(response.body)
       let commanderName = responseObject.commander.name
 
-      let model = await require('./server/models/users')
+      let model = require('./server/models/users')
       let user = await model.findOne({ frontier_id: profile.customer_id })
       if (user) {
         let updatedUser = {
@@ -144,7 +144,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
           commander: commanderName,
           email: profile.email,
           trusted: false,
-          access: 1,
+          access: 'NORMAL',
           joined_at: new Date()
         }
         await model.findOneAndUpdate(
