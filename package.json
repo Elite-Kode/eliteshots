@@ -11,7 +11,7 @@
     "dev": "vue-cli-service serve",
     "preparedev": "run-p builddev rundev",
     "rundev": "cross-env NODE_ENV=development nodemon --inspect ./bin/start.js",
-    "runprod": "cross-env PORT=4002 pm2 start process.json --env production",
+    "runprod": "cross-env PORT=4003 pm2 start process.json --env production",
     "start": "run-s versionfile buildprod runprod",
     "startdev": "run-s versionfile preparedev",
     "startrun": "npm run dev",
