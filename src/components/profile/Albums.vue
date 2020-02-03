@@ -18,8 +18,6 @@
   <div>
     <h1>My Albums</h1>
     <album-gallery :albumItems="albums"
-                   @albumOpened="onClickThumbnail"
-                   @albumDeleted="onClickDelete"
                    :authenticated="authenticated" deletable/>
   </div>
 </template>
@@ -47,12 +45,6 @@ export default {
     this.$store.dispatch('fetchAlbums', this.currentPage)
   },
   methods: {
-    onClickThumbnail (image) {
-      this.$store.dispatch('triggerUserImageViewed', image)
-    },
-    onClickDelete (image) {
-      this.$store.dispatch('triggerUserImageDeleted', image)
-    }
   }
 }
 </script>

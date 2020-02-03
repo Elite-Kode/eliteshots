@@ -1051,6 +1051,12 @@ router.get('/images/:imageId', async (req, res, next) => {
       },
       cmdr_name: {
         '$arrayElemAt': ['$user.commander', 0]
+      },
+      user_access: {
+        '$arrayElemAt': ['$user.access', 0]
+      },
+      user_trusted: {
+        '$arrayElemAt': ['$user.trusted', 0]
       }
     })
 

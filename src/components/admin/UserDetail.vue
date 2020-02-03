@@ -99,7 +99,7 @@
                  :disabled="!canBan">
             Ban
           </v-btn>
-          <v-btn block color="success" outlined @click="unbanUser" v-else :disabled="!canUnban"> Unban</v-btn>
+          <v-btn block color="success" outlined @click="unbanUser" v-else :disabled="!canUnban">Unban</v-btn>
         </v-col>
         <v-col cols="6" sm="3">
           <v-btn block color="error" @click="demoteUser" :disabled="!canDemote">Demote</v-btn>

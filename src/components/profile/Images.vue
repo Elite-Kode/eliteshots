@@ -17,32 +17,12 @@
 <template>
   <div>
     <h1>Uploaded Images</h1>
-    <v-dialog v-model="editDialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Update Image {{editId}}</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row dense>
-              <v-col>
-                <v-text-field label="Title (optional)" v-model="editTitle"/>
-              </v-col>
-            </v-row>
-            <v-row dense>
-              <v-col>
-                <v-textarea label="Description (optional)" v-model="editDescription"/>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn color="error" text @click="clickEditCancel">Cancel</v-btn>
-          <v-btn color="success" text @click="clickEditConfirm">Confirm</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <image-edit :editId="editId"
+                :edit-title="editTitle"
+                :edit-description="editDescription"
+                :editDialog="editDialog"
+                @cancel="onEditCancel"
+                @confim="onEditConfirm"/>
     <image-gallery :imageItems="myImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
@@ -57,13 +37,15 @@
 </template>
 
 <script>
-import ImageGallery from '@/components/ImageGallery'
 import { mapState } from 'vuex'
+import ImageGallery from '@/components/ImageGallery'
+import ImageEdit from '@/components/profile/ImageEdit'
 
 export default {
   name: 'Image',
   components: {
-    'image-gallery': ImageGallery
+    'image-gallery': ImageGallery,
+    'image-edit': ImageEdit
   },
   data () {
     return {
@@ -104,22 +86,16 @@ export default {
     onClickSave (image) {
       this.$store.dispatch('triggerUserImageSaved', image)
     },
-    clickEditCancel () {
-      this.editId = ''
-      this.editTitle = ''
-      this.editDescription = ''
+    onEditCancel () {
       this.editDialog = false
     },
-    clickEditConfirm () {
+    onEditConfirm ({ title, description }) {
+      this.editDialog = false
       this.$store.dispatch('triggerUserImageEdited', {
         imageId: this.editId,
-        title: this.editTitle,
-        description: this.editDescription
+        title,
+        description
       })
-      this.editId = ''
-      this.editTitle = ''
-      this.editDescription = ''
-      this.editDialog = false
     },
     async onFetchImages () {
       this.loadingNewImages = true
