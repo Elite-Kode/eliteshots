@@ -53,11 +53,18 @@
           </v-card-title>
           <v-card-actions>
             <v-row dense>
-              <v-col cols="12">
+              <v-col cols="6">
                 <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)"
                        :disabled="!canReject(slotProps.imageItem.user_id)">
                   Reject
                   <v-icon right>clear</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="6">
+                <v-btn block color="primary" @click.stop="curateImage(slotProps.imageItem)"
+                       :disabled="!canCurate(slotProps.imageItem.user_id, slotProps.imageItem.curated)">
+                  Curate
+                  <v-icon right>mdi-image-frame</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
@@ -115,8 +122,17 @@ export default {
     canReject (userId) {
       return this.authUser._id !== userId
     },
+    canCurate (userId, curated) {
+      return this.authUser._id !== userId && !curated
+    },
     rejectImage (image) {
       this.modActionType = 'REJECT'
+      this.modActionTargetType = 'IMAGE'
+      this.modActionTarget = image._id
+      this.modActionDialog = true
+    },
+    curateImage (image) {
+      this.modActionType = 'CURATE'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = image._id
       this.modActionDialog = true
@@ -133,6 +149,8 @@ export default {
       if (this.modActionTargetType === 'IMAGE') {
         if (this.modActionType === 'REJECT') {
           this.$store.dispatch('rejectImage', payload)
+        } else if (this.modActionType === 'CURATE') {
+          this.$store.dispatch('curateImage', payload)
         }
       }
     }

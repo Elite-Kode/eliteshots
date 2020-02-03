@@ -141,6 +141,9 @@ const actions = {
     await axios.put(`/frontend/admin/images/${target}/reject`, { comment })
     commit('rejectImage', target)
   },
+  async curateImage ({ commit }, { target, comment }) {
+    await axios.put(`/frontend/admin/images/${target}/curate`, { comment })
+  },
   async banUser ({ commit }, { target, comment }) {
     await axios.put(`/frontend/admin/ban/${target}`, { comment })
   },

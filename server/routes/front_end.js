@@ -59,6 +59,7 @@ let modActionTrust = 'TRUST'
 let modActionUntrust = 'UNTRUST'
 let modActionAccept = 'ACCEPT'
 let modActionReject = 'REJECT'
+let modActionCurate = 'CURATE'
 
 router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
   try {
@@ -1435,7 +1436,7 @@ router.put('/admin/images/:imageId/accept', async (req, res, next) => {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
         let targetImage = await imageModel.findOne({
-          _id: req.params.userId
+          _id: req.params.imageId
         }).lean()
         if (req.user._id === targetImage.user_id) {
           res.status(403).send({ message: 'You cannot accept your own images' })
@@ -1477,7 +1478,7 @@ router.put('/admin/images/:imageId/reject', async (req, res, next) => {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
         let targetImage = await imageModel.findOne({
-          _id: req.params.userId
+          _id: req.params.imageId
         }).lean()
         if (req.user._id === targetImage.user_id) {
           res.status(403).send({ message: 'You cannot reject your own images' })
@@ -1498,6 +1499,51 @@ router.put('/admin/images/:imageId/reject', async (req, res, next) => {
             comments: req.body.comment,
             comments_lower: req.body.comment.toLowerCase(),
             action_at: new Date(),
+            mod_user_id: req.user._id
+          })
+          return modActionDocument.save()
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/admin/images/:imageId/curate', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let targetImage = await imageModel.findOne({
+          _id: req.params.imageId
+        }).lean()
+        if (req.user._id === targetImage.user_id) {
+          res.status(403).send({ message: 'You cannot curate your own images' })
+          return
+        }
+      let actionDate = new Date()
+        let mongoSession = await mongoose.startSession()
+        await mongoSession.withTransaction(async () => {
+          await imageModel.findOneAndUpdate({
+            _id: req.params.imageId,
+            curated:  { $ne: true }
+          }, {
+            curated: true,
+            curated_by: req.user._id,
+            curated_at: actionDate
+          }, { session: mongoSession })
+          let modActionDocument = new modActionsModel({
+            action: modActionCurate,
+            target_user: null,
+            target_image: req.params.imageId,
+            comments: req.body.comment,
+            comments_lower: req.body.comment.toLowerCase(),
+            action_at: actionDate,
             mod_user_id: req.user._id
           })
           return modActionDocument.save()
