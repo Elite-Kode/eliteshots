@@ -248,7 +248,7 @@ const actions = {
     })
   },
   async fetchAlbums ({ commit }) {
-    let response = await axios.get('/frontend/albums/self')
+    let response = await axios.get('/frontend/self/albums')
     let albums = response.data
     commit('setAlbums', albums)
     return albums
@@ -258,7 +258,7 @@ const actions = {
     commit('deleteAlbum', albumId)
   },
   async fetchImages ({ commit }, last) {
-    let response = await axios.get('/frontend/images/self', { params: { last } })
+    let response = await axios.get('/frontend/self/images', { params: { last } })
     let images = response.data
     if (last) {
       commit('addImages', images)
@@ -273,7 +273,7 @@ const actions = {
     return images
   },
   async fetchLikedImages ({ commit }, last) {
-    let response = await axios.get('/frontend/images/self/liked', { params: { last } })
+    let response = await axios.get('/frontend/self/images/liked', { params: { last } })
     let images = response.data
     if (last) {
       commit('addLiked', images)
@@ -283,7 +283,7 @@ const actions = {
     return images
   },
   async fetchSavedImages ({ commit }, last) {
-    let response = await axios.get('/frontend/images/self/saved', { params: { last } })
+    let response = await axios.get('/frontend/self/images/saved', { params: { last } })
     let images = response.data
     if (last) {
       commit('addSaved', images)
@@ -293,7 +293,7 @@ const actions = {
     return images
   },
   async fetchViewedImages ({ commit }, last) {
-    let response = await axios.get('/frontend/images/self/viewed', { params: { last } })
+    let response = await axios.get('/frontend/self/images/viewed', { params: { last } })
     let images = response.data
     if (last) {
       commit('addViewed', images)
