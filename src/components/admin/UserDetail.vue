@@ -80,20 +80,6 @@
         </v-col>
       </v-row>
       <v-row>
-        <template v-if="authenticated && authUser.access === adminAccess">
-          <v-col cols="3">
-            <v-subheader>Email</v-subheader>
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              :value="userData.email"
-              dense
-              readonly>
-            </v-text-field>
-          </v-col>
-        </template>
-      </v-row>
-      <v-row>
         <v-col cols="12" sm="3">
           <v-btn block color="error" outlined @click="banUser" v-if="userData.access!==bannedAccess"
                  :disabled="!canBan">

@@ -78,9 +78,6 @@ export default {
         normalHeaders.splice(2, 0, {
           text: 'Frontier Id',
           value: 'frontier_id'
-        }, {
-          text: 'Email',
-          value: 'email'
         })
       }
       return normalHeaders

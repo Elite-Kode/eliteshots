@@ -54,17 +54,6 @@
             readonly/>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="3">
-          <v-subheader>Email</v-subheader>
-        </v-col>
-        <v-col cols="3">
-          <v-text-field
-            :value="authUser.email"
-            dense
-            readonly/>
-        </v-col>
-      </v-row>
     </v-form>
   </div>
 </template>

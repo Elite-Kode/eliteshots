@@ -28,7 +28,6 @@ let users = new Schema({
   discord_discriminator: String,
   frontier_id: String,
   commander: String,
-  email: String,
   trusted: Boolean,
   access: { type: String, enum: ['NORMAL', 'MOD', 'BANNED', 'ADMIN'], uppercase: true },
   joined_at: { type: Date, index: true }

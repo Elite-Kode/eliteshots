@@ -131,8 +131,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
       if (user) {
         let updatedUser = {
           frontier_id: profile.customer_id,
-          commander: commanderName,
-          email: profile.email
+          commander: commanderName
         }
         await model.findOneAndUpdate(
           { frontier_id: profile.customer_id },
@@ -146,7 +145,6 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
         let user = {
           frontier_id: profile.customer_id,
           commander: commanderName,
-          email: profile.email,
           trusted: false,
           access: 'NORMAL',
           joined_at: new Date()

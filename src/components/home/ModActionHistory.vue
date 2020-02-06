@@ -69,20 +69,6 @@
                   </v-col>
                 </template>
               </v-row>
-              <v-row>
-                <template v-if="authenticated && authUser.access === adminAccess">
-                  <v-col cols="3">
-                    <v-subheader>Email</v-subheader>
-                  </v-col>
-                  <v-col cols="9">
-                    <v-text-field
-                      :value="modAction.users.email"
-                      dense
-                      readonly>
-                    </v-text-field>
-                  </v-col>
-                </template>
-              </v-row>
             </v-form>
           </v-card>
         </template>
