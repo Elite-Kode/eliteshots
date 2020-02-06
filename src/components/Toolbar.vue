@@ -9,7 +9,7 @@
     <v-btn icon large to="/" exact class="ml-4">
       <v-avatar>
         <v-img
-          :src="require('@/assets/EliteShotsv1.png')"
+          :src="require('@/assets/EliteShotsV1.svg')"
           alt="Elite Shots"
         />
       </v-avatar>
