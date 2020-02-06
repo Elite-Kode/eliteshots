@@ -81,7 +81,7 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
         let lowQualityImage = imageResize[0]
         let thumbnailImage = imageResize[1]
 
-        backblaze.authorize()
+        await backblaze.authorize()
 
         let urlParams = (await Promise.all([
           backblaze.getUploadUrl(secrets.b2_bucket_id),
