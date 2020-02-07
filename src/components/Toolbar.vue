@@ -25,7 +25,7 @@
         <v-btn v-if="authenticated" href="/auth/logout" icon>
           <v-icon>fas fa-sign-out-alt</v-icon>
         </v-btn>
-        <v-btn icon @click="onClickLogin">
+        <v-btn v-else icon @click="onClickLogin">
           <v-icon>fas fa-sign-in-alt</v-icon>
         </v-btn>
 
