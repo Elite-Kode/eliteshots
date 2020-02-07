@@ -23,6 +23,7 @@
           align-with-title
           slider-color="secondary"
           light
+          show-arrows
         >
           <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link">
             {{tabItem.name}}

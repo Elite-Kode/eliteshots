@@ -20,35 +20,105 @@
     </v-toolbar-title>
     <v-spacer/>
 
-    <v-btn v-if="authenticated" href="/auth/logout" icon>
-      <v-icon>fas fa-sign-out-alt</v-icon>
-    </v-btn>
-    <v-dialog v-else width="360">
-      <template v-slot:activator="{on}">
-        <v-btn icon v-on="on">
-          <v-icon>fas fa-sign-in-alt</v-icon>
+    <template v-if="$vuetify.breakpoint.mdAndUp">
+      <v-btn v-if="authenticated" href="/auth/logout" icon>
+        <v-icon>fas fa-sign-out-alt</v-icon>
+      </v-btn>
+      <v-dialog v-else width="360">
+        <template v-slot:activator="{on}">
+          <v-btn icon v-on="on">
+            <v-icon>fas fa-sign-in-alt</v-icon>
+          </v-btn>
+        </template>
+        <login-card/>
+      </v-dialog>
+
+      <v-btn icon to="/upload">
+        <v-icon>fas fa-upload</v-icon>
+      </v-btn>
+      <v-btn icon @click="switchTheme()">
+        <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
+        <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
+      </v-btn>
+      <v-btn v-if="authenticated && (authUser.access === modAccess || authUser.access === adminAccess)"
+             icon :to="{name: 'mod-queue'}" exact>
+        <v-icon>fas fa-user-secret</v-icon>
+      </v-btn>
+      <v-btn icon to="/about" exact :class="{'mr-4':!authenticated}">
+        <v-icon>info</v-icon>
+      </v-btn>
+      <v-btn v-if="authenticated" icon to="/profile" class="mr-4">
+        <v-icon>person</v-icon>
+      </v-btn>
+    </template>
+    <v-menu bottom left v-else>
+      <template v-slot:activator="{ on }">
+        <v-btn
+          dark
+          icon
+          v-on="on"
+          class="mr-4"
+        >
+          <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
-      <login-card/>
-    </v-dialog>
 
-    <v-btn icon to="/upload">
-      <v-icon>fas fa-upload</v-icon>
-    </v-btn>
-    <v-btn icon @click="switchTheme()">
-      <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
-      <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
-    </v-btn>
-    <v-btn v-if="authenticated && (authUser.access === modAccess || authUser.access === adminAccess)"
-           icon :to="{name: 'mod-queue'}" exact>
-      <v-icon>fas fa-user-secret</v-icon>
-    </v-btn>
-    <v-btn icon to="/about" exact :class="{'mr-4':!authenticated}">
-      <v-icon>info</v-icon>
-    </v-btn>
-    <v-btn v-if="authenticated" icon to="/profile" class="mr-4">
-      <v-icon>person</v-icon>
-    </v-btn>
+      <v-list>
+        <v-list-item v-if="authenticated"
+                     href="/auth/logout"
+                     ripple="{center:true}">
+          <v-list-item-icon class="mr-0">
+            <v-icon>fas fa-sign-out-alt</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item v-else
+                     ripple="{center:true}">
+          <v-dialog width="360">
+            <template v-slot:activator="{ on }">
+              <v-list-item-icon v-on="on" class="mr-0">
+                <v-icon>fas fa-sign-in-alt</v-icon>
+              </v-list-item-icon>
+            </template>
+            <login-card/>
+          </v-dialog>
+        </v-list-item>
+        <v-list-item to="/upload"
+                     :ripple="false">
+          <v-list-item-icon class="mr-0">
+            <v-icon>fas fa-upload</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item @click="switchTheme()"
+                     :ripple="false">
+          <v-list-item-icon class="mr-0">
+            <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
+            <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item v-if="authenticated && (authUser.access === modAccess || authUser.access === adminAccess)"
+                     :to="{name: 'mod-queue'}"
+                     exact
+                     :ripple="false">
+          <v-list-item-icon class="mr-0">
+            <v-icon>fas fa-user-secret</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item to="/about"
+                     exact
+                     :ripple="false">
+          <v-list-item-icon class="mr-0">
+            <v-icon>info</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item v-if="authenticated"
+                     to="/profile"
+                     :ripple="false">
+          <v-list-item-icon class="mr-0">
+            <v-icon>person</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <template v-slot:extension v-if="hasToolbarTabs">
       <slot name="toolbar-tabs"/>
     </template>
