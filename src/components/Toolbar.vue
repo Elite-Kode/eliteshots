@@ -67,7 +67,7 @@
               <v-icon>fas fa-sign-out-alt</v-icon>
             </v-list-item-icon>
           </v-list-item>
-          <v-list-item :ripple="false" @click="onClickLogin">
+          <v-list-item v-else :ripple="false" @click="onClickLogin">
             <v-list-item-icon class="mr-0">
               <v-icon>fas fa-sign-in-alt</v-icon>
             </v-list-item-icon>
