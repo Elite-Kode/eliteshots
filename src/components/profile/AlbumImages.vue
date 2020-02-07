@@ -26,6 +26,7 @@
     <image-gallery :imageItems="albumImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
+                   link-key="image_location"
                    @imageViewed="onClickThumbnail"
                    @imageEdited="onClickEdit"
                    @imageDeleted="onClickDelete"

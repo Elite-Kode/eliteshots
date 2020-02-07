@@ -26,6 +26,7 @@
     <image-gallery :imageItems="acceptedImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"
+                   link-key="image_location"
                    @fetchImages="onFetchImages"
                    :authenticated="authenticated">
       <template v-slot:thumbnail="slotProps">

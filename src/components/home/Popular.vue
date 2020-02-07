@@ -18,6 +18,7 @@
   <image-gallery :imageItems="popularImages"
                  :loading="loadingNewImages"
                  :end="imagesEnd"
+                 link-key="image_location"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"

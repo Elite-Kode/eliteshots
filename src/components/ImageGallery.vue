@@ -52,27 +52,37 @@
               </v-img>
             </v-hover>
             <v-card-actions>
-              <v-btn icon :to="{ name: 'image-item', params:{imageId: imageItem._id}}" target="_blank">
-                <v-icon>launch</v-icon>
-              </v-btn>
-              <v-spacer/>
-              <v-btn v-if="editable" icon @click="clickEdit(i)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-btn v-if="deletable" icon @click="clickDelete(i)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-              <v-btn v-if="authenticated" icon @click="clickLike(i)">
-                <v-icon v-if="imageItem.self_like" color="primary">favorite</v-icon>
-                <v-icon v-else>favorite_border</v-icon>
-              </v-btn>
-              <v-btn v-if="authenticated" icon @click="clickSave(i)">
-                <v-icon v-if="imageItem.self_save" color="primary">bookmark</v-icon>
-                <v-icon v-else>bookmark_border</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>share</v-icon>
-              </v-btn>
+              <template v-if="shareLinks[i].status">
+                <v-text-field dense
+                              readonly
+                              prepend-icon="clear"
+                              @click:prepend="closeShare(i)"
+                              class="share-link"
+                              :value="shareLinks[i].link"/>
+              </template>
+              <template v-else>
+                <v-btn icon :to="{ name: 'image-item', params:{imageId: imageItem._id}}" target="_blank">
+                  <v-icon>launch</v-icon>
+                </v-btn>
+                <v-spacer/>
+                <v-btn v-if="editable" icon @click="clickEdit(i)">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+                <v-btn v-if="deletable" icon @click="clickDelete(i)">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <v-btn v-if="authenticated" icon @click="clickLike(i)">
+                  <v-icon v-if="imageItem.self_like" color="primary">favorite</v-icon>
+                  <v-icon v-else>favorite_border</v-icon>
+                </v-btn>
+                <v-btn v-if="authenticated" icon @click="clickSave(i)">
+                  <v-icon v-if="imageItem.self_save" color="primary">bookmark</v-icon>
+                  <v-icon v-else>bookmark_border</v-icon>
+                </v-btn>
+                <v-btn icon @click="clickShare(i)">
+                  <v-icon>share</v-icon>
+                </v-btn>
+              </template>
             </v-card-actions>
           </v-card>
         </slot>
@@ -110,6 +120,10 @@ export default {
         return []
       }
     },
+    linkKey: {
+      type: String,
+      default: ''
+    },
     authenticated: {
       type: Boolean,
       default: false
@@ -137,7 +151,8 @@ export default {
   },
   data () {
     return {
-      selectedImageIndex: null
+      selectedImageIndex: null,
+      shareLinks: []
     }
   },
   computed: {
@@ -152,6 +167,12 @@ export default {
       if (this.$refs.imageContainer.clientHeight < window.innerHeight && !this.end) {
         this.fetchImages()
       }
+      this.shareLinks = this.imageItems.map(image => {
+        return {
+          link: image[this.linkKey],
+          status: false
+        }
+      })
     }
   },
   methods: {
@@ -170,6 +191,12 @@ export default {
     },
     clickSave (index) {
       this.$emit('imageSaved', this.imageItems[index])
+    },
+    clickShare (index) {
+      this.shareLinks[index].status = true
+    },
+    closeShare (index) {
+      this.shareLinks[index].status = false
     },
     closeGallery () {
       this.selectedImageIndex = null
@@ -190,16 +217,10 @@ export default {
   .image-thumbnail:hover {
     cursor: pointer;
   }
+</style>
 
-  .back-to-list {
-    position: fixed;
-    z-index: 1;
-    opacity: 0.2;
-    margin-left: 10px;
-    margin-top: 10px;
-  }
-
-  .back-to-list:hover {
-    opacity: 1;
+<style>
+  .share-link .v-text-field__details {
+    display: none;
   }
 </style>

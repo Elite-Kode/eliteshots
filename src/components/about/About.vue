@@ -22,7 +22,7 @@
       <v-container fluid>
         <v-row>
           <v-col cols="12" md="6" lg="5">
-            <v-img height="70%"
+            <v-img height="50vh"
                    contain
                    :src="require('@/assets/EliteShotsV1.svg')"
                    alt="Elite Shots Logo"
@@ -34,41 +34,65 @@
               Elite Dangerous is a beautiful game and you can never have enough of space screenshots. Elite Shots is
               your single portal for all screenshots related to Elite Dangerous.
             </p>
-            <v-btn color="primary">Guide</v-btn>
-            <v-btn outlined class="ml-2" color="primary">Source</v-btn>
+            <v-btn outlined color="primary" href="https://github.com/SayakMukhopadhyay/eliteshots" target="_blank">Source
+            </v-btn>
           </v-col>
         </v-row>
-        <v-card>
+        <v-card class="my-5">
           <v-card-title>
             <span class="headline">For Commanders. By a Commander.</span>
           </v-card-title>
           <v-card-text>
-            <v-container>
-              <v-row dense>
-                <v-col>
-                  Test
-                </v-col>
-              </v-row>
-            </v-container>
+            <v-row dense>
+              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+                <v-icon size="128">favorite_border</v-icon>
+                <div class="text-center mt-2">
+                  <h2 class="mb-2">Like</h2>
+                  <div>Like and save your favorite screenshots.</div>
+                </div>
+              </v-col>
+              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+                <v-icon size="128">fas fa-upload</v-icon>
+                <div class="text-center mt-2">
+                  <h2 class="mb-2">Upload</h2>
+                  <div>Upload the best screenshots that can wow the community.</div>
+                </div>
+              </v-col>
+              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+                <v-icon size="128">star_border</v-icon>
+                <div class="text-center mt-2">
+                  <h2 class="mb-2">Curated</h2>
+                  <div>Get curated! The curators will pick the best among the best.</div>
+                </div>
+              </v-col>
+              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+                <v-icon size="128">share</v-icon>
+                <div class="text-center mt-2">
+                  <h2 class="mb-2">Share</h2>
+                  <div>Share the screenshots to a variety of social media.</div>
+                </div>
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
         <h2>Reach me at</h2>
         <v-row>
           <v-col cols="12" md="6" lg="3">
-            <v-card href="https://github.com/SayakMukhopadhyay">
-              <v-img width="70%"
+            <v-card href="https://github.com/SayakMukhopadhyay" class="pt-5 card-img">
+              <v-img width="50%"
+                     height="50%"
                      contain
                      :src="require('@/assets/github-logo.svg')"
-                     alt="Github Logo"
-              />
+                     alt="Github Logo"/>
               <v-card-text>
                 Github Profile
               </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" md="6" lg="3">
-            <v-card href="https://discord.gg/0uwCh6R62aQ0eeAX">
-              <v-img width="70%"
+            <v-card href="https://discord.gg/0uwCh6R62aQ0eeAX" class="pt-5 card-img">
+              <v-img width="50%"
+                     height="50%"
                      contain
                      :src="require('@/assets/edcd-logo.svg')"
                      alt="EDCD Logo"/>
@@ -78,8 +102,9 @@
             </v-card>
           </v-col>
           <v-col cols="12" md="6" lg="3">
-            <v-card href="https://forums.frontier.co.uk/member.php/136073-Garud">
-              <v-img width="70%"
+            <v-card href="https://forums.frontier.co.uk/member.php/136073-Garud" class="pt-5 card-img">
+              <v-img width="50%"
+                     height="50%"
                      contain
                      :src="require('@/assets/ed-logo.svg')"
                      alt="Elite Dangerous Logo"/>
@@ -89,8 +114,9 @@
             </v-card>
           </v-col>
           <v-col cols="12" md="6" lg="3">
-            <v-card href="https://discord.gg/YksSXke">
-              <v-img width="70%"
+            <v-card href="https://discord.gg/YksSXke" class="pt-5 card-img">
+              <v-img width="50%"
+                     height="50%"
                      contain
                      :src="require('@/assets/discord-logo.svg')"
                      alt="Discord Logo"/>
@@ -101,23 +127,26 @@
           </v-col>
         </v-row>
         <h2>Brought to you By</h2>
-        <v-row>
-          <v-col cols="12" md="3" lg="3">
-            <v-img width="70%"
+        <v-row justify="center">
+          <v-col cols="12" md="3" lg="3" class="card-img">
+            <v-img width="50%"
+                   height="50%"
                    contain
                    :src="require('@/assets/garud-logo.svg')"
                    alt="Garud Logo"/>
             <h3>CMDR Garud</h3>
           </v-col>
-          <v-col cols="12" md="2" lg="3">
-            <v-img width="70%"
+          <v-col cols="12" md="2" lg="3" class="card-img">
+            <v-img width="50%"
+                   height="50%"
                    contain
                    :src="require('@/assets/ampersand.svg')"
                    alt="Ampersand"/>
           </v-col>
           <v-col cols="12" md="3" lg="3">
-            <a href="https://knightsofkarma.com" class="self-logo">
-              <v-img width="70%"
+            <a href="https://knightsofkarma.com" class="card-img">
+              <v-img width="50%"
+                     height="50%"
                      contain
                      :src="require('@/assets/kok-logo.svg')"
                      alt="Knights of Karma Logo"/>
@@ -163,5 +192,13 @@ export default {
 </script>
 
 <style scoped>
+  .card-img {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
+  .card-img .v-card__text {
+    text-align: center;
+  }
 </style>

@@ -2,6 +2,7 @@
   <image-gallery :imageItems="curatedImages"
                  :loading="loadingNewImages"
                  :end="imagesEnd"
+                 link-key="image_location"
                  @imageViewed="onClickThumbnail"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
