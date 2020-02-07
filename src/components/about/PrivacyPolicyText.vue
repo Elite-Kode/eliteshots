@@ -28,7 +28,7 @@
       <strong>What personal information do I collect from the people that visit my website?</strong>
     </p>
     <p>
-      When registering on my site your Discord username is collected.
+      When registering on my site your Elite Dangerous commander name is collected.
     </p>
     <p>
       <strong> When do I collect information?</strong>
