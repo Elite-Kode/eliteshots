@@ -25,7 +25,7 @@ let likesModel = require('../models/likes')
 let savesModel = require('../models/saves')
 let viewsModel = require('../models/views')
 
-let imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots/'
+let imageUrlRoute = processVars.imageUrlRoute
 
 let router = express.Router()
 

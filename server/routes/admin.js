@@ -18,12 +18,13 @@
 
 const express = require('express')
 const mongoose = require('mongoose')
+const processVars = require('../../processVars')
 
 let imageModel = require('../models/images')
 let usersModel = require('../models/users')
 let modActionsModel = require('../models/mod_actions')
 
-let imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots/'
+let imageUrlRoute = processVars.imageUrlRoute
 
 let router = express.Router()
 
