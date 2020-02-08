@@ -114,14 +114,14 @@
             </v-card>
           </v-col>
           <v-col cols="12" md="6" lg="3">
-            <v-card href="https://discord.gg/YksSXke" class="pt-5 card-img">
+            <v-card href="https://discord.gg/AuHfMvq" class="pt-5 card-img">
               <v-img width="50%"
                      height="50%"
                      contain
                      :src="require('@/assets/discord-logo.svg')"
                      alt="Discord Logo"/>
               <v-card-text>
-                Elite BGS Discord Server
+                Elite Shots Discord Server
               </v-card-text>
             </v-card>
           </v-col>

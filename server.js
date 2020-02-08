@@ -41,6 +41,7 @@ const frontEnd = require('./server/routes/front_end')
 
 require('./server/db')
 require('./server/modules/backblaze')
+require('./server/modules/discord')
 
 const app = express()
 
@@ -127,6 +128,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
       let commanderName = responseObject.commander.name
 
       let model = require('./server/models/users')
+      const client = require('./server/modules/discord/client');
       let user = await model.findOne({ frontier_id: profile.customer_id })
       if (user) {
         let updatedUser = {
@@ -142,6 +144,9 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
           })
         done(null, user)
       } else {
+        let configModel = require('./server/models/configs');
+        let config = await configModel.findOne();
+
         let user = {
           frontier_id: profile.customer_id,
           commander: commanderName,
@@ -156,6 +161,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
             upsert: true,
             runValidators: true
           })
+        client.guilds.get(config.guild_id).channels.get(config.admin_channel_id).send("CMDR " + commanderName + " has joined Elite Shots");
         done(null, user)
       }
     } else {
