@@ -26,6 +26,7 @@ import ModActionHistory from '@/components/home/ModActionHistory'
 import PrivacyPolicy from '@/components/about/PrivacyPolicy'
 import Disclaimer from '@/components/about/Disclaimer'
 import TAndC from '@/components/about/TAndC'
+import Donate from '@/components/Donate'
 
 Vue.use(Router)
 
@@ -141,6 +142,10 @@ export default new Router({
         component: ImageItem,
         name: 'image-item',
         props: true
+      }, {
+        path: '/donate',
+        component: Donate,
+        name: 'donate'
       }
       ]
     }

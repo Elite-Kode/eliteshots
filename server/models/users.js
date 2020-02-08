@@ -29,6 +29,14 @@ let users = new Schema({
   frontier_id: String,
   commander: String,
   trusted: Boolean,
+  patronage: {
+    level: { type: String, enum: ['BACKER', 'BENEFACTOR', 'PROMOTER', 'CONTRIBUTER', 'NONE'], uppercase: true },
+    since: Date
+  },
+  donation: [{
+    amount: Number,
+    date: Date
+  }],
   access: { type: String, enum: ['NORMAL', 'MOD', 'BANNED', 'ADMIN'], uppercase: true },
   joined_at: { type: Date, index: true }
 }, { runSettersOnQuery: true })
