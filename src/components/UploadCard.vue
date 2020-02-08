@@ -189,6 +189,12 @@ export default {
         ...image,
         status: 'SENDING'
       })
+      if (!image.title) {
+        image.title = ''
+      }
+      if (!image.description) {
+        image.description = ''
+      }
       formData.append('imageTitle', image.title)
       formData.append('imageDescription', image.description)
       if (this.currentAlbumTitle !== '' && this.currentAlbumTitle.toLowerCase() !== this.defaultAlbum.toLowerCase()) {
