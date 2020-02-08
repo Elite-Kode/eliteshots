@@ -34,7 +34,8 @@
               Elite Dangerous is a beautiful game and you can never have enough of space screenshots. Elite Shots is
               your single portal for all screenshots related to Elite Dangerous.
             </p>
-            <v-btn outlined color="primary" href="https://github.com/SayakMukhopadhyay/eliteshots" target="_blank">Source
+            <v-btn outlined color="primary" href="https://github.com/SayakMukhopadhyay/eliteshots" target="_blank">
+              Source
             </v-btn>
           </v-col>
         </v-row>
@@ -128,7 +129,7 @@
         </v-row>
         <h2>Brought to you By</h2>
         <v-row justify="center">
-          <v-col cols="12" md="3" lg="3" class="card-img">
+          <v-col cols="12" md="3" class="card-img">
             <v-img width="50%"
                    height="50%"
                    contain
@@ -136,21 +137,38 @@
                    alt="Garud Logo"/>
             <h3>CMDR Garud</h3>
           </v-col>
-          <v-col cols="12" md="2" lg="3" class="card-img">
+          <v-col cols="12" md="1" class="card-img">
             <v-img width="50%"
                    height="50%"
                    contain
                    :src="require('@/assets/ampersand.svg')"
                    alt="Ampersand"/>
           </v-col>
-          <v-col cols="12" md="3" lg="3">
-            <a href="https://knightsofkarma.com" class="card-img">
+          <v-col cols="12" md="3">
+            <a href="https://knightsofkarma.com" target="_blank" class="card-img">
               <v-img width="50%"
                      height="50%"
                      contain
                      :src="require('@/assets/kok-logo.svg')"
                      alt="Knights of Karma Logo"/>
               <h3>Knights of Karma</h3>
+            </a>
+          </v-col>
+          <v-col cols="12" md="1" class="card-img">
+            <v-img width="50%"
+                   height="50%"
+                   contain
+                   :src="require('@/assets/ampersand.svg')"
+                   alt="Ampersand"/>
+          </v-col>
+          <v-col cols="12" md="3">
+            <a href="https://twitter.com/GalPhotoED" target="_blank" class="card-img">
+              <v-img width="50%"
+                     height="50%"
+                     contain
+                     :src="require('@/assets/galphoto-logo.svg')"
+                     alt="GalPhoto Logo"/>
+              <h3>GalPhoto</h3>
             </a>
           </v-col>
         </v-row>
