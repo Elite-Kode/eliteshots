@@ -27,6 +27,7 @@ import PrivacyPolicy from '@/components/about/PrivacyPolicy'
 import Disclaimer from '@/components/about/Disclaimer'
 import TAndC from '@/components/about/TAndC'
 import Donate from '@/components/Donate'
+import Guidelines from '@/components/about/Guidelines'
 
 Vue.use(Router)
 
@@ -146,6 +147,10 @@ export default new Router({
         path: '/donate',
         component: Donate,
         name: 'donate'
+      }, {
+        path: '/guidelines',
+        component: Guidelines,
+        name: 'guidelines'
       }
       ]
     }

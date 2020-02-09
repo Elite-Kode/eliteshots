@@ -34,6 +34,7 @@
               Elite Dangerous is a beautiful game and you can never have enough of space screenshots. Elite Shots is
               your single portal for all screenshots related to Elite Dangerous.
             </p>
+            <v-btn color="primary" to="/guidelines" class="mr-2">Guidelines</v-btn>
             <v-btn outlined color="primary" href="https://github.com/SayakMukhopadhyay/eliteshots" target="_blank">
               Source
             </v-btn>
