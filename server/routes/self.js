@@ -61,7 +61,11 @@ router.get('/albums', async (req, res, next) => {
         let albums = await aggregate.exec()
 
         albums.map(album => {
-          album.thumbnail_location = `${imageUrlRoute}${album.thumbnail_location}`
+          if (album.thumbnail_location) {
+            album.thumbnail_location = `${imageUrlRoute}${album.thumbnail_location}`
+          } else {
+            album.thumbnail_location = `${processVars.protocol}://${processVars.host}/ed-logo.svg`
+          }
         })
 
         query = {
@@ -71,15 +75,21 @@ router.get('/albums', async (req, res, next) => {
 
         let imageCount = await imageModel.find(query).countDocuments().exec()
 
-        let imageThumbnailLocation = (await imageModel.find(query).sort({
-          uploaded_at: -1
-        }).lean().limit(1).exec())[0].thumbnail_location
+        let imageThumbnailLocation
+
+        if (imageCount === 0) {
+          imageThumbnailLocation = `${processVars.protocol}://${processVars.host}/ed-logo.svg`
+        } else {
+          imageThumbnailLocation = imageUrlRoute + (await imageModel.find(query).sort({
+            uploaded_at: -1
+          }).lean().limit(1).exec())[0].thumbnail_location
+        }
 
         albums.push({
           title: processVars.defaultAlbumTitle,
           title_lower: processVars.defaultAlbumTitle.toLowerCase(),
           no_of_images: imageCount,
-          thumbnail_location: `${imageUrlRoute}${imageThumbnailLocation}`
+          thumbnail_location: imageThumbnailLocation
         })
         res.send(albums)
       } else {
