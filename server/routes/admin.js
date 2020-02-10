@@ -668,7 +668,7 @@ router.put('/trust/:userId', async (req, res, next) => {
           res.status(403).send('You cannot trust yourself')
           return
         }
-        if (targetUser.access === bannedAcces) {
+        if (targetUser.access === bannedAccess) {
           res.status(403).send('You cannot trust a banned user')
           return
         }
