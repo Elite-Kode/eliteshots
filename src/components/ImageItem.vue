@@ -35,7 +35,7 @@
           <v-img :src="imageItem.image_location"/>
           <v-card-title class="d-block">
             <v-row dense>
-              <v-col cols="12" lg="9">
+              <v-col v-if="isMod" cols="12" lg="9">
                 <v-row dense class="flex-md-nowrap">
                   <v-col>
                     <v-btn block color="success" @click="acceptImage"
@@ -81,26 +81,26 @@
                   </v-col>
                 </v-row>
               </v-col>
-              <v-col cols="12" lg="3">
+              <v-col cols="12" :lg="isMod?3:12">
                 <v-row dense class="flex-md-nowrap">
-                  <v-col class="d-flex justify-center">
-                    <v-btn v-if="canEdit" icon @click="editImage">
+                  <v-col v-if="canEdit" class="d-flex justify-center">
+                    <v-btn icon @click="editImage">
                       <v-icon>edit</v-icon>
                     </v-btn>
                   </v-col>
-                  <v-col class="d-flex justify-center">
-                    <v-btn v-if="canDelete" icon @click="deleteImage">
+                  <v-col v-if="canDelete" class="d-flex justify-center">
+                    <v-btn icon @click="deleteImage">
                       <v-icon>delete</v-icon>
                     </v-btn>
                   </v-col>
-                  <v-col class="d-flex justify-center">
-                    <v-btn v-if="authenticated" icon @click="likeImage">
+                  <v-col v-if="authenticated" class="d-flex justify-center">
+                    <v-btn icon @click="likeImage">
                       <v-icon v-if="imageItem.self_like" color="primary">favorite</v-icon>
                       <v-icon v-else>favorite_border</v-icon>
                     </v-btn>
                   </v-col>
-                  <v-col class="d-flex justify-center">
-                    <v-btn v-if="authenticated" icon @click="saveImage">
+                  <v-col v-if="authenticated" class="d-flex justify-center">
+                    <v-btn icon @click="saveImage">
                       <v-icon v-if="imageItem.self_save" color="primary">bookmark</v-icon>
                       <v-icon v-else>bookmark_border</v-icon>
                     </v-btn>
@@ -167,6 +167,9 @@ export default {
       authenticated: state => state.auth.authenticated,
       authUser: state => state.auth.user
     }),
+    isMod () {
+      return this.authUser.access === this.modAccess || this.authUser.access === this.adminAccess
+    },
     canAccept () {
       return this.authUser._id !== this.imageItem.user_id && this.imageItem.moderation_status !== 'ACCEPTED'
     },
