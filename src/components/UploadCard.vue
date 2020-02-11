@@ -54,6 +54,7 @@
                              v-else-if="uploadImage.file.status === 'error' || uploadImage.file.status === 'canceled'">
                         <v-icon x-large>refresh</v-icon>
                       </v-btn>
+                      <v-progress-circular v-else indeterminate/>
                     </div>
                   </v-img>
                 </v-col>
