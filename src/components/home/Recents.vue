@@ -7,7 +7,8 @@
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
                  @fetchImages="onFetchImages"
-                 :authenticated="authenticated"/>
+                 :authenticated="authenticated"
+                 curation-banner/>
 </template>
 
 <script>

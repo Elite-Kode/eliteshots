@@ -18,7 +18,7 @@
   <div>
     <div>Mod Action History</div>
     <v-timeline align-top>
-      <v-timeline-item v-for="(modAction, i) in modActions"
+      <v-timeline-item v-for="(modAction, i) in modActionsFormatted"
                        :key="i">
         <template v-slot:opposite>
           <v-card>
@@ -28,11 +28,12 @@
               @click="clickThumbnail(i)"
               class="image-thumbnail"
               min-height="200px">
-              <v-btn icon :to="{ name: 'image-item', params:{imageId: modAction._id}}" target="_blank">
+              <v-btn icon :to="{ name: 'image-item', params:{imageId: modAction.images._id}}" target="_blank"
+                     @click.stop="">
                 <v-icon>launch</v-icon>
               </v-btn>
             </v-img>
-            <v-form v-else>
+            <v-form v-else class="mx-3">
               <v-row align="center">
                 <v-col cols="3">
                   <v-subheader>Commander Name</v-subheader>
@@ -72,22 +73,19 @@
             </v-form>
           </v-card>
         </template>
-        <template v-slot:icon>
-          <v-avatar>
-            L
-          </v-avatar>
-        </template>
         <v-card class="chevron">
           <v-toolbar color="primary"
                      dense
-                     dark>
+                     dark
+                     class="px-3">
             <v-toolbar-title class="text-truncate">
               <span>{{modAction.action}}</span>
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <p>{{modAction.comments}}</p>
-            <p>Viewed at: {{modAction.action_at_formatted}}</p>
+            <p>Action at: {{modAction.action_at_formatted}}</p>
+            <p>Action by: {{modAction.mods.commander}}</p>
           </v-card-text>
         </v-card>
       </v-timeline-item>
@@ -132,10 +130,17 @@ export default {
     }),
     imageLinks () {
       return this.modActions.map(modAction => {
-        if (modAction.images > 0) {
+        if (modAction.images) {
           return modAction.images.low_res_location
         }
-        modAction.action_at_formatted = moment(modAction.action_at).format('Do MMMM YYYY, h:mm:ss a')
+      })
+    },
+    modActionsFormatted () {
+      return this.modActions.map(modAction => {
+        return {
+          ...modAction,
+          action_at_formatted: moment(modAction.action_at).format('Do MMMM YYYY, h:mm:ss a')
+        }
       })
     }
   },
@@ -169,5 +174,9 @@ export default {
 <style scoped>
   .chevron {
     border-color: var(--v-primary-base) !important;
+  }
+
+  .chevron:after {
+    margin: 0 1px;
   }
 </style>

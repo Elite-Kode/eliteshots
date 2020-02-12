@@ -33,7 +33,12 @@
                    @imageLiked="onClickLike"
                    @imageSaved="onClickSave"
                    @fetchImages="onFetchImages"
-                   :authenticated="authenticated" deletable editable no-user/>
+                   :authenticated="authenticated"
+                   deletable
+                   editable
+                   no-user
+                   curation-banner
+                   mod-status-banner/>
   </div>
 </template>
 

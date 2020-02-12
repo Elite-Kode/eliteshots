@@ -27,7 +27,7 @@
               @click="clickThumbnail(i)"
               class="image-thumbnail"
               min-height="200px">
-              <v-btn icon :to="{ name: 'image-item', params:{imageId: view._id}}" target="_blank">
+              <v-btn icon :to="{ name: 'image-item', params:{imageId: view._id}}" target="_blank" @click.stop="">
                 <v-icon>launch</v-icon>
               </v-btn>
             </v-img>
@@ -41,7 +41,8 @@
         <v-card class="chevron">
           <v-toolbar color="primary"
                      dense
-                     dark>
+                     dark
+                     class="px-3">
             <v-toolbar-title class="text-truncate">
               <span>{{view.title}}</span>
             </v-toolbar-title>
@@ -142,5 +143,9 @@ export default {
 <style scoped>
   .chevron {
     border-color: var(--v-primary-base) !important;
+  }
+
+  .chevron:after {
+    margin: 0 1px;
   }
 </style>

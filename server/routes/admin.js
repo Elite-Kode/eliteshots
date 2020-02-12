@@ -300,11 +300,19 @@ router.get('/modActions', async (req, res, next) => {
           localField: 'target_user',
           foreignField: '_id',
           as: 'users'
+        }).lookup({
+          from: 'users',
+          localField: 'mod_user_id',
+          foreignField: '_id',
+          as: 'mods'
         }).unwind({
           path: '$images',
           preserveNullAndEmptyArrays: true
         }).unwind({
           path: '$users',
+          preserveNullAndEmptyArrays: true
+        }).unwind({
+          path: '$mods',
           preserveNullAndEmptyArrays: true
         })
 
@@ -722,19 +730,19 @@ router.put('/untrust/:userId', async (req, res, next) => {
           return
         }
         if (req.user._id === req.params.userId) {
-          res.status(403).send("You cannot untrust yourself")
+          res.status(403).send('You cannot untrust yourself')
           return
         }
         if (targetUser.access === bannedAccess) {
-          res.status(403).send("You cannot untrust a banned user")
+          res.status(403).send('You cannot untrust a banned user')
           return
         }
         if (targetUser.access === adminAccess) {
-          res.status(403).send("You cannot untrust an admin")
+          res.status(403).send('You cannot untrust an admin')
           return
         }
         if (targetUser.access === modAccess && req.user.access !== adminAccess) {
-          res.status(403).send("Only admins can untrust a mod")
+          res.status(403).send('Only admins can untrust a mod')
           return
         }
         let mongoSession = await mongoose.startSession()

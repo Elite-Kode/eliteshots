@@ -27,6 +27,12 @@
                 class="image-thumbnail"
                 min-height="200px"
               >
+                <h4 v-if="imageItem.curated && curationBanner" class="ribbon ribbon-curated">CURATED</h4>
+                <template v-else-if="modStatusBanner">
+                  <h4 v-if="imageItem.moderation_status==='ACCEPTED'" class="ribbon ribbon-accepted">ACCEPTED</h4>
+                  <h4 v-else-if="imageItem.moderation_status==='REJECTED'" class="ribbon ribbon-rejected">REJECTED</h4>
+                  <h4 v-else-if="imageItem.moderation_status==='PENDING'" class="ribbon ribbon-pending">PENDING</h4>
+                </template>
                 <v-expand-transition>
                   <v-row v-if="hover" class="mx-0 image-title-background">
                     <v-col class="text-truncate">
@@ -147,6 +153,14 @@ export default {
     noUser: {
       type: Boolean,
       default: false
+    },
+    curationBanner: {
+      type: Boolean,
+      default: false
+    },
+    modStatusBanner: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -217,8 +231,62 @@ export default {
   .image-thumbnail:hover {
     cursor: pointer;
   }
-</style>
 
+  .ribbon {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateX(30%) translateY(0%) rotate(45deg);
+    transform-origin: top left;
+  }
+
+  .ribbon:before,
+  .ribbon:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    margin: 0 -1px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ribbon:before {
+    right: 100%;
+  }
+
+  .ribbon:after {
+    left: 100%;
+  }
+</style>
+<style scoped lang="sass">
+  @import '~vuetify/src/styles/styles.sass'
+
+  .ribbon-pending,
+  .ribbon-pending:before,
+  .ribbon-pending:after
+    background-color: var(--v-secondary-base)
+    color: map-get($material-dark, 'fg-color')
+
+  .ribbon-accepted,
+  .ribbon-accepted:before,
+  .ribbon-accepted:after
+    background-color: var(--v-success-base)
+    color: map-get($material-dark, 'fg-color')
+
+  .ribbon-rejected,
+  .ribbon-rejected:before,
+  .ribbon-rejected:after
+    background-color: var(--v-error-base)
+    color: map-get($material-dark, 'fg-color')
+
+  .ribbon-curated,
+  .ribbon-curated:before,
+  .ribbon-curated:after
+    background-color: var(--v-warning-base)
+    color: map-get($material-light, 'fg-color')
+</style>
 <style>
   .share-link .v-text-field__details {
     display: none;
