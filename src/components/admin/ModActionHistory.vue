@@ -33,7 +33,7 @@
                 <v-icon>launch</v-icon>
               </v-btn>
             </v-img>
-            <v-form v-else class="mx-3">
+            <v-form v-else-if="modAction.users" class="mx-3">
               <v-row align="center">
                 <v-col cols="3">
                   <v-subheader>Commander Name</v-subheader>
