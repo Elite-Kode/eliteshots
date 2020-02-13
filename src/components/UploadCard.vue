@@ -49,9 +49,12 @@
                       <v-btn icon @click="removeImage(i)" v-if="uploadImage.file.status === 'queued'">
                         <v-icon x-large>cancel</v-icon>
                       </v-btn>
-                      <v-icon x-large v-else-if="uploadImage.file.status === 'success'">check</v-icon>
+                      <v-icon x-large
+                              v-else-if="uploadImage.file.status === 'success' || uploadImage.status === 'SUCCESS'">
+                        check
+                      </v-icon>
                       <v-btn icon @click="retryUpload(i)"
-                             v-else-if="uploadImage.file.status === 'error' || uploadImage.file.status === 'canceled'">
+                             v-else-if="uploadImage.file.status === 'error' || uploadImage.file.status === 'canceled' || uploadImage.status === 'FAILED' || uploadImage.status === 'ERROR'">
                         <v-icon x-large>refresh</v-icon>
                       </v-btn>
                       <v-progress-circular v-else indeterminate/>

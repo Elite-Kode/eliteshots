@@ -25,12 +25,12 @@
         <v-btn text to="/donate">
           Support Elite Shots
         </v-btn>
-        <v-btn v-if="authenticated" href="/auth/logout" icon>
-          <v-icon>fas fa-sign-out-alt</v-icon>
-        </v-btn>
-        <v-btn v-else icon @click="onClickLogin">
-          <v-icon>fas fa-sign-in-alt</v-icon>
-        </v-btn>
+        <!--        <v-btn v-if="authenticated" href="/auth/logout" icon>
+                  <v-icon>fas fa-sign-out-alt</v-icon>
+                </v-btn>
+                <v-btn v-else icon @click="onClickLogin">
+                  <v-icon>fas fa-sign-in-alt</v-icon>
+                </v-btn>-->
         <v-btn icon to="/upload">
           <v-icon>fas fa-upload</v-icon>
         </v-btn>
@@ -42,14 +42,44 @@
                icon :to="{name: 'mod-queue'}" exact>
           <v-icon>fas fa-user-secret</v-icon>
         </v-btn>
-        <v-btn icon to="/about" exact :class="{'mr-4':!authenticated}">
+        <v-btn icon to="/about" exact>
           <v-icon>info</v-icon>
         </v-btn>
-        <v-btn v-if="authenticated" icon to="/profile" class="mr-4">
-          <v-icon>person</v-icon>
-        </v-btn>
       </template>
-      <v-menu bottom left v-else>
+      <v-menu bottom left v-if="authenticated">
+        <template v-slot:activator="{ on }">
+          <v-btn v-if="authenticated"
+                 icon
+                 v-on="on"
+                 :class="{'mr-4':$vuetify.breakpoint.mdAndUp}">
+            <v-icon>person</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item v-if="authenticated"
+                       href="/auth/logout"
+                       :ripple="false">
+            <v-list-item-icon class="mr-0">
+              <v-icon>power_settings_new</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+          <v-list-item v-if="authenticated"
+                       to="/profile"
+                       :ripple="false">
+            <v-list-item-icon class="mr-0">
+              <v-icon>person</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-btn v-else
+             icon
+             @click="onClickLogin"
+             :class="{'mr-4':$vuetify.breakpoint.mdAndUp}">
+        <v-icon>person</v-icon>
+      </v-btn>
+      <v-menu bottom left v-if="!$vuetify.breakpoint.mdAndUp">
         <template v-slot:activator="{ on }">
           <v-btn
             dark
@@ -62,18 +92,6 @@
         </template>
 
         <v-list>
-          <v-list-item v-if="authenticated"
-                       href="/auth/logout"
-                       :ripple="false">
-            <v-list-item-icon class="mr-0">
-              <v-icon>fas fa-sign-out-alt</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-          <v-list-item v-else :ripple="false" @click="onClickLogin">
-            <v-list-item-icon class="mr-0">
-              <v-icon>fas fa-sign-in-alt</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
           <v-list-item to="/upload"
                        :ripple="false">
             <v-list-item-icon class="mr-0">
@@ -100,13 +118,6 @@
                        :ripple="false">
             <v-list-item-icon class="mr-0">
               <v-icon>info</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-          <v-list-item v-if="authenticated"
-                       to="/profile"
-                       :ripple="false">
-            <v-list-item-icon class="mr-0">
-              <v-icon>person</v-icon>
             </v-list-item-icon>
           </v-list-item>
           <v-list-item to="/donate"
