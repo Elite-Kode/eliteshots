@@ -46,7 +46,7 @@
           <v-icon>info</v-icon>
         </v-btn>
       </template>
-      <v-menu bottom left v-if="authenticated">
+      <v-menu bottom offset-y v-if="authenticated">
         <template v-slot:activator="{ on }">
           <v-btn v-if="authenticated"
                  icon
@@ -58,17 +58,17 @@
 
         <v-list>
           <v-list-item v-if="authenticated"
-                       href="/auth/logout"
-                       :ripple="false">
-            <v-list-item-icon class="mr-0">
-              <v-icon>power_settings_new</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-          <v-list-item v-if="authenticated"
                        to="/profile"
                        :ripple="false">
             <v-list-item-icon class="mr-0">
               <v-icon>person</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+          <v-list-item v-if="authenticated"
+                       href="/auth/logout"
+                       :ripple="false">
+            <v-list-item-icon class="mr-0">
+              <v-icon>power_settings_new</v-icon>
             </v-list-item-icon>
           </v-list-item>
         </v-list>
@@ -79,7 +79,7 @@
              :class="{'mr-4':$vuetify.breakpoint.mdAndUp}">
         <v-icon>person</v-icon>
       </v-btn>
-      <v-menu bottom left v-if="!$vuetify.breakpoint.mdAndUp">
+      <v-menu bottom offset-y v-if="!$vuetify.breakpoint.mdAndUp">
         <template v-slot:activator="{ on }">
           <v-btn
             dark
