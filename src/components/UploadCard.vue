@@ -50,11 +50,11 @@
                         <v-icon x-large>cancel</v-icon>
                       </v-btn>
                       <v-icon x-large
-                              v-else-if="uploadImage.file.status === 'success' || uploadImage.status === 'SUCCESS'">
+                              v-else-if="uploadImage.status === 'SUCCESS'">
                         check
                       </v-icon>
                       <v-btn icon @click="retryUpload(i)"
-                             v-else-if="uploadImage.file.status === 'error' || uploadImage.file.status === 'canceled' || uploadImage.status === 'FAILED' || uploadImage.status === 'ERROR'">
+                             v-else-if="uploadImage.status === 'FAILED' || uploadImage.status === 'ERROR'">
                         <v-icon x-large>refresh</v-icon>
                       </v-btn>
                       <v-progress-circular v-else indeterminate/>
@@ -165,6 +165,16 @@ export default {
     },
     async retryUpload (index) {
       let image = this.uploadedImages[index]
+      this.uploadedImages.splice(index, 1, {
+        ...image,
+        status: 'SENDING'
+      })
+      if (!image.title) {
+        image.title = ''
+      }
+      if (!image.description) {
+        image.description = ''
+      }
       try {
         let uploadBody = {
           title: image.title,
