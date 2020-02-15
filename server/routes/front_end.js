@@ -705,19 +705,22 @@ router.get('/images/:imageId', async (req, res, next) => {
 
 router.put('/images/:imageId/view', async (req, res, next) => {
   try {
-    if (req.user && req.user.access !== bannedAccess) {
-      let viewDocument = new viewsModel({
-        image_id: req.params.imageId,
-        user_id: req.user._id,
-        viewed_at: new Date()
-      })
-      await viewDocument.save()
-    } else {
-      await imageModel.findOneAndUpdate({
-        _id: req.params.imageId
-      }, {
-        $inc: { anonymous_views: 1 }
-      })
+    let image = await imageModel.findById(req.params.imageId)
+    if (image.user_id !== req.user._id) {
+      if (req.user && req.user.access !== bannedAccess) {
+        let viewDocument = new viewsModel({
+          image_id: req.params.imageId,
+          user_id: req.user._id,
+          viewed_at: new Date()
+        })
+        await viewDocument.save()
+      } else {
+        await imageModel.findOneAndUpdate({
+          _id: req.params.imageId
+        }, {
+          $inc: { anonymous_views: 1 }
+        })
+      }
     }
     res.status(200).send({})
   } catch (err) {

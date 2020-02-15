@@ -94,8 +94,8 @@
         </slot>
       </v-col>
       <slot name="lightbox" :imageLinks="imageLinks" :selectedImageIndex="selectedImageIndex"
-            :closeGallery="closeGallery">
-        <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"/>
+            :closeGallery="closeGallery" :imageSlide="imageSlide">
+        <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery" @onslideend="imageSlide"/>
       </slot>
     </v-row>
     <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end">
@@ -214,6 +214,9 @@ export default {
     },
     closeGallery () {
       this.selectedImageIndex = null
+    },
+    imageSlide ({ index }) {
+      this.$emit('imageViewed', this.imageItems[index])
     },
     fetchImages () {
       this.$emit('fetchImages')
