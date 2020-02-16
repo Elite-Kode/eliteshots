@@ -46,8 +46,10 @@
                 </v-expand-transition>
                 <v-expand-transition v-if="!noUser">
                   <v-row v-if="hover" class="mx-0 image-title-background">
-                    <v-col class="text-truncate">
-                      CMDR {{imageItem.cmdr_name}}
+                    <v-col class="text-truncate cmdr-link">
+                      <router-link :to="{ name: 'public-profile', params: { userId: imageItem.user_id }}">CMDR
+                        {{imageItem.cmdr_name}}
+                      </router-link>
                     </v-col>
                     <v-col class="flex-shrink-1 flex-grow-0 d-inline-flex">
                       <v-icon class="mr-1">remove_red_eye</v-icon>
@@ -261,6 +263,10 @@ export default {
 
   .ribbon:after {
     left: 100%;
+  }
+
+  .cmdr-link a{
+    color: unset;
   }
 </style>
 <style scoped lang="sass">
