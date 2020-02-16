@@ -28,6 +28,7 @@ import Disclaimer from '@/components/about/Disclaimer'
 import TAndC from '@/components/about/TAndC'
 import Donate from '@/components/Donate'
 import Guidelines from '@/components/about/Guidelines'
+import PublicProfile from '@/components/PublicProfile'
 
 Vue.use(Router)
 
@@ -118,6 +119,11 @@ export default new Router({
           component: ViewsHistory,
           name: 'views-history'
         }]
+      }, {
+        path: '/users/:userId',
+        component: PublicProfile,
+        name: 'public-profile',
+        props: true
       }, {
         path: '/upload',
         component: UploadCard,

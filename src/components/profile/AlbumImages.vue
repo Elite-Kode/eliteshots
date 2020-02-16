@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     onClickThumbnail (image) {
-      this.$store.dispatch('triggerImageViewed', image)
+      this.$store.dispatch('triggerSelfImageViewed', image)
     },
     onClickEdit (image) {
       this.editId = image._id
@@ -89,20 +89,20 @@ export default {
       this.editDialog = true
     },
     onClickDelete (image) {
-      this.$store.dispatch('triggerUserImageDeleted', image)
+      this.$store.dispatch('triggerSelfImageDeleted', image)
     },
     onClickLike (image) {
-      this.$store.dispatch('triggerUserImageLiked', image)
+      this.$store.dispatch('triggerSelfImageLiked', image)
     },
     onClickSave (image) {
-      this.$store.dispatch('triggerUserImageSaved', image)
+      this.$store.dispatch('triggerSelfImageSaved', image)
     },
     onEditCancel () {
       this.editDialog = false
     },
     onEditConfirm ({ title, description }) {
       this.editDialog = false
-      this.$store.dispatch('triggerUserImageEdited', {
+      this.$store.dispatch('triggerSelfImageEdited', {
         imageId: this.editId,
         title,
         description

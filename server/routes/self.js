@@ -183,10 +183,8 @@ router.get('/images', async (req, res, next) => {
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
           image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-          if (req.user) {
-            image.self_like = !!image.self_like
-            image.self_save = !!image.self_save
-          }
+          image.self_like = !!image.self_like
+          image.self_save = !!image.self_save
         })
         res.send(imageData)
       } else {
@@ -299,10 +297,8 @@ router.get('/images/liked', async (req, res, next) => {
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
           image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-          if (req.user) {
-            image.self_like = !!image.self_like
-            image.self_save = !!image.self_save
-          }
+          image.self_like = !!image.self_like
+          image.self_save = !!image.self_save
         })
         res.send(imageData)
       } else {
@@ -415,10 +411,8 @@ router.get('/images/saved', async (req, res, next) => {
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
           image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-          if (req.user) {
-            image.self_like = !!image.self_like
-            image.self_save = !!image.self_save
-          }
+          image.self_like = !!image.self_like
+          image.self_save = !!image.self_save
         })
         res.send(imageData)
       } else {
@@ -531,10 +525,8 @@ router.get('/images/viewed', async (req, res, next) => {
           image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
           image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
           image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
-          if (req.user) {
-            image.self_like = !!image.self_like
-            image.self_save = !!image.self_save
-          }
+          image.self_like = !!image.self_like
+          image.self_save = !!image.self_save
         })
         res.send(imageData)
       } else {

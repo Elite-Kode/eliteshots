@@ -127,7 +127,7 @@ export default {
     ...mapState({
       theme: state => state.themes.theme,
       themes: state => state.themes.themes,
-      albums: state => state.users.albums,
+      albums: state => state.self.albums,
       defaultAlbum: state => state.albums.defaultAlbum
     }),
     albumTitles () {

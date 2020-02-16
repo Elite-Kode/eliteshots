@@ -29,13 +29,13 @@ import { mapState } from 'vuex'
 import AlbumGallery from '@/components/AlbumGallery'
 
 export default {
-  name: 'Album',
+  name: 'Albums',
   components: {
     'album-gallery': AlbumGallery
   },
   computed: {
     ...mapState({
-      albums: state => state.users.albums,
+      albums: state => state.self.albums,
       authenticated: state => state.auth.authenticated
     })
   },

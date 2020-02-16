@@ -293,7 +293,7 @@ export default {
       this.editDialog = true
     },
     deleteImage () {
-      this.$store.dispatch('triggerUserImageDeleted', this.imageItem)
+      this.$store.dispatch('triggerSelfImageDeleted', this.imageItem)
     },
     likeImage () {
       this.$store.dispatch('triggerImageLiked', this.imageItem)
@@ -306,7 +306,7 @@ export default {
     },
     onEditConfirm ({ title, description }) {
       this.editDialog = false
-      this.$store.dispatch('triggerUserImageEdited', {
+      this.$store.dispatch('triggerSelfImageEdited', {
         imageId: this.editId,
         title,
         description

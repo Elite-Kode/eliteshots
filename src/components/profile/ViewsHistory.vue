@@ -88,7 +88,7 @@ export default {
   },
   computed: {
     ...mapState({
-      viewedImages: state => state.users.viewed
+      viewedImages: state => state.self.viewed
     }),
     viewedImagesDeDuped () {
       let deDuped = []
@@ -120,7 +120,7 @@ export default {
   methods: {
     clickThumbnail (index) {
       this.selectedImageIndex = index
-      this.$store.dispatch('triggerUserImageViewed', this.viewedImages[index])
+      this.$store.dispatch('triggerSelfImageViewed', this.viewedImages[index])
     },
     closeGallery () {
       this.selectedImageIndex = null

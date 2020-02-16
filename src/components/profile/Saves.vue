@@ -35,7 +35,7 @@ import { mapState } from 'vuex'
 import ImageGallery from '@/components/ImageGallery'
 
 export default {
-  name: 'Like',
+  name: 'Saves',
   components: {
     'image-gallery': ImageGallery
   },
@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     ...mapState({
-      savedImages: state => state.users.saved,
+      savedImages: state => state.self.saved,
       authenticated: state => state.auth.authenticated
     })
   },
@@ -57,13 +57,13 @@ export default {
   },
   methods: {
     onClickThumbnail (image) {
-      this.$store.dispatch('triggerUserImageViewed', image)
+      this.$store.dispatch('triggerSelfImageViewed', image)
     },
     onClickLike (image) {
-      this.$store.dispatch('triggerUserImageLiked', image)
+      this.$store.dispatch('triggerSelfImageLiked', image)
     },
     onClickSave (image) {
-      this.$store.dispatch('triggerUserImageSaved', image)
+      this.$store.dispatch('triggerSelfImageSaved', image)
     },
     async onFetchImages () {
       this.loadingNewImages = true

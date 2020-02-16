@@ -48,7 +48,7 @@ import ImageGallery from '@/components/ImageGallery'
 import ImageEdit from '@/components/profile/ImageEdit'
 
 export default {
-  name: 'Image',
+  name: 'Images',
   components: {
     'image-gallery': ImageGallery,
     'image-edit': ImageEdit
@@ -65,7 +65,7 @@ export default {
   },
   computed: {
     ...mapState({
-      myImages: state => state.users.images,
+      myImages: state => state.self.images,
       authenticated: state => state.auth.authenticated
     })
   },
@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     onClickThumbnail (image) {
-      this.$store.dispatch('triggerImageViewed', image)
+      this.$store.dispatch('triggerSelfImageViewed', image)
     },
     onClickEdit (image) {
       this.editId = image._id
@@ -84,20 +84,20 @@ export default {
       this.editDialog = true
     },
     onClickDelete (image) {
-      this.$store.dispatch('triggerUserImageDeleted', image)
+      this.$store.dispatch('triggerSelfImageDeleted', image)
     },
     onClickLike (image) {
-      this.$store.dispatch('triggerUserImageLiked', image)
+      this.$store.dispatch('triggerSelfImageLiked', image)
     },
     onClickSave (image) {
-      this.$store.dispatch('triggerUserImageSaved', image)
+      this.$store.dispatch('triggerSelfImageSaved', image)
     },
     onEditCancel () {
       this.editDialog = false
     },
     onEditConfirm ({ title, description }) {
       this.editDialog = false
-      this.$store.dispatch('triggerUserImageEdited', {
+      this.$store.dispatch('triggerSelfImageEdited', {
         imageId: this.editId,
         title,
         description

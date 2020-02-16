@@ -151,7 +151,7 @@ export default {
   methods: {
     clickThumbnail (index) {
       this.selectedImageIndex = index
-      this.$store.dispatch('triggerUserImageViewed', this.viewedImages[index])
+      this.$store.dispatch('triggerImageViewed', this.viewedImages[index])
     },
     closeGallery () {
       this.selectedImageIndex = null
