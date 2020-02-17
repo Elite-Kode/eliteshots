@@ -20,7 +20,9 @@
     <image-edit :editId="editId"
                 :edit-title="editTitle"
                 :edit-description="editDescription"
+                :edit-album="editAlbum"
                 :editDialog="editDialog"
+                :all-albums="albums"
                 @cancel="onEditCancel"
                 @confirm="onEditConfirm"/>
     <image-gallery :imageItems="albumImages"
@@ -67,16 +69,19 @@ export default {
       editDialog: false,
       editId: '',
       editTitle: '',
-      editDescription: ''
+      editDescription: '',
+      editAlbum: ''
     }
   },
   computed: {
     ...mapState({
+      albums: state => state.self.albums,
       authenticated: state => state.auth.authenticated
     })
   },
   created () {
     this.$store.dispatch('checkAuthenticated')
+    this.$store.dispatch('fetchAlbums')
   },
   methods: {
     onClickThumbnail (image) {
@@ -86,6 +91,7 @@ export default {
       this.editId = image._id
       this.editTitle = image.title
       this.editDescription = image.description
+      this.editAlbum = image.album_id ? image.album_id : '0'
       this.editDialog = true
     },
     onClickDelete (image) {
@@ -100,12 +106,13 @@ export default {
     onEditCancel () {
       this.editDialog = false
     },
-    onEditConfirm ({ title, description }) {
+    onEditConfirm ({ title, description, album }) {
       this.editDialog = false
       this.$store.dispatch('triggerSelfImageEdited', {
         imageId: this.editId,
         title,
-        description
+        description,
+        album
       })
     },
     async onFetchImages () {

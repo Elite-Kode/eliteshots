@@ -26,7 +26,9 @@
     <image-edit :editId="editId"
                 :edit-title="editTitle"
                 :edit-description="editDescription"
+                :edit-album="editAlbum"
                 :editDialog="editDialog"
+                :all-albums="albums"
                 @cancel="onEditCancel"
                 @confirm="onEditConfirm"/>
     <v-content>
@@ -159,11 +161,13 @@ export default {
       editDialog: false,
       editId: '',
       editTitle: '',
-      editDescription: ''
+      editDescription: '',
+      editAlbum: ''
     }
   },
   computed: {
     ...mapState({
+      albums: state => state.self.albums,
       authenticated: state => state.auth.authenticated,
       authUser: state => state.auth.user
     }),
@@ -225,6 +229,7 @@ export default {
   },
   async created () {
     this.$store.dispatch('checkAuthenticated')
+    this.$store.dispatch('fetchAlbums')
     await this.fetchUseImageDetail()
     this.$store.dispatch('triggerImageViewed', this.imageItem)
   },
@@ -290,6 +295,7 @@ export default {
       this.editId = this.imageItem._id
       this.editTitle = this.imageItem.title
       this.editDescription = this.imageItem.description
+      this.editAlbum = this.imageItem.album_id ? this.imageItem.album_id : '0'
       this.editDialog = true
     },
     deleteImage () {
@@ -304,12 +310,13 @@ export default {
     onEditCancel () {
       this.editDialog = false
     },
-    onEditConfirm ({ title, description }) {
+    onEditConfirm ({ title, description, album }) {
       this.editDialog = false
       this.$store.dispatch('triggerSelfImageEdited', {
         imageId: this.editId,
         title,
-        description
+        description,
+        album
       })
     },
     onCancelled () {

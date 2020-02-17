@@ -276,6 +276,10 @@ const actions = {
       }
     })
   },
+  async createAlbum ({ commit, dispatch }, { title, description }) {
+    await axios.post('/frontend/self/albums', { title, description })
+    dispatch('fetchAlbums')
+  },
   async fetchAlbums ({ commit }) {
     let response = await axios.get('/frontend/self/albums')
     let albums = response.data
@@ -343,8 +347,8 @@ const actions = {
     await axios.put(`/frontend/public/images/${imageItem._id}/save`)
     commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
-  async triggerSelfImageEdited ({ commit, rootState }, { imageId, title, description }) {
-    await axios.put(`/frontend/self/images/${imageId}/edit`, { title, description })
+  async triggerSelfImageEdited ({ commit, rootState }, { imageId, title, description, album }) {
+    await axios.put(`/frontend/self/images/${imageId}/edit`, { title, description, album })
     commit('editImage', { imageId, title, description, authenticated: rootState.auth.authenticated })
   },
   async triggerSelfImageDeleted ({ commit, rootState }, imageItem) {

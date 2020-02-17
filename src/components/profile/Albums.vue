@@ -27,6 +27,7 @@
                    @albumOpened="onClickOpen"
                    @albumDeleted="onClickDelete"
                    @albumEdited="onClickEdit"
+                   @albumCreated="onClickCreate"
                    :authenticated="authenticated"
                    deletable
                    editable/>
@@ -59,11 +60,8 @@ export default {
     })
   },
   created () {
-    if (this.$router.currentRoute.name === 'images-page') {
-      this.currentPage = parseInt(this.$router.currentRoute.params.pageNumber)
-    }
     this.$store.dispatch('checkAuthenticated')
-    this.$store.dispatch('fetchAlbums', this.currentPage)
+    this.$store.dispatch('fetchAlbums')
   },
   methods: {
     onClickOpen (albumItem) {
@@ -80,6 +78,9 @@ export default {
       this.editTitle = albumItem.title
       this.editDescription = albumItem.description
       this.editDialog = true
+    },
+    onClickCreate ({ title, description }) {
+      this.$store.dispatch('createAlbum', { title, description })
     },
     onClickDelete (albumItem) {
       this.$store.dispatch('deleteAlbum', albumItem._id)

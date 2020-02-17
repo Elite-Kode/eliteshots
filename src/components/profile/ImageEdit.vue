@@ -32,6 +32,16 @@
               <v-textarea label="Description (optional)" v-model="editDescriptionNew"/>
             </v-col>
           </v-row>
+          <v-row dense>
+            <v-col>
+              <v-select
+                label="Album (optional)"
+                v-model="editAlbumNew"
+                :items="allAlbums"
+                item-text="title"
+                item-value="_id"/>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
@@ -61,28 +71,49 @@ export default {
       type: String,
       default: ''
     },
+    editAlbum: {
+      type: String,
+      default: ''
+    },
     editDialog: {
       type: Boolean,
       default: false
+    },
+    allAlbums: {
+      type: Array,
+      default () {
+        return []
+      }
     }
   },
   data () {
     return {
       dialogState: false,
       editTitleNew: '',
-      editDescriptionNew: ''
+      editDescriptionNew: '',
+      editAlbumNew: ''
     }
   },
   computed: {
     ...mapState({
       authenticated: state => state.auth.authenticated
-    })
+    }),
+    allAlbumsDefaulted () {
+      return this.allAlbums.map(album => {
+        if (album._id) {
+          return album
+        } else {
+          album._id = '0'
+        }
+      })
+    }
   },
   watch: {
     editDialog () {
       this.dialogState = this.editDialog
       this.editTitleNew = this.editTitle
       this.editDescriptionNew = this.editDescription
+      this.editAlbumNew = this.editAlbum
     }
   },
   created () {
@@ -90,21 +121,25 @@ export default {
     this.dialogState = this.editDialog
     this.editTitleNew = this.editTitle
     this.editDescriptionNew = this.editDescription
+    this.editAlbumNew = this.editAlbum
   },
   methods: {
     clickEditCancel () {
       this.editTitleNew = ''
       this.editDescriptionNew = ''
+      this.editAlbumNew = ''
       this.$emit('cancel')
       this.dialogState = false
     },
     clickEditConfirm () {
       this.$emit('confirm', {
         title: this.editTitleNew,
-        description: this.editDescriptionNew
+        description: this.editDescriptionNew,
+        album: this.editAlbumNew
       })
       this.editTitleNew = ''
       this.editDescriptionNew = ''
+      this.editAlbumNew = ''
       this.dialogState = false
     }
   }

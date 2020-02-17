@@ -158,6 +158,33 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
   }
 })
 
+router.post('/albums', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access !== bannedAccess) {
+        let createdDate = new Date()
+        let albumDocument = new albumModel({
+          title: req.body.title,
+          title_lower: req.body.title.toLowerCase(),
+          description: req.body.description,
+          description_lower: req.body.description.toLowerCase(),
+          created_at: createdDate,
+          last_modified_at: createdDate,
+          user_id: req.user._id
+        })
+        let album = await albumDocument.save()
+        res.status(201).send(album)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.get('/albums', async (req, res, next) => {
   try {
     if (req.user) {
@@ -836,6 +863,13 @@ router.put('/images/:imageId/edit', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
+        let albumId
+
+        if (req.params.albumId === '0') {
+          albumId = null
+        } else {
+          albumId = ObjectId(req.params.albumId)
+        }
         await imageModel.findOneAndUpdate({
           _id: req.params.imageId,
           user_id: req.user._id
@@ -843,7 +877,8 @@ router.put('/images/:imageId/edit', async (req, res, next) => {
           title: req.body.title,
           title_lower: req.body.title.toLowerCase(),
           description: req.body.description,
-          description_lower: req.body.description.toLowerCase()
+          description_lower: req.body.description.toLowerCase(),
+          album_id: albumId
         })
         res.status(200).send({})
       } else {
