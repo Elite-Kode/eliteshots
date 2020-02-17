@@ -17,21 +17,40 @@
 <template>
   <div>
     <h1>My Albums</h1>
+    <album-edit :editId="editId"
+                :edit-title="editTitle"
+                :edit-description="editDescription"
+                :editDialog="editDialog"
+                @cancel="onEditCancel"
+                @confirm="onEditConfirm"/>
     <album-gallery :albumItems="albums"
-                   @albumOpened="albumOpened"
-                   @albumDeleted="albumDeleted"
-                   :authenticated="authenticated" deletable/>
+                   @albumOpened="onClickOpen"
+                   @albumDeleted="onClickDelete"
+                   @albumEdited="onClickEdit"
+                   :authenticated="authenticated"
+                   deletable
+                   editable/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import AlbumGallery from '@/components/AlbumGallery'
+import AlbumEdit from '@/components/profile/AlbumEdit'
 
 export default {
   name: 'Albums',
   components: {
+    AlbumEdit,
     'album-gallery': AlbumGallery
+  },
+  data () {
+    return {
+      editDialog: false,
+      editId: '',
+      editTitle: '',
+      editDescription: ''
+    }
   },
   computed: {
     ...mapState({
@@ -47,7 +66,7 @@ export default {
     this.$store.dispatch('fetchAlbums', this.currentPage)
   },
   methods: {
-    albumOpened (albumItem) {
+    onClickOpen (albumItem) {
       let params = {}
       if (albumItem._id) {
         params = { albumId: albumItem._id }
@@ -56,8 +75,25 @@ export default {
       }
       this.$router.push({ name: 'album-images', params })
     },
-    albumDeleted (albumItem) {
+    onClickEdit (albumItem) {
+      this.editId = albumItem._id
+      this.editTitle = albumItem.title
+      this.editDescription = albumItem.description
+      this.editDialog = true
+    },
+    onClickDelete (albumItem) {
       this.$store.dispatch('deleteAlbum', albumItem._id)
+    },
+    onEditCancel () {
+      this.editDialog = false
+    },
+    onEditConfirm ({ title, description }) {
+      this.editDialog = false
+      this.$store.dispatch('triggerSelfAlbumEdited', {
+        albumId: this.editId,
+        title,
+        description
+      })
     }
   }
 }

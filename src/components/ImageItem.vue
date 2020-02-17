@@ -28,7 +28,7 @@
                 :edit-description="editDescription"
                 :editDialog="editDialog"
                 @cancel="onEditCancel"
-                @confim="onEditConfirm"/>
+                @confirm="onEditConfirm"/>
     <v-content>
       <v-container fluid class="pa-0">
         <v-card>

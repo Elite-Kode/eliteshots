@@ -238,6 +238,19 @@ const mutations = {
       }
     }
   },
+  editAlbum (state, { albumId, title, description, authenticated }) {
+    let index = state.albums ? state.albums.findIndex(album => {
+      return album._id === albumId
+    }) : -1
+    if (index !== -1) {
+      if (authenticated) {
+        state.albums[index].title = title
+        state.albums[index].title_lower = title.toLowerCase()
+        state.albums[index].description = description
+        state.albums[index].description_lower = description.toLowerCase()
+      }
+    }
+  },
   deleteAlbum (state, albumId) {
     let index = state.albums ? state.albums.findIndex(album => {
       return album._id === albumId
@@ -284,7 +297,7 @@ const actions = {
     return images
   },
   async fetchAlbumImages ({ commit }, { last, albumId }) {
-    let response = await axios.get(`/frontend/self/album/${albumId}/images`, { params: { last } })
+    let response = await axios.get(`/frontend/self/albums/${albumId}/images`, { params: { last } })
     let images = response.data
     return images
   },
@@ -337,6 +350,10 @@ const actions = {
   async triggerSelfImageDeleted ({ commit, rootState }, imageItem) {
     await axios.delete(`/frontend/self/images/${imageItem._id}`)
     commit('deleteImage', { imageItem, authenticated: rootState.auth.authenticated })
+  },
+  async triggerSelfAlbumEdited ({ commit, rootState }, { albumId, title, description }) {
+    await axios.put(`/frontend/albums/${albumId}/edit`, { title, description })
+    commit('editAlbum', { albumId, title, description, authenticated: rootState.auth.authenticated })
   }
 }
 

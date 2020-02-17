@@ -17,31 +17,33 @@
 <template>
   <div>
     <v-row dense class="mx-0">
-      <v-col cols="2" v-for="(albumItem, i) in albumItems" :key="i">
+      <v-col cols=12 lg="2" md="4" sm="6" v-for="(albumItem, i) in albumItems" :key="i">
         <slot name="thumbnail" :albumItem="albumItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
           <v-card>
-            <v-hover v-slot="{ hover }">
-              <v-img
-                :src="albumItem.thumbnail_location"
-                @click="clickThumbnail(i)"
-                class="album-thumbnail"
-                aspect-ratio="1"
-              >
-                <v-expand-transition>
-                  <v-row v-if="hover" class="mx-0 album-title-background">
-                    <v-col class="text-truncate">
-                      {{albumItem.title}}
-                    </v-col>
-                  </v-row>
-                </v-expand-transition>
-              </v-img>
-            </v-hover>
+            <v-img
+              :src="albumItem.thumbnail_location"
+              @click="clickThumbnail(i)"
+              class="album-thumbnail"
+              aspect-ratio="1"
+            >
+              <v-row class="mx-0 album-title-background">
+                <v-col class="text-truncate">
+                  {{albumItem.title}}
+                </v-col>
+              </v-row>
+            </v-img>
             <v-card-actions>
               <v-icon class="mr-1">photo</v-icon>
               {{albumItem.no_of_images}}
               <v-spacer/>
+              <v-btn v-if="editable && albumItem.title!==defaultAlbum" icon @click="clickEdit(i)">
+                <v-icon>edit</v-icon>
+              </v-btn>
               <v-btn v-if="deletable && albumItem.title!==defaultAlbum" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
+              </v-btn>
+              <v-btn v-if="albumItem.title!==defaultAlbum" icon :to="{ name: 'public-album', params:{albumId: albumItem._id}}" target="_blank">
+                <v-icon>share</v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -70,6 +72,10 @@ export default {
     deletable: {
       type: Boolean,
       default: false
+    },
+    editable: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -86,6 +92,9 @@ export default {
     clickThumbnail (index) {
       this.selectedAlbumIndex = index
       this.$emit('albumOpened', this.albumItems[index])
+    },
+    clickEdit (index) {
+      this.$emit('albumEdited', this.albumItems[index])
     },
     clickDelete (index) {
       this.$emit('albumDeleted', this.albumItems[index])

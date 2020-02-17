@@ -22,7 +22,7 @@
                 :edit-description="editDescription"
                 :editDialog="editDialog"
                 @cancel="onEditCancel"
-                @confim="onEditConfirm"/>
+                @confirm="onEditConfirm"/>
     <image-gallery :imageItems="myImages"
                    :loading="loadingNewImages"
                    :end="imagesEnd"

@@ -228,7 +228,7 @@ router.get('/albums', async (req, res, next) => {
   }
 })
 
-router.get('/album/:albumId/images', async (req, res, next) => {
+router.get('/albums/:albumId/images', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
@@ -357,6 +357,31 @@ router.delete('/albums/:albumId', async (req, res, next) => {
           }, {
             $unset: { album_id: 1 }
           })
+        })
+        res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/albums/:albumId/edit', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access !== bannedAccess) {
+        await albumModel.findOneAndUpdate({
+          _id: req.params.albumId,
+          user_id: req.user._id
+        }, {
+          title: req.body.title,
+          title_lower: req.body.title.toLowerCase(),
+          description: req.body.description,
+          description_lower: req.body.description.toLowerCase()
         })
         res.status(200).send({})
       } else {

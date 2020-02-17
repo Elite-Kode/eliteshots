@@ -18,7 +18,7 @@
   <v-dialog v-model="dialogState" persistent max-width="600px">
     <v-card>
       <v-card-title>
-        <span class="headline">Update Image {{editId}}</span>
+        <span class="headline">Update Album {{editId}}</span>
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -47,7 +47,7 @@
 import { mapState } from 'vuex'
 
 export default {
-  name: 'ImageEdit',
+  name: 'AlbumEdit',
   props: {
     editId: {
       type: String,

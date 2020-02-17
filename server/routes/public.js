@@ -25,6 +25,7 @@ let likesModel = require('../models/likes')
 let savesModel = require('../models/saves')
 let viewsModel = require('../models/views')
 let usersModel = require('../models/users')
+let albumModel = require('../models/albums')
 
 let imageUrlRoute = processVars.imageUrlRoute
 
@@ -574,6 +575,119 @@ router.get('/users/:userId/images', async (req, res, next) => {
 
     let query = {
       user_id: ObjectId(req.params.userId),
+      moderation_status: acceptedStatus
+    }
+
+    if (lastElement) {
+      query.uploaded_at = { $lt: new Date(lastElement) }
+    }
+
+    aggregate.match(query).lookup({
+      from: 'views',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'views'
+    }).lookup({
+      from: 'likes',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'likes'
+    }).lookup({
+      from: 'saves',
+      localField: '_id',
+      foreignField: 'image_id',
+      as: 'saves'
+    }).addFields({
+      no_of_views: {
+        $size: '$views'
+      },
+      no_of_likes: {
+        $size: '$likes'
+      },
+      no_of_saves: {
+        $size: '$saves'
+      }
+    })
+
+    if (req.user) {
+      aggregate.addFields({
+        self_like: {
+          $size: {
+            $filter: {
+              input: '$likes',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        },
+        self_save: {
+          $size: {
+            $filter: {
+              input: '$saves',
+              as: 'el',
+              cond: {
+                $eq: ['$$el.user_id', req.user._id]
+              }
+            }
+          }
+        }
+      })
+    }
+
+    aggregate.project({
+      views: 0,
+      likes: 0,
+      saves: 0
+    })
+
+    aggregate.sort({
+      uploaded_at: -1
+    }).limit(imagesPerFetch)
+
+    let imageData = await aggregate.exec()
+
+    imageData.map(image => {
+      image.image_location = `${imageUrlRoute}${image.image_location}`
+      image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+      image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+      image.anonymous_views = image.anonymous_views ? image.anonymous_views : 0
+      if (req.user) {
+        image.self_like = !!image.self_like
+        image.self_save = !!image.self_save
+      }
+    })
+    res.send(imageData)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/albums/:albumId', async (req, res, next) => {
+  try {
+    let album = await albumModel.findById(req.params.albumId).lean()
+    res.send(album)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/albums/:albumId/images', async (req, res, next) => {
+  try {
+    let lastElement = req.query.last
+    let aggregate = imageModel.aggregate()
+
+    let albumId
+
+    if (req.params.albumId === processVars.defaultAlbumTitle.toLowerCase()) {
+      albumId = null
+    } else {
+      albumId = ObjectId(req.params.albumId)
+    }
+
+    let query = {
+      album_id: albumId,
       moderation_status: acceptedStatus
     }
 

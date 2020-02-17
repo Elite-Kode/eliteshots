@@ -29,6 +29,7 @@ import TAndC from '@/components/about/TAndC'
 import Donate from '@/components/Donate'
 import Guidelines from '@/components/about/Guidelines'
 import PublicProfile from '@/components/PublicProfile'
+import PublicAlbum from '@/components/PublicAlbum'
 
 Vue.use(Router)
 
@@ -123,6 +124,11 @@ export default new Router({
         path: '/users/:userId',
         component: PublicProfile,
         name: 'public-profile',
+        props: true
+      }, {
+        path: '/albums/:albumId',
+        component: PublicAlbum,
+        name: 'public-album',
         props: true
       }, {
         path: '/upload',

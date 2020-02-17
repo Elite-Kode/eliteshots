@@ -2,7 +2,9 @@ import axios from 'axios'
 
 const state = {
   publicProfileImages: [],
-  publicProfileUser: {}
+  publicProfileUser: {},
+  publicAlbumImages: [],
+  publicProfileAlbum: {}
 }
 const mutations = {
   setPublicProfileImages (state, publicProfileImages) {
@@ -11,11 +13,23 @@ const mutations = {
   setPublicProfileUser (state, publicProfileUser) {
     state.publicProfileUser = publicProfileUser
   },
+  setPublicAlbumImages (state, publicAlbumImages) {
+    state.publicAlbumImages = publicAlbumImages
+  },
+  setPublicProfileAlbum (state, publicProfileAlbum) {
+    state.publicProfileAlbum = publicProfileAlbum
+  },
   addPublicProfileImages (state, publicProfileImages) {
     state.publicProfileImages.push(...publicProfileImages)
   },
+  addPublicAlbumImages (state, publicAlbumImages) {
+    state.publicAlbumImages.push(...publicAlbumImages)
+  },
   terminatePublicProfileImages (state) {
     state.publicProfileImages = []
+  },
+  terminatePublicAlbumImages (state) {
+    state.publicAlbumImages = []
   },
   increaseViewCount (state, { imageItem, authenticated }) {
     let index = state.publicProfileImages ? state.publicProfileImages.findIndex(image => {
@@ -71,11 +85,27 @@ const actions = {
     }
     return images
   },
+  async fetchPublicAlbumImages ({ commit }, { albumId, last }) {
+    let response = await axios.get(`/frontend/public/albums/${albumId}/images`, { params: { last } })
+    let images = response.data
+    if (last) {
+      commit('addPublicAlbumImages', images)
+    } else {
+      commit('setPublicAlbumImages', images)
+    }
+    return images
+  },
   async fetchPublicProfileUser ({ commit }, userId) {
     let response = await axios.get(`/frontend/public/users/${userId}`)
     let user = response.data
     commit('setPublicProfileUser', user)
     return user
+  },
+  async fetchPublicProfileAlbum ({ commit }, albumId) {
+    let response = await axios.get(`/frontend/public/albums/${albumId}`)
+    let album = response.data
+    commit('setPublicProfileAlbum', album)
+    return album
   },
   async triggerUserImageViewed ({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/public/images/${imageItem._id}/view`)
