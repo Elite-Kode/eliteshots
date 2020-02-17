@@ -37,7 +37,7 @@
               <v-select
                 label="Album (optional)"
                 v-model="editAlbumNew"
-                :items="allAlbums"
+                :items="allAlbumsDefaulted"
                 item-text="title"
                 item-value="_id"/>
             </v-col>
@@ -104,6 +104,7 @@ export default {
           return album
         } else {
           album._id = '0'
+          return album
         }
       })
     }

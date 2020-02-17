@@ -865,10 +865,10 @@ router.put('/images/:imageId/edit', async (req, res, next) => {
       if (req.user.access !== bannedAccess) {
         let albumId
 
-        if (req.params.albumId === '0') {
+        if (req.params.album === '0') {
           albumId = null
         } else {
-          albumId = ObjectId(req.params.albumId)
+          albumId = ObjectId(req.params.album)
         }
         await imageModel.findOneAndUpdate({
           _id: req.params.imageId,
