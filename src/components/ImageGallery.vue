@@ -194,7 +194,6 @@ export default {
   methods: {
     clickThumbnail (index) {
       this.selectedImageIndex = index
-      this.$emit('imageViewed', this.imageItems[index])
     },
     clickEdit (index) {
       this.$emit('imageEdited', this.imageItems[index])
