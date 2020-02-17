@@ -111,7 +111,7 @@ export default {
   data () {
     return {
       dropzoneOptions: {
-        url: '/frontend/upload',
+        url: '/frontend/self/upload',
         thumbnailWidth: 500,
         maxFilesize: 10,
         acceptedFiles: 'image/jpeg,image/png,image.bmp',

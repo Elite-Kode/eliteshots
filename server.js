@@ -38,6 +38,7 @@ const authUser = require('./server/routes/auth/auth_user')
 const admin = require('./server/routes/admin')
 const self = require('./server/routes/self')
 const users = require('./server/routes/user')
+const publicRoutes = require('./server/routes/public')
 const frontEnd = require('./server/routes/front_end')
 
 require('./server/db')
@@ -66,6 +67,7 @@ app.use('/auth/user', authUser)
 app.use('/frontend/admin', admin)
 app.use('/frontend/self', self)
 app.use('/frontend/users', users)
+app.use('/frontend/public', publicRoutes)
 app.use('/frontend', frontEnd)
 
 // Pass all 404 errors called by browser to angular

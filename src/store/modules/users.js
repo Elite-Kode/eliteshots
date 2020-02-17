@@ -62,7 +62,7 @@ const mutations = {
 }
 const actions = {
   async fetchPublicProfileImages ({ commit }, { userId, last }) {
-    let response = await axios.get(`/frontend/users/${userId}/images`, { params: { last } })
+    let response = await axios.get(`/frontend/public/users/${userId}/images`, { params: { last } })
     let images = response.data
     if (last) {
       commit('addPublicProfileImages', images)
@@ -72,21 +72,21 @@ const actions = {
     return images
   },
   async fetchPublicProfileUser ({ commit }, userId) {
-    let response = await axios.get(`/frontend/users/${userId}`)
+    let response = await axios.get(`/frontend/public/users/${userId}`)
     let user = response.data
     commit('setPublicProfileUser', user)
     return user
   },
   async triggerUserImageViewed ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/view`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/view`)
     commit('increaseViewCount', { imageItem, authenticated: rootState.auth.authenticated })
   },
   async triggerUserImageLiked ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/like`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/like`)
     commit('likeImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
   async triggerUserImageSaved ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/save`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/save`)
     commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   }
 }

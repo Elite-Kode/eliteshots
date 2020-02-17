@@ -196,151 +196,6 @@ router.get('/images/rejected', async (req, res, next) => {
   }
 })
 
-router.get('/images/uploaded/:userId', async (req, res, next) => {
-  try {
-    if (req.user) {
-      if (req.user.access === modAccess || req.user.access === adminAccess) {
-        let lastElement = req.query.last
-
-        let query = { user_id: req.params.userId }
-
-        if (lastElement) {
-          query.uploaded_at = { $lt: new Date(lastElement) }
-        }
-
-        let images = await imageModel.find(query).sort({
-          uploaded_at: -1
-        }).limit(imagesPerFetch).lean()
-
-        images.map(image => {
-          image.image_location = `${imageUrlRoute}${image.image_location}`
-          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
-          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
-        })
-        res.send(images)
-      } else {
-        res.status(403).send({})
-      }
-    } else {
-      res.status(401).send({})
-    }
-  } catch (err) {
-    next(err)
-  }
-})
-
-router.get('/users', async (req, res, next) => {
-  try {
-    if (req.user) {
-      if (req.user.access === modAccess || req.user.access === adminAccess) {
-        let select = ''
-        if (req.user.access === modAccess) {
-          select = 'commander trusted access'
-        }
-        let users = await usersModel.paginate({}, {
-          select,
-          lean: true,
-          leanWithId: false,
-          page: req.query.page,
-          limit: 10
-        })
-        res.send(users)
-      } else {
-        res.status(403).send({})
-      }
-    } else {
-      res.status(401).send({})
-    }
-  } catch (err) {
-    next(err)
-  }
-})
-
-router.get('/users/:userId', async (req, res, next) => {
-  try {
-    if (req.user) {
-      if (req.user.access === modAccess || req.user.access === adminAccess) {
-        let select = ''
-        if (req.user.access === modAccess) {
-          select = 'commander trusted access'
-        }
-        let user = await usersModel.findById(req.params.userId).select(select).lean()
-        res.send(user)
-      } else {
-        res.status(403).send({})
-      }
-    } else {
-      res.status(401).send({})
-    }
-  } catch (err) {
-    next(err)
-  }
-})
-
-router.get('/modActions', async (req, res, next) => {
-  try {
-    if (req.user) {
-      if (req.user.access === modAccess || req.user.access === adminAccess) {
-        let lastElement = req.query.last
-        let aggregate = modActionsModel.aggregate()
-
-        let query = {}
-
-        if (lastElement) {
-          query.action_at = { $lt: new Date(lastElement) }
-        }
-
-        aggregate.match(query).lookup({
-          from: 'images',
-          localField: 'target_image',
-          foreignField: '_id',
-          as: 'images'
-        }).lookup({
-          from: 'users',
-          localField: 'target_user',
-          foreignField: '_id',
-          as: 'users'
-        }).lookup({
-          from: 'users',
-          localField: 'mod_user_id',
-          foreignField: '_id',
-          as: 'mods'
-        }).unwind({
-          path: '$images',
-          preserveNullAndEmptyArrays: true
-        }).unwind({
-          path: '$users',
-          preserveNullAndEmptyArrays: true
-        }).unwind({
-          path: '$mods',
-          preserveNullAndEmptyArrays: true
-        })
-
-        aggregate.sort({
-          action_at: -1
-        }).limit(imagesPerFetch)
-
-        let modActionData = await aggregate.exec()
-
-        modActionData.map(modAction => {
-          if (modAction.images) {
-            modAction.images.image_location = `${imageUrlRoute}${modAction.images.image_location}`
-            modAction.images.thumbnail_location = `${imageUrlRoute}${modAction.images.thumbnail_location}`
-            modAction.images.low_res_location = `${imageUrlRoute}${modAction.images.low_res_location}`
-          }
-        })
-        res.send(modActionData)
-      } else {
-        res.status(403).send({})
-      }
-    } else {
-      res.status(401).send({})
-    }
-  } catch (err) {
-    next(err)
-  }
-})
-
 router.put('/images/:imageId/accept', async (req, res, next) => {
   try {
     if (req.user) {
@@ -482,7 +337,88 @@ router.put('/images/:imageId/curate', async (req, res, next) => {
   }
 })
 
-router.put('/ban/:userId', async (req, res, next) => {
+router.get('/users/:userId/images', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let lastElement = req.query.last
+
+        let query = { user_id: req.params.userId }
+
+        if (lastElement) {
+          query.uploaded_at = { $lt: new Date(lastElement) }
+        }
+
+        let images = await imageModel.find(query).sort({
+          uploaded_at: -1
+        }).limit(imagesPerFetch).lean()
+
+        images.map(image => {
+          image.image_location = `${imageUrlRoute}${image.image_location}`
+          image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
+          image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
+        })
+        res.send(images)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/users', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let select = ''
+        if (req.user.access === modAccess) {
+          select = 'commander trusted access'
+        }
+        let users = await usersModel.paginate({}, {
+          select,
+          lean: true,
+          leanWithId: false,
+          page: req.query.page,
+          limit: 10
+        })
+        res.send(users)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/users/:userId', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let select = ''
+        if (req.user.access === modAccess) {
+          select = 'commander trusted access'
+        }
+        let user = await usersModel.findById(req.params.userId).select(select).lean()
+        res.send(user)
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/users/:userId/ban', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
@@ -533,7 +469,7 @@ router.put('/ban/:userId', async (req, res, next) => {
   }
 })
 
-router.put('/unban/:userId', async (req, res, next) => {
+router.put('/users/:userId/unban', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
@@ -579,7 +515,7 @@ router.put('/unban/:userId', async (req, res, next) => {
   }
 })
 
-router.put('/demote/:userId', async (req, res, next) => {
+router.put('/users/:userId/demote', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === adminAccess) {
@@ -620,7 +556,7 @@ router.put('/demote/:userId', async (req, res, next) => {
   }
 })
 
-router.put('/promote/:userId', async (req, res, next) => {
+router.put('/users/:userId/promote', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === adminAccess) {
@@ -661,7 +597,7 @@ router.put('/promote/:userId', async (req, res, next) => {
   }
 })
 
-router.put('/trust/:userId', async (req, res, next) => {
+router.put('/users/:userId/trust', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
@@ -718,7 +654,7 @@ router.put('/trust/:userId', async (req, res, next) => {
   }
 })
 
-router.put('/untrust/:userId', async (req, res, next) => {
+router.put('/users/:userId/untrust', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access === modAccess || req.user.access === adminAccess) {
@@ -764,6 +700,70 @@ router.put('/untrust/:userId', async (req, res, next) => {
           return modActionDocument.save()
         })
         res.status(200).send({})
+      } else {
+        res.status(403).send({})
+      }
+    } else {
+      res.status(401).send({})
+    }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/modActions', async (req, res, next) => {
+  try {
+    if (req.user) {
+      if (req.user.access === modAccess || req.user.access === adminAccess) {
+        let lastElement = req.query.last
+        let aggregate = modActionsModel.aggregate()
+
+        let query = {}
+
+        if (lastElement) {
+          query.action_at = { $lt: new Date(lastElement) }
+        }
+
+        aggregate.match(query).lookup({
+          from: 'images',
+          localField: 'target_image',
+          foreignField: '_id',
+          as: 'images'
+        }).lookup({
+          from: 'users',
+          localField: 'target_user',
+          foreignField: '_id',
+          as: 'users'
+        }).lookup({
+          from: 'users',
+          localField: 'mod_user_id',
+          foreignField: '_id',
+          as: 'mods'
+        }).unwind({
+          path: '$images',
+          preserveNullAndEmptyArrays: true
+        }).unwind({
+          path: '$users',
+          preserveNullAndEmptyArrays: true
+        }).unwind({
+          path: '$mods',
+          preserveNullAndEmptyArrays: true
+        })
+
+        aggregate.sort({
+          action_at: -1
+        }).limit(imagesPerFetch)
+
+        let modActionData = await aggregate.exec()
+
+        modActionData.map(modAction => {
+          if (modAction.images) {
+            modAction.images.image_location = `${imageUrlRoute}${modAction.images.image_location}`
+            modAction.images.thumbnail_location = `${imageUrlRoute}${modAction.images.thumbnail_location}`
+            modAction.images.low_res_location = `${imageUrlRoute}${modAction.images.low_res_location}`
+          }
+        })
+        res.send(modActionData)
       } else {
         res.status(403).send({})
       }

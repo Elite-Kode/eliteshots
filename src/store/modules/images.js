@@ -166,7 +166,7 @@ const mutations = {
 }
 const actions = {
   async fetchPopular ({ commit }, last) {
-    let response = await axios.get('/frontend/images/popular', { params: { last } })
+    let response = await axios.get('/frontend/public/images/popular', { params: { last } })
     let popular = response.data
     if (last) {
       commit('addPopular', popular)
@@ -176,7 +176,7 @@ const actions = {
     return popular
   },
   async fetchRecents ({ commit }, last) {
-    let response = await axios.get('/frontend/images/recents', { params: { last } })
+    let response = await axios.get('/frontend/public/images/recents', { params: { last } })
     let recents = response.data
     if (last) {
       commit('addRecents', recents)
@@ -186,7 +186,7 @@ const actions = {
     return recents
   },
   async fetchCurated ({ commit }, last) {
-    let response = await axios.get('/frontend/images/curated', { params: { last } })
+    let response = await axios.get('/frontend/public/images/curated', { params: { last } })
     let curated = response.data
     if (last) {
       commit('addCurated', curated)
@@ -196,19 +196,19 @@ const actions = {
     return curated
   },
   async fetchImage ({ commit }, imageId) {
-    let response = await axios.get(`/frontend/images/${imageId}`)
+    let response = await axios.get(`/frontend/public/images/${imageId}`)
     return response.data
   },
   async triggerImageViewed ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/view`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/view`)
     commit('increaseViewCount', { imageItem, authenticated: rootState.auth.authenticated })
   },
   async triggerImageLiked ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/like`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/like`)
     commit('likeImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
   async triggerImageSaved ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/save`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/save`)
     commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   }
 }

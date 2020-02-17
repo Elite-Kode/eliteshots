@@ -257,7 +257,7 @@ const actions = {
     if (album) {
       formData.append('albumTitle', album)
     }
-    return axios.post('/frontend/upload', formData, {
+    return axios.post('/frontend/self/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -270,7 +270,7 @@ const actions = {
     return albums
   },
   async deleteAlbum ({ commit }, albumId) {
-    await axios.delete(`/frontend/albums/${albumId}`)
+    await axios.delete(`/frontend/self/albums/${albumId}`)
     commit('deleteAlbum', albumId)
   },
   async fetchImages ({ commit }, last) {
@@ -284,7 +284,7 @@ const actions = {
     return images
   },
   async fetchAlbumImages ({ commit }, { last, albumId }) {
-    let response = await axios.get(`/frontend/images/album/${albumId}`, { params: { last } })
+    let response = await axios.get(`/frontend/self/album/${albumId}/images`, { params: { last } })
     let images = response.data
     return images
   },
@@ -319,23 +319,23 @@ const actions = {
     return images
   },
   async triggerSelfImageViewed ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/view`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/view`)
     commit('increaseViewCount', { imageItem, authenticated: rootState.auth.authenticated })
   },
   async triggerSelfImageLiked ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/like`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/like`)
     commit('likeImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
   async triggerSelfImageSaved ({ commit, rootState }, imageItem) {
-    await axios.put(`/frontend/images/${imageItem._id}/save`)
+    await axios.put(`/frontend/public/images/${imageItem._id}/save`)
     commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
   async triggerSelfImageEdited ({ commit, rootState }, { imageId, title, description }) {
-    await axios.put(`/frontend/images/${imageId}/edit`, { title, description })
+    await axios.put(`/frontend/self/images/${imageId}/edit`, { title, description })
     commit('editImage', { imageId, title, description, authenticated: rootState.auth.authenticated })
   },
   async triggerSelfImageDeleted ({ commit, rootState }, imageItem) {
-    await axios.delete(`/frontend/images/${imageItem._id}`)
+    await axios.delete(`/frontend/self/images/${imageItem._id}`)
     commit('deleteImage', { imageItem, authenticated: rootState.auth.authenticated })
   }
 }

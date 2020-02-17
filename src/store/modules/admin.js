@@ -134,7 +134,7 @@ const actions = {
     return images
   },
   async fetchUploaded ({ commit }, { last, userId }) {
-    let response = await axios.get(`/frontend/admin/images/uploaded/${userId}`, { params: { last } })
+    let response = await axios.get(`/frontend/admin/users/${userId}/images`, { params: { last } })
     let images = response.data
     if (last) {
       commit('addUploadedImages', images)
@@ -155,22 +155,22 @@ const actions = {
     await axios.put(`/frontend/admin/images/${target}/curate`, { comment })
   },
   async banUser ({ commit }, { target, comment }) {
-    await axios.put(`/frontend/admin/ban/${target}`, { comment })
+    await axios.put(`/frontend/admin/users/${target}/ban`, { comment })
   },
   async unbanUser ({ commit }, { target, comment }) {
-    await axios.put(`/frontend/admin/unban/${target}`, { comment })
+    await axios.put(`/frontend/admin/users/${target}/unban`, { comment })
   },
   async demoteUser ({ commit }, { target, comment }) {
-    await axios.put(`/frontend/admin/demote/${target}`, { comment })
+    await axios.put(`/frontend/admin/users/${target}/demote`, { comment })
   },
   async promoteUser ({ commit }, { target, comment }) {
-    await axios.put(`/frontend/admin/promote/${target}`, { comment })
+    await axios.put(`/frontend/admin/users/${target}/promote`, { comment })
   },
   async trustUser ({ commit }, { target, comment }) {
-    await axios.put(`/frontend/admin/trust/${target}`, { comment })
+    await axios.put(`/frontend/admin/users/${target}/trust`, { comment })
   },
   async untrustUser ({ commit }, { target, comment }) {
-    await axios.put(`/frontend/admin/untrust/${target}`, { comment })
+    await axios.put(`/frontend/admin/users/${target}/untrust`, { comment })
   },
   async fetchUsers ({ commit }, { page }) {
     let response = await axios.get('/frontend/admin/users', { params: { page } })
