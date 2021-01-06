@@ -21,7 +21,7 @@
     "@bugsnag/js": "^6.5.0",
     "@bugsnag/plugin-express": "^6.5.1",
     "@bugsnag/plugin-vue": "^6.5.0",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "axios-retry": "^3.1.2",
     "backblaze-b2": "^1.5.0",
     "body-parser": "^1.19.0",
