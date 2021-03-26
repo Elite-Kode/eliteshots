@@ -385,6 +385,7 @@ router.delete('/albums/:albumId', async (req, res, next) => {
             $unset: { album_id: 1 }
           })
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})

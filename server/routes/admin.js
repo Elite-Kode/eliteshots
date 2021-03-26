@@ -230,6 +230,7 @@ router.put('/images/:imageId/accept', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -276,6 +277,7 @@ router.put('/images/:imageId/reject', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -325,6 +327,7 @@ router.put('/images/:imageId/curate', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -457,6 +460,7 @@ router.put('/users/:userId/ban', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -503,6 +507,7 @@ router.put('/users/:userId/unban', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -544,6 +549,7 @@ router.put('/users/:userId/demote', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -585,6 +591,7 @@ router.put('/users/:userId/promote', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -642,6 +649,7 @@ router.put('/users/:userId/trust', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
@@ -699,6 +707,7 @@ router.put('/users/:userId/untrust', async (req, res, next) => {
           })
           return modActionDocument.save()
         })
+        mongoSession.endSession()
         res.status(200).send({})
       } else {
         res.status(403).send({})
