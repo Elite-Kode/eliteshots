@@ -23,6 +23,7 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const mongoStore = require('connect-mongo')(session)
 const request = require('request-promise-native')
+const mongoose = require('mongoose')
 const passport = require('passport')
 const FrontierStrategy = require('passport-frontier').Strategy
 const secrets = require('./secrets')
@@ -45,17 +46,21 @@ require('./server/db')
 require('./server/modules/backblaze')
 require('./server/modules/discord')
 
+let imageModel = require('./server/models/images')
+
 const app = express()
 
 app.use(bugsnagClientMiddleware.requestHandler)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'dist')))
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'pug')
 app.use(session({
   name: 'EliteShots',
   secret: secrets.session_secret,
   cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
-  store: new mongoStore({ mongooseConnection: require('mongoose').connection })
+  store: new mongoStore({ mongooseConnection: mongoose.connection })
 }))
 app.use(passport.initialize())
 app.use(passport.session())
@@ -71,9 +76,26 @@ app.use('/frontend/public', publicRoutes)
 app.use('/frontend', frontEnd)
 
 // Pass all 404 errors called by browser to angular
-app.all('*', (req, res) => {
-  console.log(`Server 404 request: ${req.originalUrl}`)
-  res.status(200).sendFile(path.join(__dirname, 'dist', 'index.html'))
+app.all('*', async (req, res) => {
+  if (app.get('env') === 'development') {
+    console.log(`Server 404 request: ${req.originalUrl}`)
+  }
+  let url = new URL(req.url, `${processVars.protocol}://${processVars.host}`)
+  let urlsPathParts = url.pathname.split('/').slice(1)
+  if (urlsPathParts[0] === 'image' && mongoose.Types.ObjectId(urlsPathParts[1])) {
+    let imageId = urlsPathParts[1]
+    let imageObject = (await imageWithUser(imageId))[0]
+    let imageUrl = `${imageObject.imageUrlRoute}${imageObject.thumbnail_location}`
+    res.render('index', {
+      title: imageObject.title,
+      description: imageObject.description,
+      url: url,
+      imageUrl: imageUrl,
+      username: imageObject.cmdr_name
+    })
+  } else {
+    res.status(200).sendFile(path.join(__dirname, 'dist', 'index.html'))
+  }
 })
 
 // error handlers
@@ -119,6 +141,25 @@ passport.deserializeUser(async (id, done) => {
     done(err)
   }
 })
+
+let imageWithUser = (imageId) => {
+  let aggregate = imageModel.aggregate()
+  let query = {
+    _id: mongoose.Types.ObjectId(imageId)
+  }
+  return aggregate.match(query).lookup({
+    from: 'users',
+    localField: 'user_id',
+    foreignField: '_id',
+    as: 'user'
+  }).addFields({
+    cmdr_name: {
+      '$arrayElemAt': ['$user.commander', 0]
+    }
+  }).project({
+    user: 0
+  }).exec()
+}
 
 let onAuthentication = async (accessToken, refreshToken, profile, done, type) => {
   let requestOptions = {

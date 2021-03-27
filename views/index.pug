@@ -1,0 +1,58 @@
+doctype html
+html
+    head
+        title Elite Shots
+        meta(charset='utf-8')
+        meta(name='viewport' content='width=device-width,initial-scale=1.0')
+        meta(property='og:site_name' content='EliteShots')
+        meta(property='og:type' content='website')
+        meta(property='og:title' content=title)
+        meta(property='og:description' content=description)
+        meta(property='og:url' content=url)
+        meta(property='og:image' content=imageUrl)
+        meta(name='twitter:card' content='summary_large_image')
+        meta(name='twitter:title' content=title)
+        meta(name='twitter:description' content=description)
+        meta(name='twitter:url' content=url)
+        meta(name='twitter:image' content=imageUrl)
+        meta(name='twitter:site' content='EliteShots')
+        meta(name='twitter:creator' content=username)
+        link(rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png')
+        link(rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png')
+        link(rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png')
+        link(rel='manifest' href='/site.webmanifest')
+        link(rel='mask-icon' href='/safari-pinned-tab.svg' color='#ff7100')
+        meta(name='msapplication-TileColor' content='#da532c')
+        meta(name='theme-color' content='#ffffff')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900')
+        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Material+Icons')
+        link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css')
+        link(href='https://use.fontawesome.com/releases/v5.7.2/css/all.css' rel='stylesheet')
+        link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css')
+        script(src='https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js' data-cfasync='false')
+        script.
+          window.addEventListener('load', function () {
+            window.cookieconsent.initialise({
+              'palette': {
+                'popup': {
+                  'background': '#eb6c44',
+                  'text': '#ffffff'
+                },
+                'button': {
+                  'background': '#f5d948'
+                }
+              },
+              'theme': 'edgeless',
+              'content': {
+                'message': 'This website uses cookies to maintain a logged in session.',
+                'link': 'Privacy Policy',
+                'href': 'about/privacypolicy'
+              }
+            })
+          })
+        link(href='/js/app.js' rel='preload' as='script')
+        link(href='/js/chunk-vendors.js' rel='preload' as='script')
+    #app
+    // built files will be auto injected
+    script(type='text/javascript' src='/js/chunk-vendors.js')
+    script(type='text/javascript' src='/js/app.js')
