@@ -17,7 +17,7 @@
 'use strict'
 
 const client = require('./client')
-const bugsnagClient = require('../bugsnag')
+const bugsnagCaller = require('../bugsnag').bugsnagCaller;
 const secrets = require('../../../secrets')
 
 client.login(secrets.discord_token)
@@ -30,14 +30,14 @@ client.on('guildMemberAdd', async member => {
   try {
     let configModel = require('../../models/configs')
     let config = await configModel.findOne()
-    await member.addRole(config.user_role_id)
+    await member.roles.add(config.user_role_id)
   } catch (err) {
-    bugsnagClient.notify(err)
+    bugsnagCaller(err)
     console.log(err)
   }
 })
 
 client.on('error', err => {
-  bugsnagClient.notify(err)
+  bugsnagCaller(err)
   console.log(err)
 })

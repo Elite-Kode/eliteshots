@@ -20,6 +20,8 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
 let elite_shots_url = require('../secrets').elite_shots_db_url
+let elite_shots_db_user = require('../secrets').elite_shots_db_user
+let elite_shots_db_pwd = require('../secrets').elite_shots_db_pwd
 
 class DB {
   constructor () {
@@ -44,8 +46,17 @@ class DB {
     })
   }
 
+  options = {
+    keepAlive: true,
+    keepAliveInitialDelay: 120000,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    user: elite_shots_db_user,
+    pass: elite_shots_db_pwd
+  }
+
   async connect () {
-    await mongoose.connect(elite_shots_url)
+    await mongoose.connect(elite_shots_url, this.options)
 
     this.retryOnDisconnect()
   }

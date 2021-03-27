@@ -29,8 +29,7 @@ const FrontierStrategy = require('passport-frontier').Strategy
 const secrets = require('./secrets')
 const processVars = require('./processVars')
 
-const bugsnagClient = require('./server/modules/bugsnag')
-const bugsnagClientMiddleware = bugsnagClient.getPlugin('express')
+const bugsnagCaller = require('./server/modules/bugsnag').bugsnagCaller
 
 const authCheck = require('./server/routes/auth/auth_check')
 const authFrontier = require('./server/routes/auth/frontier')
@@ -48,9 +47,17 @@ require('./server/modules/discord')
 
 let imageModel = require('./server/models/images')
 
+const bugsnagClient = require('./server/modules/bugsnag').bugsnagClient
+
 const app = express()
 
-app.use(bugsnagClientMiddleware.requestHandler)
+let bugsnagClientMiddleware = {}
+
+if (secrets.bugsnag_use) {
+  bugsnagClientMiddleware = bugsnagClient.getPlugin('express')
+  app.use(bugsnagClientMiddleware.requestHandler)
+}
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'dist')))
@@ -99,7 +106,9 @@ app.all('*', async (req, res) => {
 })
 
 // error handlers
-app.use(bugsnagClientMiddleware.errorHandler)
+if (secrets.bugsnag_use) {
+  app.use(bugsnagClientMiddleware.errorHandler)
+}
 
 // development error handler
 // will print stacktrace
@@ -137,7 +146,7 @@ passport.deserializeUser(async (id, done) => {
     let user = await model.findOne({ frontier_id: id })
     done(null, user)
   } catch (err) {
-    bugsnagClient.notify(err)
+    bugsnagCaller(err)
     done(err)
   }
 })
@@ -218,7 +227,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
       throw new Error('CAPI data not found')
     }
   } catch (err) {
-    bugsnagClient.notify(err)
+    bugsnagCaller(err)
     done(err)
   }
 }
@@ -247,5 +256,6 @@ passport.use('frontier', new FrontierStrategy({
   scope: ['auth', 'capi'],
   state: true
 }, onAuthenticationIdentify))
+
 
 module.exports = app
