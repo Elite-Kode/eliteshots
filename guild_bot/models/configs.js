@@ -1,5 +1,5 @@
 /*
- * KodeBlox Copyright 2020 Sayak Mukhopadhyay
+ * KodeBlox Copyright 2021 Sayak Mukhopadhyay
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,14 @@
 
 'use strict'
 
-const discord = require('discord.js');
+const mongoose = require('mongoose')
 
-module.exports = new discord.Client();
+let Schema = mongoose.Schema
+
+let configs = new Schema({
+  guild_id: String,
+  admin_channel_id: String,
+  user_role_id: String
+}, { runSettersOnQuery: true })
+
+module.exports = mongoose.model('configs', configs)

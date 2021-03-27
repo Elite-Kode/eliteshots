@@ -1,5 +1,5 @@
 /*
- * KodeBlox Copyright 2020 Sayak Mukhopadhyay
+ * KodeBlox Copyright 2021 Sayak Mukhopadhyay
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 'use strict'
 
-const client = require('./client')
-const bugsnagCaller = require('../bugsnag').bugsnagCaller;
-const secrets = require('../../../secrets')
+const discord = require('discord.js')
+const bugsnagCaller = require('./bugsnag').bugsnagCaller
+const secrets = require('./secrets')
+
+const client = new discord.Client()
 
 client.login(secrets.discord_token)
 
@@ -28,16 +30,16 @@ client.on('ready', () => {
 
 client.on('guildMemberAdd', async member => {
   try {
-    let configModel = require('../../models/configs')
+    let configModel = require('./models/configs')
     let config = await configModel.findOne()
     await member.roles.add(config.user_role_id)
   } catch (err) {
     bugsnagCaller(err)
-    console.log(err)
   }
 })
 
 client.on('error', err => {
   bugsnagCaller(err)
-  console.log(err)
 })
+
+module.exports = client

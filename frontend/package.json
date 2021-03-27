@@ -9,13 +9,10 @@
     "builddev": "vue-cli-service build --watch",
     "buildprod": "vue-cli-service build",
     "dev": "vue-cli-service serve",
-    "preparedev": "run-p builddev rundev",
     "rundev": "cross-env NODE_ENV=development nodemon --inspect=localhost:9030 ./bin/start.js",
     "runprod": "cross-env PORT=4004 pm2 start process.json --env production",
-    "start": "run-s versionfile buildprod runprod",
-    "startdev": "run-s versionfile preparedev",
-    "startrun": "npm run dev",
-    "versionfile": "node versionFile.js"
+    "start": "run-s buildprod runprod",
+    "startdev": "run-p builddev rundev"
   },
   "dependencies": {
     "@bugsnag/js": "^7.9.0",
@@ -27,7 +24,6 @@
     "body-parser": "^1.19.0",
     "connect-mongo": "^3.2.0",
     "core-js": "^3.4.4",
-    "discord.js": "^11.6.4",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "fs-extra": "^8.1.0",
