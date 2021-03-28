@@ -6,8 +6,8 @@
     "builddev": "vue-cli-service build --watch",
     "buildprod": "vue-cli-service build",
     "dev": "vue-cli-service serve",
-    "rundev": "cross-env NODE_ENV=development nodemon --inspect=localhost:9030 ./bin/start.js",
-    "runprod": "cross-env PORT=4004 pm2 start process.json --env production",
+    "rundev": "cross-env NODE_ENV=development nodemon --inspect=localhost:9029 ./bin/start.js",
+    "runprod": "cross-env PORT=4020 pm2 start process.json --env production",
     "start": "run-s buildprod runprod",
     "startdev": "run-p builddev rundev"
   },
