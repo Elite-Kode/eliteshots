@@ -22,6 +22,7 @@ const bodyParser = require('body-parser');
 const secrets = require('./secrets');
 
 const newMember = require('./routes/new_member');
+const moderation = require('./routes/moderation')
 
 const bugsnagClient = require('./bugsnag').bugsnagClient;
 
@@ -36,6 +37,7 @@ let bugsnagClientMiddleware = {}
 app.use(bodyParser.json());
 
 app.use('/new-member', newMember);
+app.use('/moderation', moderation)
 
 if (secrets.bugsnag_use) {
     bugsnagClientMiddleware = bugsnagClient.getPlugin('express');

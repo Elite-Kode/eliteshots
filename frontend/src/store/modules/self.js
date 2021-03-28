@@ -271,9 +271,7 @@ const actions = {
       formData.append('albumTitle', album)
     }
     return axios.post('/frontend/self/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+      headers: formData.getHeaders()
     })
   },
   async createAlbum ({ commit, dispatch }, { title, description }) {

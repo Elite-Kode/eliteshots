@@ -19,6 +19,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
+const axios = require('axios')
+const FormData = require('form-data')
 const multer = require('multer')
 const jimp = require('jimp')
 
@@ -146,6 +148,11 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
           user_id: req.user._id
         })
         await imageDocument.save()
+        let formData = new FormData()
+        formData.append('file', req.file.buffer, { filename: req.file.originalname })
+        await axios.post(`${secrets.companion_bot_endpoint}/moderation/new-upload`, formData, {
+          headers: formData.getHeaders()
+        })
         res.status(201).send({})
       } else {
         res.status(403).send({})

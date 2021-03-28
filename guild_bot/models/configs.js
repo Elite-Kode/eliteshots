@@ -23,6 +23,7 @@ let Schema = mongoose.Schema
 let configs = new Schema({
   guild_id: String,
   admin_channel_id: String,
+  mod_channel_id: String,
   user_role_id: String
 }, { runSettersOnQuery: true })
 
