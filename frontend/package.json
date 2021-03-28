@@ -1,9 +1,6 @@
 {
-  "name": "eliteshots",
-  "version": "1.1.0",
+  "name": "eliteshots-frontend",
   "private": true,
-  "description": "A website for Elite Dangerous screenshots",
-  "author": "Sayak Mukhopadhyay <mukhopadhyaysayak@gmail.com>",
   "scripts": {
     "lint": "vue-cli-service lint",
     "builddev": "vue-cli-service build --watch",
