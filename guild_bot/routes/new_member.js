@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
       announcementChannel.send('CMDR ' + req.body.name + ' has joined Elite Shots')
     }
   }
+  res.sendStatus(200)
 })
 
 module.exports = router
