@@ -20,8 +20,9 @@ const express = require('express')
 const path = require('path')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
-const axios = require('axios');
+const axios = require('axios')
 const session = require('express-session')
+const consolidate = require('consolidate')
 const mongoStore = require('connect-mongo')(session)
 const request = require('request-promise-native')
 const mongoose = require('mongoose')
@@ -60,9 +61,13 @@ if (secrets.bugsnag_use) {
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+app.engine('html', consolidate.mustache)
+app.set('view engine', 'html')
+app.set('views', __dirname + '/dist')
+app.get('/', (req, res) => {
+  res.render('index.html')
+})
 app.use(express.static(path.join(__dirname, 'dist')))
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'pug')
 app.use(session({
   name: 'EliteShots',
   secret: secrets.session_secret,
@@ -92,16 +97,17 @@ app.all('*', async (req, res) => {
   if (urlsPathParts[0] === 'image' && mongoose.Types.ObjectId(urlsPathParts[1])) {
     let imageId = urlsPathParts[1]
     let imageObject = (await imageWithUser(imageId))[0]
-    let imageUrl = `${imageObject.imageUrlRoute}${imageObject.thumbnail_location}`
-    res.render('index', {
+    let imageUrl = `${processVars.imageUrlRoute}${imageObject.thumbnail_location}`
+    res.render('index.html', {
       title: imageObject.title,
       description: imageObject.description,
       url: url,
       imageUrl: imageUrl,
-      username: imageObject.cmdr_name
+      username: imageObject.cmdr_name,
+      metaCards: true
     })
   } else {
-    res.status(200).sendFile(path.join(__dirname, 'dist', 'index.html'))
+    res.render('index.html')
   }
 })
 
@@ -217,7 +223,7 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
             runValidators: true
           })
         if (secrets.discord_use) {
-          await axios.post(`${secrets.companion_bot_endpoint}/new-member`, { name: commanderName });
+          await axios.post(`${secrets.companion_bot_endpoint}/new-member`, { name: commanderName })
         }
         done(null, user)
       }
@@ -254,6 +260,5 @@ passport.use('frontier', new FrontierStrategy({
   scope: ['auth', 'capi'],
   state: true
 }, onAuthenticationIdentify))
-
 
 module.exports = app
