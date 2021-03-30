@@ -98,9 +98,11 @@ app.all('*', async (req, res) => {
     let imageId = urlsPathParts[1]
     let imageObject = (await imageWithUser(imageId))[0]
     let imageUrl = `${processVars.imageUrlRoute}${imageObject.thumbnail_location}`
+    let title =  imageObject.title ? imageObject.title : "&#x3164;"
+    let description =  imageObject.description ? imageObject.description : "&#x3164;"
     res.render('index.html', {
-      title: imageObject.title,
-      description: imageObject.description,
+      title: title,
+      description: description,
       url: url,
       imageUrl: imageUrl,
       username: imageObject.cmdr_name,
