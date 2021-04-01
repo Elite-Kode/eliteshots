@@ -34,7 +34,7 @@
     <v-content>
       <v-container fluid class="pa-0">
         <v-card>
-          <v-img :src="imageItem.image_location"/>
+          <v-img class="image-fit" :src="imageItem.image_location"/>
           <v-card-title class="d-block">
             <v-row dense>
               <v-col v-if="isMod" cols="12" lg="9">
@@ -358,4 +358,8 @@ export default {
 </script>
 
 <style scoped>
+.image-fit {
+  width: max-content;
+  margin: auto
+}
 </style>

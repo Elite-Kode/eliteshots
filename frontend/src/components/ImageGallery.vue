@@ -25,7 +25,7 @@
                 :src="imageItem.thumbnail_location"
                 @click="clickThumbnail(i)"
                 class="image-thumbnail"
-                min-height="200px"
+                :aspect-ratio="1"
               >
                 <h4 v-if="imageItem.curated && curationBanner" class="ribbon ribbon-curated">CURATED</h4>
                 <template v-else-if="modStatusBanner">
