@@ -2,7 +2,7 @@ let host = ''
 let protocol = ''
 let imageUrlRoute = ''
 if (process.env.NODE_ENV === 'development') {
-  host = 'localhost:3004'
+  host = 'localhost:3020'
   protocol = 'http'
   imageUrlRoute = 'https://cdn.eliteshots.gallery/file/eliteshots-dev/'
 } else if (process.env.NODE_ENV === 'production') {
@@ -13,8 +13,6 @@ if (process.env.NODE_ENV === 'development') {
 
 let version = require('./version')
 
-let defaultAlbumTitle = 'Default'
-
 module.exports = {
-  host, protocol, imageUrlRoute, version, defaultAlbumTitle
+  host, protocol, imageUrlRoute, version
 }
