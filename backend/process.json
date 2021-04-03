@@ -1,7 +1,7 @@
 {
     "apps": [
         {
-            "name": "eliteshots-guild-bot",
+            "name": "eliteshots-backend",
             "namespace": "eliteshots",
             "script": "./bin/start.js",
             "watch": true,

@@ -16,22 +16,19 @@
 
 'use strict'
 
-const express = require('express')
-const mongoose = require('mongoose')
+const B2 = require('backblaze-b2')
+const axiosRetry = require('axios-retry')
 
-const backblaze = require('../modules/backblaze')
-const processVars = require('../../processVars')
+const secrets = require('../../secrets')
 
-let albumModel = require('../models/albums')
-let imageModel = require('../models/images')
+let b2Client = new B2({
+  applicationKeyId: secrets.b2_key_id,
+  applicationKey: secrets.b2_key,
+  retry: {
+    retries: 5,
+    retryDelay: axiosRetry.exponentialDelay
+  }
+})
+b2Client.authorize()
 
-let imageUrlRoute = processVars.imageUrlRoute
-
-let router = express.Router()
-
-let imagesPerFetch = 4
-let ObjectId = mongoose.Types.ObjectId
-
-let bannedAccess = 'BANNED'
-
-module.exports = router
+module.exports = b2Client

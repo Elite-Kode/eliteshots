@@ -24,8 +24,8 @@ const FormData = require('form-data')
 const multer = require('multer')
 const jimp = require('jimp')
 
-const processVars = require('../../processVars')
-const secrets = require('../../secrets')
+const processVars = require('../processVars')
+const secrets = require('../secrets')
 const backblaze = require('../modules/backblaze')
 const upload = multer()
 
@@ -150,9 +150,11 @@ router.post('/upload', upload.single('screenshot'), async (req, res, next) => {
         await imageDocument.save()
         let formData = new FormData()
         formData.append('file', req.file.buffer, { filename: req.file.originalname })
-        await axios.post(`${secrets.companion_bot_endpoint}/moderation/new-upload`, formData, {
-          headers: formData.getHeaders()
-        })
+        if (secrets.discord_use) {
+          await axios.post(`${secrets.companion_bot_endpoint}/moderation/new-upload`, formData, {
+            headers: formData.getHeaders()
+          })
+        }
         res.status(201).send({})
       } else {
         res.status(403).send({})

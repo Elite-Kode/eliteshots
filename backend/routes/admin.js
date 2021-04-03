@@ -18,7 +18,7 @@
 
 const express = require('express')
 const mongoose = require('mongoose')
-const processVars = require('../../processVars')
+const processVars = require('../processVars')
 
 let imageModel = require('../models/images')
 let usersModel = require('../models/users')

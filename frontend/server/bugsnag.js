@@ -1,5 +1,5 @@
 /*
- * KodeBlox Copyright 2020 Sayak Mukhopadhyay
+ * KodeBlox Copyright 2021 Sayak Mukhopadhyay
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@
 const bugsnag = require('@bugsnag/js')
 const bugsnagExpress = require('@bugsnag/plugin-express')
 
-const processVars = require('../../../processVars')
-const useBugsnag = require('../../../secrets').bugsnag_use
+const processVars = require('../processVars')
+const useBugsnag = require('../secrets').bugsnag_use
 
 let bugsnagClient = {}
 
 if (useBugsnag) {
   bugsnagClient = bugsnag.start({
-    apiKey: require('../../../secrets').bugsnag_token,
+    apiKey: require('../secrets').bugsnag_token,
     enabledReleaseStages: ['development', 'production'],
     plugins: [bugsnagExpress],
     appVersion: processVars.version
