@@ -52,9 +52,6 @@ app.use(express.static(path.join(__dirname, 'dist')))
 
 // Pass all 404 errors called by browser to angular
 app.all('*', async (req, res) => {
-  if (app.get('env') === 'development') {
-    console.log(`Server 404 request: ${req.originalUrl}`)
-  }
   let url = new URL(req.url, `${processVars.protocol}://${processVars.host}`)
   let urlsPathParts = url.pathname.split('/').slice(1)
   if (urlsPathParts[0] === 'image' && mongoose.Types.ObjectId(urlsPathParts[1])) {
