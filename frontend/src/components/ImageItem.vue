@@ -31,7 +31,7 @@
                 :all-albums="albums"
                 @cancel="onEditCancel"
                 @confirm="onEditConfirm"/>
-    <v-content>
+    <v-main>
       <v-container fluid class="pa-0">
         <v-card>
           <v-img class="image-fit" :src="imageItem.image_location"/>
@@ -124,7 +124,7 @@
           </v-card-title>
         </v-card>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 
@@ -360,6 +360,6 @@ export default {
 <style scoped>
 .image-fit {
   width: max-content;
-  margin: auto
+  margin: auto;
 }
 </style>

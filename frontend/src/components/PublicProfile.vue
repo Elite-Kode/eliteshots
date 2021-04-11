@@ -17,7 +17,7 @@
 <template>
   <div>
     <profile-toolbar/>
-    <v-content>
+    <v-main>
       <v-container fluid>
         <h1>CMDR {{ publicProfileUser.commander }}</h1>
         <image-gallery :imageItems="publicProfileImages"
@@ -32,7 +32,7 @@
                        no-user
                        curation-banner/>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 

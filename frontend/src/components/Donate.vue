@@ -17,7 +17,7 @@
 <template>
   <div>
     <ed-toolbar scroll-of-screen scroll-threshold="64"/>
-    <v-content>
+    <v-main>
       <v-container fluid>
         <h1>Support Elite Shots</h1>
         <p>
@@ -39,7 +39,7 @@
           easily.
         </p>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 

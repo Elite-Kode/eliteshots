@@ -17,7 +17,7 @@
 <template>
   <div>
     <ed-toolbar/>
-    <v-content>
+    <v-main>
       <v-container fluid>
         <h1>{{publicProfileAlbum.title}}</h1>
         <h3>CMDR {{ publicProfileUser.commander }}</h3>
@@ -33,7 +33,7 @@
                        no-user
                        curation-banner/>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 

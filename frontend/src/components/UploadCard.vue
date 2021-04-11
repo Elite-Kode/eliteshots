@@ -23,7 +23,7 @@
         </v-toolbar>
       </template>
     </ed-toolbar>
-    <v-content class="fill-height">
+    <v-main class="fill-height">
       <v-container fluid class="fill-height pa-0">
         <v-row class="flex-column mx-0 fill-height flex-nowrap">
           <v-col class="flex-grow-1 pa-0 uploaderColumn">
@@ -90,7 +90,7 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 

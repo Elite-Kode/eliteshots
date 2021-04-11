@@ -18,7 +18,7 @@
   <div>
     <ed-toolbar>
     </ed-toolbar>
-    <v-content>
+    <v-main>
       <v-container fluid>
         <h2 class="mb-5">Submission Guidelines</h2>
         <h3>All submissions made in Elite Shots are moderated by a team of moderators. Here are some rules and
@@ -32,7 +32,7 @@
           submission won't be available for public. In case of submissions which violate out Terms and Conditions, they
           can be outright deleted and will not be recoverable.</h3>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 

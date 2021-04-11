@@ -18,7 +18,7 @@
   <div>
     <ed-toolbar>
     </ed-toolbar>
-    <v-content>
+    <v-main>
       <v-container fluid>
         <v-row>
           <v-col cols="12" md="6" lg="5">
@@ -138,38 +138,29 @@
                    alt="Garud Logo"/>
             <h3>CMDR Garud</h3>
           </v-col>
-          <v-col cols="12" md="1" class="card-img">
-            <v-img width="50%"
-                   height="50%"
+          <v-col class="card-img" cols="12" lg="3" md="3" sm="12">
+            <v-img :src="require('@/assets/garud-logo.svg')"
+                   alt="Garud Logo"
                    contain
-                   :src="require('@/assets/ampersand.svg')"
-                   alt="Ampersand"/>
+                   height="50%"
+                   width="50%"/>
+            <h3>CMDR Garud</h3>
           </v-col>
-          <v-col cols="12" md="3">
-            <a href="https://knightsofkarma.com" target="_blank" class="card-img">
-              <v-img width="50%"
-                     height="50%"
+          <v-col class="card-img" cols="12" lg="3" md="2" sm="12">
+            <v-img :src="require('@/assets/ampersand.svg')"
+                   alt="Ampersand"
+                   contain
+                   height="50%"
+                   width="50%"/>
+          </v-col>
+          <v-col cols="12" lg="3" md="3" sm="12">
+            <a class="card-img" href="https://knightsofkarma.com" target="_blank">
+              <v-img :src="require('@/assets/kok-logo.svg')"
+                     alt="Knights of Karma Logo"
                      contain
-                     :src="require('@/assets/kok-logo.svg')"
-                     alt="Knights of Karma Logo"/>
+                     height="50%"
+                     width="50%"/>
               <h3>Knights of Karma</h3>
-            </a>
-          </v-col>
-          <v-col cols="12" md="1" class="card-img">
-            <v-img width="50%"
-                   height="50%"
-                   contain
-                   :src="require('@/assets/ampersand.svg')"
-                   alt="Ampersand"/>
-          </v-col>
-          <v-col cols="12" md="3">
-            <a href="https://twitter.com/GalPhotoED" target="_blank" class="card-img">
-              <v-img width="50%"
-                     height="50%"
-                     contain
-                     :src="require('@/assets/galphoto-logo.svg')"
-                     alt="GalPhoto Logo"/>
-              <h3>GalPhoto</h3>
             </a>
           </v-col>
         </v-row>
@@ -187,7 +178,7 @@
         </h2>
         <privacy-policy-text/>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 
@@ -211,13 +202,13 @@ export default {
 </script>
 
 <style scoped>
-  .card-img {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.card-img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .card-img .v-card__text {
-    text-align: center;
-  }
+.card-img .v-card__text {
+  text-align: center;
+}
 </style>

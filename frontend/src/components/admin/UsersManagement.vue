@@ -25,12 +25,13 @@
       :items-per-page="10"
       :footer-props="tableFooter"
       dense
+      class="elevation-1"
       :loading="loading">
       <template v-slot:item._id="{item}">
         <router-link :to="{ name: 'user-detail', params: { userId: item._id }}">{{ item._id }}</router-link>
       </template>
       <template v-slot:item.trusted="{ item }">
-        <v-checkbox
+        <v-simple-checkbox
           v-model="item.trusted"
           disabled
         />
