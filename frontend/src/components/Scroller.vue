@@ -16,7 +16,7 @@
 
 <template>
   <v-scale-transition origin="center center">
-    <v-btn fixed fab bottom right color="primary" v-if="scrollPosition > 100" @click="scrollToTop">
+    <v-btn v-if="scrollPosition > 100" bottom color="primary" fab fixed right @click="scrollToTop">
       <v-icon>keyboard_arrow_up</v-icon>
     </v-btn>
   </v-scale-transition>

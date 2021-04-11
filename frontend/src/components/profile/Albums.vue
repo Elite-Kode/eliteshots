@@ -17,20 +17,20 @@
 <template>
   <div>
     <h1>My Albums</h1>
-    <album-edit :editId="editId"
+    <album-edit :edit-description="editDescription"
                 :edit-title="editTitle"
-                :edit-description="editDescription"
                 :editDialog="editDialog"
+                :editId="editId"
                 @cancel="onEditCancel"
                 @confirm="onEditConfirm"/>
     <album-gallery :albumItems="albums"
-                   @albumOpened="onClickOpen"
-                   @albumDeleted="onClickDelete"
-                   @albumEdited="onClickEdit"
-                   @albumCreated="onClickCreate"
                    :authenticated="authenticated"
                    deletable
-                   editable/>
+                   editable
+                   @albumCreated="onClickCreate"
+                   @albumDeleted="onClickDelete"
+                   @albumEdited="onClickEdit"
+                   @albumOpened="onClickOpen"/>
   </div>
 </template>
 

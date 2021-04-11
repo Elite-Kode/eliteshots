@@ -24,10 +24,10 @@
           <v-card>
             <v-img
               :src="view.thumbnail_location"
-              @click="clickThumbnail(i)"
               class="image-thumbnail"
-              min-height="200px">
-              <v-btn icon :to="{ name: 'image-item', params:{imageId: view._id}}" target="_blank" @click.stop="">
+              min-height="200px"
+              @click="clickThumbnail(i)">
+              <v-btn :to="{ name: 'image-item', params:{imageId: view._id}}" icon target="_blank" @click.stop="">
                 <v-icon>launch</v-icon>
               </v-btn>
             </v-img>
@@ -35,21 +35,21 @@
         </template>
         <template v-slot:icon>
           <v-avatar>
-            {{view.count}}
+            {{ view.count }}
           </v-avatar>
         </template>
         <v-card class="chevron">
-          <v-toolbar color="primary"
-                     dense
+          <v-toolbar class="px-3"
+                     color="primary"
                      dark
-                     class="px-3">
+                     dense>
             <v-toolbar-title class="text-truncate">
-              <span>{{view.title}}</span>
+              <span>{{ view.title }}</span>
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <p>{{view.description}}</p>
-            <p>Viewed at: {{view.viewed_at_formatted}}</p>
+            <p>{{ view.description }}</p>
+            <p>Viewed at: {{ view.viewed_at_formatted }}</p>
           </v-card-text>
         </v-card>
       </v-timeline-item>
@@ -141,11 +141,11 @@ export default {
 </script>
 
 <style scoped>
-  .chevron {
-    border-color: var(--v-primary-base) !important;
-  }
+.chevron {
+  border-color: var(--v-primary-base) !important;
+}
 
-  .chevron:after {
-    margin: 0 1px;
-  }
+.chevron:after {
+  margin: 0 1px;
+}
 </style>

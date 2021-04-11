@@ -15,16 +15,16 @@
   -->
 
 <template>
-  <image-gallery :imageItems="popularImages"
-                 :loading="loadingNewImages"
+  <image-gallery :authenticated="authenticated"
                  :end="imagesEnd"
+                 :imageItems="popularImages"
+                 :loading="loadingNewImages"
+                 curation-banner
                  link-key="image_location"
-                 @imageViewed="onClickThumbnail"
+                 @fetchImages="onFetchImages"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
-                 @fetchImages="onFetchImages"
-                 :authenticated="authenticated"
-                 curation-banner/>
+                 @imageViewed="onClickThumbnail"/>
 </template>
 
 <script>

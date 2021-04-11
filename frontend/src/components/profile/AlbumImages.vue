@@ -17,30 +17,30 @@
 <template>
   <div>
     <h1>Album Images</h1>
-    <image-edit :editId="editId"
-                :edit-title="editTitle"
-                :edit-description="editDescription"
+    <image-edit :all-albums="albums"
                 :edit-album="editAlbum"
+                :edit-description="editDescription"
+                :edit-title="editTitle"
                 :editDialog="editDialog"
-                :all-albums="albums"
+                :editId="editId"
                 @cancel="onEditCancel"
                 @confirm="onEditConfirm"/>
-    <image-gallery :imageItems="albumImages"
-                   :loading="loadingNewImages"
+    <image-gallery :authenticated="authenticated"
                    :end="imagesEnd"
-                   link-key="image_location"
-                   @imageViewed="onClickThumbnail"
-                   @imageEdited="onClickEdit"
-                   @imageDeleted="onClickDelete"
-                   @imageLiked="onClickLike"
-                   @imageSaved="onClickSave"
-                   @fetchImages="onFetchImages"
-                   :authenticated="authenticated"
+                   :imageItems="albumImages"
+                   :loading="loadingNewImages"
+                   curation-banner
                    deletable
                    editable
+                   link-key="image_location"
+                   mod-status-banner
                    no-user
-                   curation-banner
-                   mod-status-banner/>
+                   @fetchImages="onFetchImages"
+                   @imageDeleted="onClickDelete"
+                   @imageEdited="onClickEdit"
+                   @imageLiked="onClickLike"
+                   @imageSaved="onClickSave"
+                   @imageViewed="onClickThumbnail"/>
   </div>
 </template>
 

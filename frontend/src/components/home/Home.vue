@@ -3,13 +3,13 @@
     <ed-toolbar>
       <template v-slot:toolbar-tabs>
         <v-tabs
-          background-color="accent"
           align-with-title
-          slider-color="secondary"
+          background-color="accent"
           light
+          slider-color="secondary"
         >
           <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link">
-            {{tabItem.name}}
+            {{ tabItem.name }}
           </v-tab>
         </v-tabs>
       </template>
@@ -47,9 +47,9 @@ export default {
 }
 </script>
 
-<style scoped lang="sass">
-  @import '~vuetify/src/styles/styles.sass'
+<style lang="sass" scoped>
+@import '~vuetify/src/styles/styles.sass'
 
-  a.v-tab--active.v-tab
-    color: map-deep-get($material-light, 'text', 'primary')
+a.v-tab--active.v-tab
+  color: map-deep-get($material-light, 'text', 'primary')
 </style>

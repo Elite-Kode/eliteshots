@@ -21,21 +21,21 @@
     <v-main>
       <v-container fluid>
         <v-row>
-          <v-col cols="12" md="6" lg="5">
-            <v-img height="50vh"
-                   contain
-                   :src="require('@/assets/EliteShotsV1.svg')"
+          <v-col cols="12" lg="5" md="6">
+            <v-img :src="require('@/assets/EliteShotsV1.svg')"
                    alt="Elite Shots Logo"
+                   contain
+                   height="50vh"
             />
           </v-col>
-          <v-col cols="12" md="6" lg="7">
+          <v-col cols="12" lg="7" md="6">
             <h1 class="display-3">Elite Shots</h1>
             <p class="mt-6">
               Elite Dangerous is a beautiful game and you can never have enough of space screenshots. Elite Shots is
               your single portal for all screenshots related to Elite Dangerous.
             </p>
-            <v-btn color="primary" to="/guidelines" class="mr-2">Guidelines</v-btn>
-            <v-btn outlined color="primary" href="https://github.com/SayakMukhopadhyay/eliteshots" target="_blank">
+            <v-btn class="mr-2" color="primary" to="/guidelines">Guidelines</v-btn>
+            <v-btn color="primary" href="https://github.com/SayakMukhopadhyay/eliteshots" outlined target="_blank">
               Source
             </v-btn>
           </v-col>
@@ -46,28 +46,28 @@
           </v-card-title>
           <v-card-text>
             <v-row dense>
-              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+              <v-col class="d-flex justify-center flex-column" cols="12" lg="3" md="6">
                 <v-icon size="128">favorite_border</v-icon>
                 <div class="text-center mt-2">
                   <h2 class="mb-2">Like</h2>
                   <div>Like and save your favorite screenshots.</div>
                 </div>
               </v-col>
-              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+              <v-col class="d-flex justify-center flex-column" cols="12" lg="3" md="6">
                 <v-icon size="128">fas fa-upload</v-icon>
                 <div class="text-center mt-2">
                   <h2 class="mb-2">Upload</h2>
                   <div>Upload the best screenshots that can wow the community.</div>
                 </div>
               </v-col>
-              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+              <v-col class="d-flex justify-center flex-column" cols="12" lg="3" md="6">
                 <v-icon size="128">star_border</v-icon>
                 <div class="text-center mt-2">
                   <h2 class="mb-2">Curated</h2>
                   <div>Get curated! The curators will pick the best among the best.</div>
                 </div>
               </v-col>
-              <v-col cols="12" md="6" lg="3" class="d-flex justify-center flex-column">
+              <v-col class="d-flex justify-center flex-column" cols="12" lg="3" md="6">
                 <v-icon size="128">share</v-icon>
                 <div class="text-center mt-2">
                   <h2 class="mb-2">Share</h2>
@@ -79,49 +79,49 @@
         </v-card>
         <h2>Reach me at</h2>
         <v-row>
-          <v-col cols="12" md="6" lg="3">
-            <v-card href="https://github.com/SayakMukhopadhyay" class="pt-5 card-img">
-              <v-img width="50%"
-                     height="50%"
+          <v-col cols="12" lg="3" md="6">
+            <v-card class="pt-5 card-img" href="https://github.com/SayakMukhopadhyay">
+              <v-img :src="require('@/assets/github-logo.svg')"
+                     alt="Github Logo"
                      contain
-                     :src="require('@/assets/github-logo.svg')"
-                     alt="Github Logo"/>
+                     height="50%"
+                     width="50%"/>
               <v-card-text>
                 Github Profile
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col cols="12" md="6" lg="3">
-            <v-card href="https://discord.gg/0uwCh6R62aQ0eeAX" class="pt-5 card-img">
-              <v-img width="50%"
-                     height="50%"
+          <v-col cols="12" lg="3" md="6">
+            <v-card class="pt-5 card-img" href="https://discord.gg/0uwCh6R62aQ0eeAX">
+              <v-img :src="require('@/assets/edcd-logo.svg')"
+                     alt="EDCD Logo"
                      contain
-                     :src="require('@/assets/edcd-logo.svg')"
-                     alt="EDCD Logo"/>
+                     height="50%"
+                     width="50%"/>
               <v-card-text>
                 EDCD Discord Server
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col cols="12" md="6" lg="3">
-            <v-card href="https://forums.frontier.co.uk/member.php/136073-Garud" class="pt-5 card-img">
-              <v-img width="50%"
-                     height="50%"
+          <v-col cols="12" lg="3" md="6">
+            <v-card class="pt-5 card-img" href="https://forums.frontier.co.uk/member.php/136073-Garud">
+              <v-img :src="require('@/assets/ed-logo.svg')"
+                     alt="Elite Dangerous Logo"
                      contain
-                     :src="require('@/assets/ed-logo.svg')"
-                     alt="Elite Dangerous Logo"/>
+                     height="50%"
+                     width="50%"/>
               <v-card-text>
                 Frontier Forums
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col cols="12" md="6" lg="3">
-            <v-card href="https://discord.gg/AuHfMvq" class="pt-5 card-img">
-              <v-img width="50%"
-                     height="50%"
+          <v-col cols="12" lg="3" md="6">
+            <v-card class="pt-5 card-img" href="https://discord.gg/AuHfMvq">
+              <v-img :src="require('@/assets/discord-logo.svg')"
+                     alt="Discord Logo"
                      contain
-                     :src="require('@/assets/discord-logo.svg')"
-                     alt="Discord Logo"/>
+                     height="50%"
+                     width="50%"/>
               <v-card-text>
                 Elite Shots Discord Server
               </v-card-text>
@@ -130,12 +130,12 @@
         </v-row>
         <h2>Brought to you By</h2>
         <v-row justify="center">
-          <v-col cols="12" md="3" class="card-img">
-            <v-img width="50%"
-                   height="50%"
+          <v-col class="card-img" cols="12" md="3">
+            <v-img :src="require('@/assets/garud-logo.svg')"
+                   alt="Garud Logo"
                    contain
-                   :src="require('@/assets/garud-logo.svg')"
-                   alt="Garud Logo"/>
+                   height="50%"
+                   width="50%"/>
             <h3>CMDR Garud</h3>
           </v-col>
           <v-col class="card-img" cols="12" lg="3" md="3" sm="12">

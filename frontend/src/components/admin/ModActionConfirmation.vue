@@ -15,16 +15,16 @@
   -->
 
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px">
+  <v-dialog v-model="dialog" max-width="600px" persistent>
     <v-card>
       <v-card-title>
-        <span class="headline">{{modAction}} {{targetType}} {{actionTarget}}</span>
+        <span class="headline">{{ modAction }} {{ targetType }} {{ actionTarget }}</span>
       </v-card-title>
       <v-card-text>
         <v-container>
           <v-row dense>
             <v-col>
-              <v-text-field label="Comments (optional)" v-model="comment"/>
+              <v-text-field v-model="comment" label="Comments (optional)"/>
             </v-col>
           </v-row>
         </v-container>

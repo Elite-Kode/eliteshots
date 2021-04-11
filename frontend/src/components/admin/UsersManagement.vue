@@ -18,15 +18,15 @@
   <div>
     <h1>User Management</h1>
     <v-data-table
+      :footer-props="tableFooter"
       :headers="headers"
       :items="users"
+      :items-per-page="10"
+      :loading="loading"
       :page.sync="page"
       :server-items-length="totalUsers"
-      :items-per-page="10"
-      :footer-props="tableFooter"
-      dense
       class="elevation-1"
-      :loading="loading">
+      dense>
       <template v-slot:item._id="{item}">
         <router-link :to="{ name: 'user-detail', params: { userId: item._id }}">{{ item._id }}</router-link>
       </template>

@@ -16,10 +16,10 @@
 
 <template>
   <div>
-    <mod-action :open-dialog="modActionDialog"
+    <mod-action :action-target="modActionTarget"
                 :mod-action="modActionType"
+                :open-dialog="modActionDialog"
                 :target-type="modActionTargetType"
-                :action-target="modActionTarget"
                 @cancelled="onCancelled"
                 @confirmed="onConfirmed"/>
     <v-form>
@@ -81,28 +81,28 @@
       </v-row>
       <v-row>
         <v-col cols="12" sm="3">
-          <v-btn block color="error" outlined @click="banUser" v-if="userData.access!==bannedAccess"
-                 :disabled="!canBan">
+          <v-btn v-if="userData.access!==bannedAccess" :disabled="!canBan" block color="error" outlined
+                 @click="banUser">
             Ban
           </v-btn>
-          <v-btn block color="success" outlined @click="unbanUser" v-else :disabled="!canUnban">Unban</v-btn>
+          <v-btn v-else :disabled="!canUnban" block color="success" outlined @click="unbanUser">Unban</v-btn>
         </v-col>
         <v-col cols="6" sm="3">
-          <v-btn block color="error" @click="demoteUser" :disabled="!canDemote">Demote</v-btn>
+          <v-btn :disabled="!canDemote" block color="error" @click="demoteUser">Demote</v-btn>
         </v-col>
         <v-col cols="6" sm="3">
-          <v-btn block color="success" @click="promoteUser" :disabled="!canPromote">Promote</v-btn>
+          <v-btn :disabled="!canPromote" block color="success" @click="promoteUser">Promote</v-btn>
         </v-col>
         <v-col cols="12" sm="3">
-          <v-btn block color="success" outlined @click="trustUser" v-if="!userData.trusted" :disabled="!canTrust">
+          <v-btn v-if="!userData.trusted" :disabled="!canTrust" block color="success" outlined @click="trustUser">
             Trust
           </v-btn>
-          <v-btn block color="error" outlined @click="untrustUser" v-else :disabled="!canTrust">Untrust</v-btn>
+          <v-btn v-else :disabled="!canTrust" block color="error" outlined @click="untrustUser">Untrust</v-btn>
         </v-col>
       </v-row>
     </v-form>
-    <uploaded-images :user-id="userId"
-                     :disable-mod-actions="!canModImages"
+    <uploaded-images :disable-mod-actions="!canModImages"
+                     :user-id="userId"
                      @accept="onAcceptImage"
                      @reject="onRejectImage"/>
   </div>

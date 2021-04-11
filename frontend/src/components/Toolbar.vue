@@ -1,13 +1,13 @@
 <template>
   <div>
     <v-app-bar
-      app
-      color="toolbar"
-      dark
+      :class="{'custom-dark': theme === themes[1]}"
       :scroll-off-screen="scrollOfScreen"
       :scroll-threshold="scrollThreshold"
-      :class="{'custom-dark': theme === themes[1]}">
-      <v-btn icon large to="/" exact class="ml-4">
+      app
+      color="toolbar"
+      dark>
+      <v-btn class="ml-4" exact icon large to="/">
         <v-avatar>
           <v-img
             :src="require('@/assets/EliteShotsV1.svg')"
@@ -39,34 +39,34 @@
           <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
         </v-btn>
         <v-btn v-if="authenticated && (authUser.access === modAccess || authUser.access === adminAccess)"
-               icon :to="{name: 'mod-queue'}" exact>
+               :to="{name: 'mod-queue'}" exact icon>
           <v-icon>fas fa-user-secret</v-icon>
         </v-btn>
-        <v-btn icon to="/about" exact>
+        <v-btn exact icon to="/about">
           <v-icon>info</v-icon>
         </v-btn>
       </template>
-      <v-menu bottom offset-y v-if="authenticated">
+      <v-menu v-if="authenticated" bottom offset-y>
         <template v-slot:activator="{ on }">
           <v-btn v-if="authenticated"
-                 icon
                  v-on="on"
-                 :class="{'mr-4':$vuetify.breakpoint.mdAndUp}">
+                 :class="{'mr-4':$vuetify.breakpoint.mdAndUp}"
+                 icon>
             <v-icon>person</v-icon>
           </v-btn>
         </template>
 
         <v-list>
           <v-list-item v-if="authenticated"
-                       to="/profile"
-                       :ripple="false">
+                       :ripple="false"
+                       to="/profile">
             <v-list-item-icon class="mr-0">
               <v-icon>person</v-icon>
             </v-list-item-icon>
           </v-list-item>
           <v-list-item v-if="authenticated"
-                       href="/auth/logout"
-                       :ripple="false">
+                       :ripple="false"
+                       href="/auth/logout">
             <v-list-item-icon class="mr-0">
               <v-icon>power_settings_new</v-icon>
             </v-list-item-icon>
@@ -74,61 +74,61 @@
         </v-list>
       </v-menu>
       <v-btn v-else
+             :class="{'mr-4':$vuetify.breakpoint.mdAndUp}"
              icon
-             @click="onClickLogin"
-             :class="{'mr-4':$vuetify.breakpoint.mdAndUp}">
+             @click="onClickLogin">
         <v-icon>person</v-icon>
       </v-btn>
-      <v-menu bottom offset-y v-if="!$vuetify.breakpoint.mdAndUp">
+      <v-menu v-if="!$vuetify.breakpoint.mdAndUp" bottom offset-y>
         <template v-slot:activator="{ on }">
           <v-btn
-            dark
-            icon
             v-on="on"
             class="mr-4"
+            dark
+            icon
           >
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
 
         <v-list>
-          <v-list-item to="/upload"
-                       :ripple="false">
+          <v-list-item :ripple="false"
+                       to="/upload">
             <v-list-item-icon class="mr-0">
               <v-icon>fas fa-upload</v-icon>
             </v-list-item-icon>
           </v-list-item>
-          <v-list-item @click="switchTheme()"
-                       :ripple="false">
+          <v-list-item :ripple="false"
+                       @click="switchTheme()">
             <v-list-item-icon class="mr-0">
               <v-icon v-if="theme === themes[0]">brightness_3</v-icon>
               <v-icon v-if="theme === themes[1]">wb_sunny</v-icon>
             </v-list-item-icon>
           </v-list-item>
           <v-list-item v-if="authenticated && (authUser.access === modAccess || authUser.access === adminAccess)"
+                       :ripple="false"
                        :to="{name: 'mod-queue'}"
-                       exact
-                       :ripple="false">
+                       exact>
             <v-list-item-icon class="mr-0">
               <v-icon>fas fa-user-secret</v-icon>
             </v-list-item-icon>
           </v-list-item>
-          <v-list-item to="/about"
+          <v-list-item :ripple="false"
                        exact
-                       :ripple="false">
+                       to="/about">
             <v-list-item-icon class="mr-0">
               <v-icon>info</v-icon>
             </v-list-item-icon>
           </v-list-item>
-          <v-list-item to="/donate"
-                       :ripple="false">
+          <v-list-item :ripple="false"
+                       to="/donate">
             <v-list-item-icon class="mr-0">
               <v-icon>attach_money</v-icon>
             </v-list-item-icon>
           </v-list-item>
         </v-list>
       </v-menu>
-      <template v-slot:extension v-if="hasToolbarTabs">
+      <template v-if="hasToolbarTabs" v-slot:extension>
         <slot name="toolbar-tabs"/>
       </template>
     </v-app-bar>
@@ -203,13 +203,13 @@ export default {
 </script>
 
 <style scoped>
-  .custom-dark, .custom-dark .theme--dark.v-btn {
-    color: var(--v-primary-base);
-  }
+.custom-dark, .custom-dark .theme--dark.v-btn {
+  color: var(--v-primary-base);
+}
 </style>
 
 <style>
-  .v-toolbar__content, .v-toolbar__extension {
-    padding: 0 !important;
-  }
+.v-toolbar__content, .v-toolbar__extension {
+  padding: 0 !important;
+}
 </style>

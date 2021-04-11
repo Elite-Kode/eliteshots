@@ -28,10 +28,10 @@
         </p>
         <v-row>
           <v-col cols="6">
-            <a href="https://www.patreon.com/bePatron?u=30377534" class="patreon-button"/>
+            <a class="patreon-button" href="https://www.patreon.com/bePatron?u=30377534"/>
           </v-col>
           <v-col cols="6">
-            <a href="https://www.paypal.me/SayakMukhopadhyay" class="paypal-button"/>
+            <a class="paypal-button" href="https://www.paypal.me/SayakMukhopadhyay"/>
           </v-col>
         </v-row>
         <p>
@@ -55,19 +55,19 @@ export default {
 </script>
 
 <style scoped>
-  a.patreon-button {
-    background-image: url(../assets/patreon-button.png);
-    display: block;
-    width: 217px;
-    height: 51px;
-    margin: auto;
-  }
+a.patreon-button {
+  background-image: url(../assets/patreon-button.png);
+  display: block;
+  width: 217px;
+  height: 51px;
+  margin: auto;
+}
 
-  a.paypal-button {
-    background-image: url(https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_200x51.png);
-    display: block;
-    width: 200px;
-    height: 51px;
-    margin: auto;
-  }
+a.paypal-button {
+  background-image: url(https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_200x51.png);
+  display: block;
+  width: 200px;
+  height: 51px;
+  margin: auto;
+}
 </style>

@@ -16,16 +16,16 @@
 
 <template>
   <div>
-    <v-row dense ref="imageContainer" class="mx-0">
-      <v-col cols=12 lg="3" md="4" sm="6" v-for="(imageItem, i) in imageItems" :key="i">
-        <slot name="thumbnail" :imageItem="imageItem" :itemIndex="i" :clickThumbnail="clickThumbnail">
+    <v-row ref="imageContainer" class="mx-0" dense>
+      <v-col v-for="(imageItem, i) in imageItems" :key="i" cols=12 lg="3" md="4" sm="6">
+        <slot :clickThumbnail="clickThumbnail" :imageItem="imageItem" :itemIndex="i" name="thumbnail">
           <v-card>
             <v-hover v-slot="{ hover }">
               <v-img
-                :src="imageItem.thumbnail_location"
-                @click="clickThumbnail(i)"
-                class="image-thumbnail"
                 :aspect-ratio="1"
+                :src="imageItem.thumbnail_location"
+                class="image-thumbnail"
+                @click="clickThumbnail(i)"
               >
                 <h4 v-if="imageItem.curated && curationBanner" class="ribbon ribbon-curated">CURATED</h4>
                 <template v-else-if="modStatusBanner">
@@ -36,11 +36,11 @@
                 <v-expand-transition>
                   <v-row v-if="hover" class="mx-0 image-title-background">
                     <v-col class="text-truncate">
-                      {{imageItem.title}}
+                      {{ imageItem.title }}
                     </v-col>
                     <v-col class="flex-shrink-1 flex-grow-0 d-inline-flex">
                       <v-icon class="mr-1">favorite</v-icon>
-                      {{imageItem.no_of_likes}}
+                      {{ imageItem.no_of_likes }}
                     </v-col>
                   </v-row>
                 </v-expand-transition>
@@ -48,12 +48,12 @@
                   <v-row v-if="hover" class="mx-0 image-title-background">
                     <v-col class="text-truncate cmdr-link">
                       <router-link :to="{ name: 'public-profile', params: { userId: imageItem.user_id }}">CMDR
-                        {{imageItem.cmdr_name}}
+                        {{ imageItem.cmdr_name }}
                       </router-link>
                     </v-col>
                     <v-col class="flex-shrink-1 flex-grow-0 d-inline-flex">
                       <v-icon class="mr-1">remove_red_eye</v-icon>
-                      {{imageItem.no_of_views + imageItem.anonymous_views}}
+                      {{ imageItem.no_of_views + imageItem.anonymous_views }}
                     </v-col>
                   </v-row>
                 </v-expand-transition>
@@ -61,15 +61,15 @@
             </v-hover>
             <v-card-actions>
               <template v-if="shareLinks[i].status">
-                <v-text-field dense
-                              readonly
-                              prepend-icon="clear"
-                              @click:prepend="closeShare(i)"
+                <v-text-field :value="shareLinks[i].link"
                               class="share-link"
-                              :value="shareLinks[i].link"/>
+                              dense
+                              prepend-icon="clear"
+                              readonly
+                              @click:prepend="closeShare(i)"/>
               </template>
               <template v-else>
-                <v-btn icon :to="{ name: 'image-item', params:{imageId: imageItem._id}}" target="_blank">
+                <v-btn :to="{ name: 'image-item', params:{imageId: imageItem._id}}" icon target="_blank">
                   <v-icon>launch</v-icon>
                 </v-btn>
                 <v-spacer/>
@@ -95,8 +95,8 @@
           </v-card>
         </slot>
       </v-col>
-      <slot name="lightbox" :imageLinks="imageLinks" :selectedImageIndex="selectedImageIndex"
-            :closeGallery="closeGallery" :imageSlide="imageSlide">
+      <slot :closeGallery="closeGallery" :imageLinks="imageLinks" :imageSlide="imageSlide"
+            :selectedImageIndex="selectedImageIndex" name="lightbox">
         <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery" @onslideend="imageSlide"/>
       </slot>
     </v-row>
@@ -227,76 +227,76 @@ export default {
 </script>
 
 <style scoped>
-  .image-title-background {
-    background-color: var(--v-primary-base);
-    opacity: 0.85;
-  }
+.image-title-background {
+  background-color: var(--v-primary-base);
+  opacity: 0.85;
+}
 
-  .image-thumbnail:hover {
-    cursor: pointer;
-  }
+.image-thumbnail:hover {
+  cursor: pointer;
+}
 
-  .ribbon {
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translateX(30%) translateY(0%) rotate(45deg);
-    transform-origin: top left;
-  }
+.ribbon {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translateX(30%) translateY(0%) rotate(45deg);
+  transform-origin: top left;
+}
 
-  .ribbon:before,
-  .ribbon:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    margin: 0 -1px;
-    width: 100%;
-    height: 100%;
-  }
+.ribbon:before,
+.ribbon:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  margin: 0 -1px;
+  width: 100%;
+  height: 100%;
+}
 
-  .ribbon:before {
-    right: 100%;
-  }
+.ribbon:before {
+  right: 100%;
+}
 
-  .ribbon:after {
-    left: 100%;
-  }
+.ribbon:after {
+  left: 100%;
+}
 
-  .cmdr-link a{
-    color: unset;
-  }
+.cmdr-link a {
+  color: unset;
+}
 </style>
-<style scoped lang="sass">
-  @import '~vuetify/src/styles/styles.sass'
+<style lang="sass" scoped>
+@import '~vuetify/src/styles/styles.sass'
 
-  .ribbon-pending,
-  .ribbon-pending:before,
-  .ribbon-pending:after
-    background-color: var(--v-secondary-base)
-    color: map-get($material-dark, 'fg-color')
+.ribbon-pending,
+.ribbon-pending:before,
+.ribbon-pending:after
+  background-color: var(--v-secondary-base)
+  color: map-get($material-dark, 'fg-color')
 
-  .ribbon-accepted,
-  .ribbon-accepted:before,
-  .ribbon-accepted:after
-    background-color: var(--v-success-base)
-    color: map-get($material-dark, 'fg-color')
+.ribbon-accepted,
+.ribbon-accepted:before,
+.ribbon-accepted:after
+  background-color: var(--v-success-base)
+  color: map-get($material-dark, 'fg-color')
 
-  .ribbon-rejected,
-  .ribbon-rejected:before,
-  .ribbon-rejected:after
-    background-color: var(--v-error-base)
-    color: map-get($material-dark, 'fg-color')
+.ribbon-rejected,
+.ribbon-rejected:before,
+.ribbon-rejected:after
+  background-color: var(--v-error-base)
+  color: map-get($material-dark, 'fg-color')
 
-  .ribbon-curated,
-  .ribbon-curated:before,
-  .ribbon-curated:after
-    background-color: var(--v-warning-base)
-    color: map-get($material-light, 'fg-color')
+.ribbon-curated,
+.ribbon-curated:before,
+.ribbon-curated:after
+  background-color: var(--v-warning-base)
+  color: map-get($material-light, 'fg-color')
 </style>
 <style>
-  .share-link .v-text-field__details {
-    display: none;
-  }
+.share-link .v-text-field__details {
+  display: none;
+}
 </style>

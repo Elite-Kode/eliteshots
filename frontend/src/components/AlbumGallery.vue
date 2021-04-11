@@ -16,25 +16,25 @@
 
 <template>
   <div>
-    <v-row dense class="mx-0">
-      <v-col cols=12 lg="2" md="4" sm="6" v-for="(albumItem, i) in albumItems" :key="i">
-        <slot name="thumbnail" :albumItem="albumItem" :itemIdex="i" :clickThumbnail="clickThumbnail">
+    <v-row class="mx-0" dense>
+      <v-col v-for="(albumItem, i) in albumItems" :key="i" cols=12 lg="2" md="4" sm="6">
+        <slot :albumItem="albumItem" :clickThumbnail="clickThumbnail" :itemIdex="i" name="thumbnail">
           <v-card>
             <v-img
               :src="albumItem.thumbnail_location"
-              @click="clickThumbnail(i)"
-              class="album-thumbnail"
               aspect-ratio="1"
+              class="album-thumbnail"
+              @click="clickThumbnail(i)"
             >
               <v-row class="mx-0 album-title-background">
                 <v-col class="text-truncate">
-                  {{albumItem.title}}
+                  {{ albumItem.title }}
                 </v-col>
               </v-row>
             </v-img>
             <v-card-actions>
               <v-icon class="mr-1">photo</v-icon>
-              {{albumItem.no_of_images}}
+              {{ albumItem.no_of_images }}
               <v-spacer/>
               <v-btn v-if="editable && albumItem.title!==defaultAlbum" icon @click="clickEdit(i)">
                 <v-icon>edit</v-icon>
@@ -42,13 +42,13 @@
               <v-btn v-if="deletable && albumItem.title!==defaultAlbum" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
               </v-btn>
-              <v-btn v-if="albumItem.title!==defaultAlbum" icon
-                     :to="{ name: 'public-album', params:{albumId: albumItem._id}}" target="_blank">
+              <v-btn v-if="albumItem.title!==defaultAlbum" :to="{ name: 'public-album', params:{albumId: albumItem._id}}"
+                     icon target="_blank">
                 <v-icon>share</v-icon>
               </v-btn>
-              <v-dialog v-if="albumItem.title===defaultAlbum" v-model="newAlbumDialog" persistent max-width="600px">
+              <v-dialog v-if="albumItem.title===defaultAlbum" v-model="newAlbumDialog" max-width="600px" persistent>
                 <template v-slot:activator="{ on }">
-                  <v-btn color="primary" v-on="on">New Album</v-btn>
+                  <v-btn v-on="on" color="primary">New Album</v-btn>
                 </template>
                 <v-card>
                   <v-card-title>
@@ -58,12 +58,12 @@
                     <v-container>
                       <v-row dense>
                         <v-col>
-                          <v-text-field label="Title" v-model="newAlbumTitle"/>
+                          <v-text-field v-model="newAlbumTitle" label="Title"/>
                         </v-col>
                       </v-row>
                       <v-row dense>
                         <v-col>
-                          <v-textarea label="Description (optional)" v-model="newAlbumDescription"/>
+                          <v-textarea v-model="newAlbumDescription" label="Description (optional)"/>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -151,12 +151,12 @@ export default {
 </script>
 
 <style scoped>
-  .album-title-background {
-    background-color: var(--v-primary-base);
-    opacity: 0.85;
-  }
+.album-title-background {
+  background-color: var(--v-primary-base);
+  opacity: 0.85;
+}
 
-  .album-thumbnail:hover {
-    cursor: pointer;
-  }
+.album-thumbnail:hover {
+  cursor: pointer;
+}
 </style>

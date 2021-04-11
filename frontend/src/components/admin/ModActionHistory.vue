@@ -25,10 +25,10 @@
             <v-img
               v-if="modAction.images"
               :src="modAction.images.thumbnail_location"
-              @click="clickThumbnail(i)"
               class="image-thumbnail"
-              min-height="200px">
-              <v-btn icon :to="{ name: 'image-item', params:{imageId: modAction.images._id}}" target="_blank"
+              min-height="200px"
+              @click="clickThumbnail(i)">
+              <v-btn :to="{ name: 'image-item', params:{imageId: modAction.images._id}}" icon target="_blank"
                      @click.stop="">
                 <v-icon>launch</v-icon>
               </v-btn>
@@ -74,18 +74,18 @@
           </v-card>
         </template>
         <v-card class="chevron">
-          <v-toolbar color="primary"
-                     dense
+          <v-toolbar class="px-3"
+                     color="primary"
                      dark
-                     class="px-3">
+                     dense>
             <v-toolbar-title class="text-truncate">
-              <span>{{modAction.action}}</span>
+              <span>{{ modAction.action }}</span>
             </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <p>{{modAction.comments}}</p>
-            <p>Action at: {{modAction.action_at_formatted}}</p>
-            <p>Action by: {{modAction.mods.commander}}</p>
+            <p>{{ modAction.comments }}</p>
+            <p>Action at: {{ modAction.action_at_formatted }}</p>
+            <p>Action by: {{ modAction.mods.commander }}</p>
           </v-card-text>
         </v-card>
       </v-timeline-item>
@@ -172,11 +172,11 @@ export default {
 </script>
 
 <style scoped>
-  .chevron {
-    border-color: var(--v-primary-base) !important;
-  }
+.chevron {
+  border-color: var(--v-primary-base) !important;
+}
 
-  .chevron:after {
-    margin: 0 1px;
-  }
+.chevron:after {
+  margin: 0 1px;
+}
 </style>

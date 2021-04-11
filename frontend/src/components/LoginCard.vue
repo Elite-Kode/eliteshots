@@ -9,7 +9,7 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn block color="primary" href="/auth/frontier" class="login-button">
+      <v-btn block class="login-button" color="primary" href="/auth/frontier">
         Login with
         <img :src="require('@/assets/Frontier-invert.svg')" alt="Frontier Logo"/>
       </v-btn>
@@ -24,8 +24,8 @@ export default {
 </script>
 
 <style scoped>
-  .login-button img {
-    height: 24px;
-    padding-left: 4px;
-  }
+.login-button img {
+  height: 24px;
+  padding-left: 4px;
+}
 </style>

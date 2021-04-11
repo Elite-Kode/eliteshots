@@ -1,13 +1,13 @@
 <template>
-  <image-gallery :imageItems="curatedImages"
-                 :loading="loadingNewImages"
+  <image-gallery :authenticated="authenticated"
                  :end="imagesEnd"
+                 :imageItems="curatedImages"
+                 :loading="loadingNewImages"
                  link-key="image_location"
-                 @imageViewed="onClickThumbnail"
+                 @fetchImages="onFetchImages"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
-                 @fetchImages="onFetchImages"
-                 :authenticated="authenticated"/>
+                 @imageViewed="onClickThumbnail"/>
 </template>
 
 <script>

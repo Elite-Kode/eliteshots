@@ -20,17 +20,17 @@
     <v-main>
       <v-container fluid>
         <h1>CMDR {{ publicProfileUser.commander }}</h1>
-        <image-gallery :imageItems="publicProfileImages"
-                       :loading="loadingNewImages"
+        <image-gallery :authenticated="authenticated"
                        :end="imagesEnd"
+                       :imageItems="publicProfileImages"
+                       :loading="loadingNewImages"
+                       curation-banner
                        link-key="image_location"
-                       @imageViewed="onClickThumbnail"
+                       no-user
+                       @fetchImages="onFetchImages"
                        @imageLiked="onClickLike"
                        @imageSaved="onClickSave"
-                       @fetchImages="onFetchImages"
-                       :authenticated="authenticated"
-                       no-user
-                       curation-banner/>
+                       @imageViewed="onClickThumbnail"/>
       </v-container>
     </v-main>
   </div>

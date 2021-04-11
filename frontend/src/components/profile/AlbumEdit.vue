@@ -15,21 +15,21 @@
   -->
 
 <template>
-  <v-dialog v-model="dialogState" persistent max-width="600px">
+  <v-dialog v-model="dialogState" max-width="600px" persistent>
     <v-card>
       <v-card-title>
-        <span class="headline">Update Album {{editId}}</span>
+        <span class="headline">Update Album {{ editId }}</span>
       </v-card-title>
       <v-card-text>
         <v-container>
           <v-row dense>
             <v-col>
-              <v-text-field label="Title (optional)" v-model="editTitleNew"/>
+              <v-text-field v-model="editTitleNew" label="Title (optional)"/>
             </v-col>
           </v-row>
           <v-row dense>
             <v-col>
-              <v-textarea label="Description (optional)" v-model="editDescriptionNew"/>
+              <v-textarea v-model="editDescriptionNew" label="Description (optional)"/>
             </v-col>
           </v-row>
         </v-container>

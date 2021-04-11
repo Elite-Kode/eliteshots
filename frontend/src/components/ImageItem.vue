@@ -17,74 +17,74 @@
 <template>
   <div>
     <ed-toolbar scroll-of-screen scroll-threshold="64"/>
-    <mod-action :open-dialog="modActionDialog"
+    <mod-action :action-target="modActionTarget"
                 :mod-action="modActionType"
+                :open-dialog="modActionDialog"
                 :target-type="modActionTargetType"
-                :action-target="modActionTarget"
                 @cancelled="onCancelled"
                 @confirmed="onConfirmed"/>
-    <image-edit :editId="editId"
-                :edit-title="editTitle"
-                :edit-description="editDescription"
+    <image-edit :all-albums="albums"
                 :edit-album="editAlbum"
+                :edit-description="editDescription"
+                :edit-title="editTitle"
                 :editDialog="editDialog"
-                :all-albums="albums"
+                :editId="editId"
                 @cancel="onEditCancel"
                 @confirm="onEditConfirm"/>
     <v-main>
-      <v-container fluid class="pa-0">
+      <v-container class="pa-0" fluid>
         <v-card>
-          <v-img class="image-fit" :src="imageItem.image_location"/>
+          <v-img :src="imageItem.image_location" class="image-fit"/>
           <v-card-title class="d-block">
             <v-row dense>
               <v-col v-if="isMod" cols="12" lg="9">
-                <v-row dense class="flex-md-nowrap">
+                <v-row class="flex-md-nowrap" dense>
                   <v-col>
-                    <v-btn block color="success" @click="acceptImage"
-                           :disabled="!canAccept">
+                    <v-btn :disabled="!canAccept" block color="success"
+                           @click="acceptImage">
                       Accept
                       <v-icon right>check</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block outlined color="error" @click="rejectImage"
-                           :disabled="!canReject">
+                    <v-btn :disabled="!canReject" block color="error" outlined
+                           @click="rejectImage">
                       Reject
                       <v-icon right>clear</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block color="primary" @click="curateImage"
-                           :disabled="!canCurate">
+                    <v-btn :disabled="!canCurate" block color="primary"
+                           @click="curateImage">
                       Curate
                       <v-icon right>mdi-image-frame</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block color="error" outlined @click="banUser" v-if="imageItem.user_access!==bannedAccess"
-                           :disabled="!canBan">
+                    <v-btn v-if="imageItem.user_access!==bannedAccess" :disabled="!canBan" block color="error" outlined
+                           @click="banUser">
                       Ban
                     </v-btn>
-                    <v-btn block color="success" outlined @click="unbanUser" v-else :disabled="!canUnban">Unban</v-btn>
+                    <v-btn v-else :disabled="!canUnban" block color="success" outlined @click="unbanUser">Unban</v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block color="error" @click="demoteUser" :disabled="!canDemote">Demote</v-btn>
+                    <v-btn :disabled="!canDemote" block color="error" @click="demoteUser">Demote</v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block color="success" @click="promoteUser" :disabled="!canPromote">Promote</v-btn>
+                    <v-btn :disabled="!canPromote" block color="success" @click="promoteUser">Promote</v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block color="success" outlined @click="trustUser" v-if="!imageItem.user_trusted"
-                           :disabled="!canTrust">
+                    <v-btn v-if="!imageItem.user_trusted" :disabled="!canTrust" block color="success" outlined
+                           @click="trustUser">
                       Trust
                     </v-btn>
-                    <v-btn block color="error" outlined @click="untrustUser" v-else :disabled="!canTrust">Untrust
+                    <v-btn v-else :disabled="!canTrust" block color="error" outlined @click="untrustUser">Untrust
                     </v-btn>
                   </v-col>
                 </v-row>
               </v-col>
-              <v-col cols="12" :lg="isMod?3:12">
-                <v-row dense class="flex-md-nowrap">
+              <v-col :lg="isMod?3:12" cols="12">
+                <v-row class="flex-md-nowrap" dense>
                   <v-col v-if="canEdit" class="d-flex justify-center">
                     <v-btn icon @click="editImage">
                       <v-icon>edit</v-icon>

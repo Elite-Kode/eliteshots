@@ -1,14 +1,14 @@
 <template>
-  <image-gallery :imageItems="recentImages"
-                 :loading="loadingNewImages"
+  <image-gallery :authenticated="authenticated"
                  :end="imagesEnd"
+                 :imageItems="recentImages"
+                 :loading="loadingNewImages"
+                 curation-banner
                  link-key="image_location"
-                 @imageViewed="onClickThumbnail"
+                 @fetchImages="onFetchImages"
                  @imageLiked="onClickLike"
                  @imageSaved="onClickSave"
-                 @fetchImages="onFetchImages"
-                 :authenticated="authenticated"
-                 curation-banner/>
+                 @imageViewed="onClickThumbnail"/>
 </template>
 
 <script>

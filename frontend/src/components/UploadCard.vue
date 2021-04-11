@@ -2,15 +2,15 @@
   <div class="fill-height">
     <ed-toolbar>
       <template v-slot:toolbar-tabs>
-        <v-toolbar light dense color="accent">
+        <v-toolbar color="accent" dense light>
           <v-spacer/>
           <v-toolbar-items>
             <v-combobox
               v-model="currentAlbumTitle"
               :items="albumTitles"
               clearable
-              solo-inverted
               label="Select or Make a new Album"
+              solo-inverted
               @input.native="currentAlbumTitle=$event.target.value"
             />
             <v-btn icon @click="removeUploads">
@@ -24,37 +24,37 @@
       </template>
     </ed-toolbar>
     <v-main class="fill-height">
-      <v-container fluid class="fill-height pa-0">
+      <v-container class="fill-height pa-0" fluid>
         <v-row class="flex-column mx-0 fill-height flex-nowrap">
           <v-col class="flex-grow-1 pa-0 uploaderColumn">
-            <vue-dropzone ref="uploadDropzone" id="uploadDropzone" :options="dropzoneOptions"
+            <vue-dropzone id="uploadDropzone" ref="uploadDropzone" :class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
+                          :options="dropzoneOptions"
+                          class="fill-height outline d-flex justify-center"
+                          useCustomSlot
                           @vdropzone-sending="onImageSending"
                           @vdropzone-thumbnail="onImageUploaded"
-                          @vdropzone-success="onImageUploadSuccess"
-                          @vdropzone-error="onImageUploadError"
-                          :class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
-                          class="fill-height outline d-flex justify-center" useCustomSlot>
+                          @vdropzone-success="onImageUploadSuccess" @vdropzone-error="onImageUploadError">
               <div class="message">
                 <h3 class="title">Drag and drop to upload content!</h3>
                 <div class="subtitle">...or click to select a file from your computer</div>
               </div>
             </vue-dropzone>
           </v-col>
-          <v-col class="flex-grow-0" v-if="uploadedImages.length">
+          <v-col v-if="uploadedImages.length" class="flex-grow-0">
             <v-card v-for="(uploadImage, i) in uploadedImages" :key="i" class="my-2">
               <v-row class="mx-0">
-                <v-col cols="6" class="d-flex" align-self="center">
+                <v-col align-self="center" class="d-flex" cols="6">
                   <v-img :src="uploadImage.thumbnail">
                     <div class="d-flex fill-height justify-center align-center image-overlay">
-                      <v-btn icon @click="removeImage(i)" v-if="uploadImage.file.status === 'queued'">
+                      <v-btn v-if="uploadImage.file.status === 'queued'" icon @click="removeImage(i)">
                         <v-icon x-large>cancel</v-icon>
                       </v-btn>
-                      <v-icon x-large
-                              v-else-if="uploadImage.status === 'SUCCESS'">
+                      <v-icon v-else-if="uploadImage.status === 'SUCCESS'"
+                              x-large>
                         check
                       </v-icon>
-                      <v-btn icon @click="retryUpload(i)"
-                             v-else-if="uploadImage.status === 'FAILED' || uploadImage.status === 'ERROR'">
+                      <v-btn v-else-if="uploadImage.status === 'FAILED' || uploadImage.status === 'ERROR'" icon
+                             @click="retryUpload(i)">
                         <v-icon x-large>refresh</v-icon>
                       </v-btn>
                       <v-progress-circular v-else indeterminate/>
@@ -246,150 +246,150 @@ export default {
 }
 </script>
 
-<style scoped lang="sass">
-  @import '~vuetify/src/styles/styles.sass'
+<style lang="sass" scoped>
+@import '~vuetify/src/styles/styles.sass'
 
-  .dark
-    background: map-get($material-dark, 'bg-color')
-    color: map-get($material-dark, 'fg-color')
-    outline-color: map-get($material-dark, 'fg-color')
+.dark
+  background: map-get($material-dark, 'bg-color')
+  color: map-get($material-dark, 'fg-color')
+  outline-color: map-get($material-dark, 'fg-color')
 
-  .light
-    background: map-get($material-light, 'bg-color')
-    color: map-get($material-light, 'fg-color')
-    outline-color: map-get($material-light, 'fg-color')
+.light
+  background: map-get($material-light, 'bg-color')
+  color: map-get($material-light, 'fg-color')
+  outline-color: map-get($material-light, 'fg-color')
 
-  .vue-dropzone
-    border: unset
-    flex-wrap: wrap
+.vue-dropzone
+  border: unset
+  flex-wrap: wrap
 
-  .uploaderColumn
-    min-height: 300px
+.uploaderColumn
+  min-height: 300px
 
-  .outline
-    outline: 5px dashed
-    outline-offset: -20px
+.outline
+  outline: 5px dashed
+  outline-offset: -20px
 
-  .message
-    align-self: center
+.message
+  align-self: center
 
-  .image-overlay
-    transition: 500ms
+.image-overlay
+  transition: 500ms
 
-  .image-overlay:hover
-    background-color: var(--v-primary-base)
-    opacity: 0.85
-    transition: 500ms
+.image-overlay:hover
+  background-color: var(--v-primary-base)
+  opacity: 0.85
+  transition: 500ms
 </style>
 <style>
-  #uploadDropzone.dropzone .dz-message {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-  }
+#uploadDropzone.dropzone .dz-message {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
 
-  #uploadDropzone.dropzone.dz-started .dz-message {
-    display: none;
-  }
+#uploadDropzone.dropzone.dz-started .dz-message {
+  display: none;
+}
 
-  #uploadDropzone.dropzone.dz-drag-hover {
-    background-color: var(--v-accent-base);
-  }
+#uploadDropzone.dropzone.dz-drag-hover {
+  background-color: var(--v-accent-base);
+}
 
-  #uploadDropzone.dropzone .dz-preview.dz-image-preview {
-    flex: 0 1 auto !important;
-    align-self: center;
-  }
+#uploadDropzone.dropzone .dz-preview.dz-image-preview {
+  flex: 0 1 auto !important;
+  align-self: center;
+}
 
-  #uploadDropzone.dropzone .dz-preview.dz-file-preview {
-    flex: 0 1 auto !important;
-    align-self: center;
-  }
+#uploadDropzone.dropzone .dz-preview.dz-file-preview {
+  flex: 0 1 auto !important;
+  align-self: center;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details {
-    background-color: var(--v-accent-base);
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-details {
+  background-color: var(--v-accent-base);
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-size,
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-filename,
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input {
-    margin-bottom: 0.75em;
-    display: flex;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-size,
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-filename,
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input {
+  margin-bottom: 0.75em;
+  display: flex;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input {
-    width: 100%;
-    text-align: center;
-    cursor: text;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input {
+  width: 100%;
+  text-align: center;
+  cursor: text;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input label {
-    width: 100%;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input label {
+  width: 100%;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input .preview-input-checkbox {
-    cursor: pointer;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .preview-input .preview-input-checkbox {
+  cursor: pointer;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-filename span,
-  #uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-size span {
-    width: 100%;
-    text-align: center;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-filename span,
+#uploadDropzone.vue-dropzone .dz-preview .dz-details .dz-size span {
+  width: 100%;
+  text-align: center;
+}
 
-  #uploadDropzone.dropzone .dz-preview .dz-progress {
-    bottom: 10px;
-    width: 90%;
-    left: 5%;
-    top: unset;
-    margin-left: unset;
-  }
+#uploadDropzone.dropzone .dz-preview .dz-progress {
+  bottom: 10px;
+  width: 90%;
+  left: 5%;
+  top: unset;
+  margin-left: unset;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-progress .dz-upload {
-    background-color: var(--v-secondary-base);
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-progress .dz-upload {
+  background-color: var(--v-secondary-base);
+}
 
-  #uploadDropzone.dropzone .dz-preview .dz-remove:hover {
-    border: 2px white solid;
-  }
+#uploadDropzone.dropzone .dz-preview .dz-remove:hover {
+  border: 2px white solid;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-remove {
-    line-height: 0;
-    top: 15px;
-    bottom: inherit;
-    border: unset;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-remove {
+  line-height: 0;
+  top: 15px;
+  bottom: inherit;
+  border: unset;
+}
 
-  #uploadDropzone.dropzone.dz-clickable .dz-remove i {
-    cursor: pointer;
-    color: unset;
-  }
+#uploadDropzone.dropzone.dz-clickable .dz-remove i {
+  cursor: pointer;
+  color: unset;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-success-mark i,
-  #uploadDropzone.vue-dropzone .dz-preview .dz-error-mark i {
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 54px;
-    display: block;
-    width: 54px;
-    background-color: var(--v-secondary-base);
-    border-radius: 27px;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-success-mark i,
+#uploadDropzone.vue-dropzone .dz-preview .dz-error-mark i {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 54px;
+  display: block;
+  width: 54px;
+  background-color: var(--v-secondary-base);
+  border-radius: 27px;
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-error-message {
-    left: 5%;
-    width: 90%;
-    top: unset;
-    bottom: 15px;
-    right: 5%;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-error-message {
+  left: 5%;
+  width: 90%;
+  top: unset;
+  bottom: 15px;
+  right: 5%;
+}
 
-  #uploadDropzone.dropzone .dz-preview .dz-error-message {
-    background: unset;
-    background-color: var(--v-error-base);
-  }
+#uploadDropzone.dropzone .dz-preview .dz-error-message {
+  background: unset;
+  background-color: var(--v-error-base);
+}
 
-  #uploadDropzone.vue-dropzone .dz-preview .dz-error-message::after {
-    content: none;
-  }
+#uploadDropzone.vue-dropzone .dz-preview .dz-error-message::after {
+  content: none;
+}
 </style>

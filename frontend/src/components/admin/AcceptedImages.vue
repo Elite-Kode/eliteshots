@@ -17,37 +17,37 @@
 <template>
   <div>
     <h1>Accepted Images</h1>
-    <mod-action :open-dialog="modActionDialog"
+    <mod-action :action-target="modActionTarget"
                 :mod-action="modActionType"
+                :open-dialog="modActionDialog"
                 :target-type="modActionTargetType"
-                :action-target="modActionTarget"
                 @cancelled="onCancelled"
                 @confirmed="onConfirmed"/>
-    <image-gallery :imageItems="acceptedImages"
-                   :loading="loadingNewImages"
+    <image-gallery :authenticated="authenticated"
                    :end="imagesEnd"
+                   :imageItems="acceptedImages"
+                   :loading="loadingNewImages"
                    link-key="image_location"
-                   @fetchImages="onFetchImages"
-                   :authenticated="authenticated">
+                   @fetchImages="onFetchImages">
       <template v-slot:thumbnail="slotProps">
         <v-card>
           <v-img
             :src="slotProps.imageItem.thumbnail_location"
-            @click="slotProps.clickThumbnail(slotProps.itemIndex)"
             class="image-thumbnail"
             min-height="200px"
+            @click="slotProps.clickThumbnail(slotProps.itemIndex)"
           >
-            <v-btn icon :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" target="_blank">
+            <v-btn :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" icon target="_blank">
               <v-icon>launch</v-icon>
             </v-btn>
           </v-img>
           <v-card-title class="px-2" style="width: 100%">
             <v-row dense>
-              <v-col cols="12" class="headline py-0">{{slotProps.imageItem.title}}</v-col>
-              <v-col cols="12" class="subheading py-0">{{slotProps.imageItem.description}}</v-col>
-              <v-col cols="12" class="subheading py-0">
+              <v-col class="headline py-0" cols="12">{{ slotProps.imageItem.title }}</v-col>
+              <v-col class="subheading py-0" cols="12">{{ slotProps.imageItem.description }}</v-col>
+              <v-col class="subheading py-0" cols="12">
                 <router-link :to="{ name: 'user-detail', params: { userId: slotProps.imageItem.user_id }}">
-                  CMDR {{slotProps.imageItem.cmdr_name}}
+                  CMDR {{ slotProps.imageItem.cmdr_name }}
                 </router-link>
               </v-col>
             </v-row>
@@ -55,15 +55,15 @@
           <v-card-actions>
             <v-row dense>
               <v-col cols="6">
-                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)"
-                       :disabled="!canReject(slotProps.imageItem.user_id)">
+                <v-btn :disabled="!canReject(slotProps.imageItem.user_id)" block color="error" outlined
+                       @click.stop="rejectImage(slotProps.imageItem)">
                   Reject
                   <v-icon right>clear</v-icon>
                 </v-btn>
               </v-col>
               <v-col cols="6">
-                <v-btn block color="primary" @click.stop="curateImage(slotProps.imageItem)"
-                       :disabled="!canCurate(slotProps.imageItem.user_id, slotProps.imageItem.curated)">
+                <v-btn :disabled="!canCurate(slotProps.imageItem.user_id, slotProps.imageItem.curated)" block color="primary"
+                       @click.stop="curateImage(slotProps.imageItem)">
                   Curate
                   <v-icon right>mdi-image-frame</v-icon>
                 </v-btn>

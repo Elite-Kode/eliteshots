@@ -17,43 +17,43 @@
 <template>
   <div>
     <h1>Uploaded Images</h1>
-    <image-gallery :imageItems="uploadedImages"
-                   :loading="loadingNewImages"
+    <image-gallery :authenticated="authenticated"
                    :end="imagesEnd"
-                   @fetchImages="onFetchImages"
-                   :authenticated="authenticated">
+                   :imageItems="uploadedImages"
+                   :loading="loadingNewImages"
+                   @fetchImages="onFetchImages">
       <template v-slot:thumbnail="slotProps">
         <v-card>
           <v-img
             :src="slotProps.imageItem.thumbnail_location"
-            @click="slotProps.clickThumbnail(slotProps.itemIndex)"
             class="image-thumbnail"
             min-height="200px"
+            @click="slotProps.clickThumbnail(slotProps.itemIndex)"
           >
-            <v-btn icon :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" target="_blank">
+            <v-btn :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" icon target="_blank">
               <v-icon>launch</v-icon>
             </v-btn>
           </v-img>
           <v-card-title class="px-2" style="width: 100%">
             <v-row dense>
-              <v-col cols="12" class="headline py-0">{{slotProps.imageItem.title}}</v-col>
-              <v-col cols="12" class="subheading py-0">{{slotProps.imageItem.description}}</v-col>
+              <v-col class="headline py-0" cols="12">{{ slotProps.imageItem.title }}</v-col>
+              <v-col class="subheading py-0" cols="12">{{ slotProps.imageItem.description }}</v-col>
             </v-row>
           </v-card-title>
           <v-card-actions>
             <v-row dense>
-              <v-col :cols="slotProps.imageItem.moderation_status !== 'REJECTED' ? 6 : 12"
-                     v-if="slotProps.imageItem.moderation_status !== 'ACCEPTED'">
-                <v-btn block color="success" @click.stop="acceptImage(slotProps.imageItem)"
-                       :disabled="disableModActions">
+              <v-col v-if="slotProps.imageItem.moderation_status !== 'ACCEPTED'"
+                     :cols="slotProps.imageItem.moderation_status !== 'REJECTED' ? 6 : 12">
+                <v-btn :disabled="disableModActions" block color="success"
+                       @click.stop="acceptImage(slotProps.imageItem)">
                   Accept
                   <v-icon right>check</v-icon>
                 </v-btn>
               </v-col>
-              <v-col :cols="slotProps.imageItem.moderation_status !== 'ACCEPTED' ? 6 : 12"
-                     v-if="slotProps.imageItem.moderation_status !== 'REJECTED'">
-                <v-btn block outlined color="error" @click.stop="rejectImage(slotProps.imageItem)"
-                       :disabled="disableModActions">
+              <v-col v-if="slotProps.imageItem.moderation_status !== 'REJECTED'"
+                     :cols="slotProps.imageItem.moderation_status !== 'ACCEPTED' ? 6 : 12">
+                <v-btn :disabled="disableModActions" block color="error" outlined
+                       @click.stop="rejectImage(slotProps.imageItem)">
                   Reject
                   <v-icon right>clear</v-icon>
                 </v-btn>

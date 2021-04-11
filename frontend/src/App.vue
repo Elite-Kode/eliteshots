@@ -39,7 +39,7 @@ export default {
 }
 </script>
 <style>
-  .v-image .v-responsive__content {
-    max-width: 100%;
-  }
+.v-image .v-responsive__content {
+  max-width: 100%;
+}
 </style>
