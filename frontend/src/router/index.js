@@ -8,7 +8,7 @@ import Curated from '@/components/home/Curated'
 import Admin from '@/components/admin/Admin'
 import Profile from '@/components/profile/Profile'
 import About from '@/components/about/About'
-import Data from '@/components/profile/Data'
+import ProfileData from '@/components/profile/ProfileData'
 import Images from '@/components/profile/Images'
 import Albums from '@/components/profile/Albums'
 import Likes from '@/components/profile/Likes'
@@ -92,8 +92,8 @@ export default new Router({
         name: 'profile',
         children: [{
           path: '/',
-          component: Data,
-          name: 'data'
+          component: ProfileData,
+          name: 'profile-data'
         }, {
           path: 'images',
           component: Images,

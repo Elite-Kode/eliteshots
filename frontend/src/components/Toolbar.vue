@@ -25,12 +25,6 @@
         <v-btn text to="/donate">
           Support Elite Shots
         </v-btn>
-        <!--        <v-btn v-if="authenticated" href="/auth/logout" icon>
-                  <v-icon>fas fa-sign-out-alt</v-icon>
-                </v-btn>
-                <v-btn v-else icon @click="onClickLogin">
-                  <v-icon>fas fa-sign-in-alt</v-icon>
-                </v-btn>-->
         <v-btn icon to="/upload">
           <v-icon>fas fa-upload</v-icon>
         </v-btn>
