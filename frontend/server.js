@@ -50,7 +50,6 @@ app.get('/', (req, res) => {
 })
 app.use(express.static(path.join(__dirname, 'dist')))
 
-// Pass all 404 errors called by browser to angular
 app.all('*', async (req, res) => {
   let url = new URL(req.url, `${processVars.protocol}://${processVars.host}`)
   let urlsPathParts = url.pathname.split('/').slice(1)
