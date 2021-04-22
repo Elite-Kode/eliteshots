@@ -16,21 +16,7 @@
 
 <template>
   <div>
-    <ed-toolbar>
-      <template v-slot:toolbar-tabs>
-        <v-tabs
-          :show-arrows="$vuetify.breakpoint.xs"
-          align-with-title
-          background-color="accent"
-          light
-          slider-color="secondary"
-        >
-          <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link">
-            {{ tabItem.name }}
-          </v-tab>
-        </v-tabs>
-      </template>
-    </ed-toolbar>
+    <admin-toolbar/>
     <v-main>
       <v-container fluid>
         <router-view/>
@@ -40,39 +26,16 @@
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar'
+import AdminToolbar from '@/components/admin/AdminToolbar'
 
 export default {
   name: 'Admin',
-  data () {
-    return {
-      tabItems: [{
-        name: 'Moderation Queue',
-        link: '/admin/mod-queue'
-      }, {
-        name: 'Accepted',
-        link: '/admin/accepted'
-      }, {
-        name: 'Rejected',
-        link: '/admin/rejected'
-      }, {
-        name: 'Users',
-        link: '/admin/users'
-      }, {
-        name: 'Mod Actions',
-        link: '/admin/mod-actions'
-      }]
-    }
-  },
   components: {
-    'ed-toolbar': Toolbar
+    'admin-toolbar': AdminToolbar
   }
 }
 </script>
 
-<style lang="sass" scoped>
-@import '~vuetify/src/styles/styles.sass'
+<style scoped>
 
-a.v-tab--active.v-tab
-  color: map-deep-get($material-light, 'text', 'primary')
 </style>
