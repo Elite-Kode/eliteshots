@@ -28,7 +28,7 @@
         </p>
         <v-row>
           <v-col cols="6">
-            <a class="patreon-button" href="https://www.patreon.com/bePatron?u=30377534"/>
+            <a class="patreon-button" href="https://www.patreon.com/bePatron?u=6593507"/>
           </v-col>
           <v-col cols="6">
             <a class="paypal-button" href="https://www.paypal.me/SayakMukhopadhyay"/>
