@@ -138,14 +138,6 @@
                    width="50%"/>
             <h3>CMDR Garud</h3>
           </v-col>
-          <v-col class="card-img" cols="12" lg="3" md="3" sm="12">
-            <v-img :src="require('@/assets/garud-logo.svg')"
-                   alt="Garud Logo"
-                   contain
-                   height="50%"
-                   width="50%"/>
-            <h3>CMDR Garud</h3>
-          </v-col>
           <v-col class="card-img" cols="12" lg="3" md="2" sm="12">
             <v-img :src="require('@/assets/ampersand.svg')"
                    alt="Ampersand"
