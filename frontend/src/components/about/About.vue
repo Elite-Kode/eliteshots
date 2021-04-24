@@ -116,7 +116,7 @@
             </v-card>
           </v-col>
           <v-col cols="12" lg="3" md="6">
-            <v-card class="pt-5 card-img" href="https://discord.gg/AuHfMvq">
+            <v-card class="pt-5 card-img" href="https://discord.gg/YksSXke">
               <v-img :src="require('@/assets/discord-logo.svg')"
                      alt="Discord Logo"
                      contain
