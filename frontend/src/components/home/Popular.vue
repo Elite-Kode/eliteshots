@@ -15,16 +15,18 @@
   -->
 
 <template>
-  <image-gallery :authenticated="authenticated"
-                 :end="imagesEnd"
-                 :imageItems="popularImages"
-                 :loading="loadingNewImages"
-                 curation-banner
-                 link-key="image_location"
-                 @fetchImages="onFetchImages"
-                 @imageLiked="onClickLike"
-                 @imageSaved="onClickSave"
-                 @imageViewed="onClickThumbnail"/>
+  <image-gallery
+    :authenticated="authenticated"
+    :end="imagesEnd"
+    :imageItems="popularImages"
+    :loading="loadingNewImages"
+    curation-banner
+    link-key="image_location"
+    @fetchImages="onFetchImages"
+    @imageLiked="onClickLike"
+    @imageSaved="onClickSave"
+    @imageViewed="onClickThumbnail"
+  />
 </template>
 
 <script>
@@ -36,7 +38,7 @@ export default {
   components: {
     'image-gallery': ImageGallery
   },
-  data () {
+  data() {
     return {
       loadingNewImages: false,
       imagesEnd: false
@@ -44,25 +46,25 @@ export default {
   },
   computed: {
     ...mapState({
-      popularImages: state => state.images.popular,
-      authenticated: state => state.auth.authenticated
+      popularImages: (state) => state.images.popular,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminatePopular')
   },
   methods: {
-    onClickThumbnail (image) {
+    onClickThumbnail(image) {
       this.$store.dispatch('triggerImageViewed', image)
     },
-    onClickLike (image) {
+    onClickLike(image) {
       this.$store.dispatch('triggerImageLiked', image)
     },
-    onClickSave (image) {
+    onClickSave(image) {
       this.$store.dispatch('triggerImageSaved', image)
     },
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.popularImages && this.popularImages.length > 0) {

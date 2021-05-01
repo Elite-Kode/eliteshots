@@ -1,13 +1,15 @@
 <template>
-  <image-gallery :authenticated="authenticated"
-                 :end="imagesEnd"
-                 :imageItems="curatedImages"
-                 :loading="loadingNewImages"
-                 link-key="image_location"
-                 @fetchImages="onFetchImages"
-                 @imageLiked="onClickLike"
-                 @imageSaved="onClickSave"
-                 @imageViewed="onClickThumbnail"/>
+  <image-gallery
+    :authenticated="authenticated"
+    :end="imagesEnd"
+    :imageItems="curatedImages"
+    :loading="loadingNewImages"
+    link-key="image_location"
+    @fetchImages="onFetchImages"
+    @imageLiked="onClickLike"
+    @imageSaved="onClickSave"
+    @imageViewed="onClickThumbnail"
+  />
 </template>
 
 <script>
@@ -19,7 +21,7 @@ export default {
   components: {
     'image-gallery': ImageGallery
   },
-  data () {
+  data() {
     return {
       loadingNewImages: false,
       imagesEnd: false
@@ -27,29 +29,32 @@ export default {
   },
   computed: {
     ...mapState({
-      curatedImages: state => state.images.curated,
-      authenticated: state => state.auth.authenticated
+      curatedImages: (state) => state.images.curated,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminateCurated')
   },
   methods: {
-    onClickThumbnail (image) {
+    onClickThumbnail(image) {
       this.$store.dispatch('triggerImageViewed', image)
     },
-    onClickLike (image) {
+    onClickLike(image) {
       this.$store.dispatch('triggerImageLiked', image)
     },
-    onClickSave (image) {
+    onClickSave(image) {
       this.$store.dispatch('triggerImageSaved', image)
     },
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.curatedImages && this.curatedImages.length > 0) {
-        images = await this.$store.dispatch('fetchCurated', this.curatedImages[this.curatedImages.length - 1].curated_at)
+        images = await this.$store.dispatch(
+          'fetchCurated',
+          this.curatedImages[this.curatedImages.length - 1].curated_at
+        )
       } else {
         images = await this.$store.dispatch('fetchCurated', null)
       }

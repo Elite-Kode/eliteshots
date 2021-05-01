@@ -21,18 +21,21 @@ const mongoose = require('mongoose')
 let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId
 
-let modActions = new Schema({
-  action: {
-    type: String,
-    enum: ['BAN', 'UNBAN', 'PROMOTE', 'DEMOTE', 'TRUST', 'UNTRUST', 'ACCEPT', 'REJECT', 'CURATE'],
-    uppercase: true
+let modActions = new Schema(
+  {
+    action: {
+      type: String,
+      enum: ['BAN', 'UNBAN', 'PROMOTE', 'DEMOTE', 'TRUST', 'UNTRUST', 'ACCEPT', 'REJECT', 'CURATE'],
+      uppercase: true
+    },
+    target_user: { type: ObjectId, index: true },
+    target_image: { type: ObjectId, index: true },
+    comments: String,
+    comments_lower: { type: String, lowercase: true, index: true },
+    action_at: { type: Date, index: true },
+    mod_user_id: { type: ObjectId, index: true }
   },
-  target_user: { type: ObjectId, index: true },
-  target_image: { type: ObjectId, index: true },
-  comments: String,
-  comments_lower: { type: String, lowercase: true, index: true },
-  action_at: { type: Date, index: true },
-  mod_user_id: { type: ObjectId, index: true }
-}, { runSettersOnQuery: true })
+  { runSettersOnQuery: true }
+)
 
 module.exports = mongoose.model('modActions', modActions)

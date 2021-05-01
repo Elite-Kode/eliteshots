@@ -23,7 +23,8 @@
         align-with-title
         background-color="accent"
         light
-        slider-color="secondary">
+        slider-color="secondary"
+      >
         <v-tab v-for="(tabItem, i) in tabItems" :key="i" :to="tabItem.link">
           {{ tabItem.name }}
         </v-tab>
@@ -38,27 +39,34 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'ProfileToolbar',
-  data () {
+  data() {
     return {
-      tabItems: [{
-        name: 'Profile',
-        link: '/profile'
-      }, {
-        name: 'Images',
-        link: '/profile/images'
-      }, {
-        name: 'Albums',
-        link: '/profile/albums'
-      }, {
-        name: 'Likes',
-        link: '/profile/likes'
-      }, {
-        name: 'Saves',
-        link: '/profile/saves'
-      }, {
-        name: 'Views',
-        link: '/profile/views'
-      }]
+      tabItems: [
+        {
+          name: 'Profile',
+          link: '/profile'
+        },
+        {
+          name: 'Images',
+          link: '/profile/images'
+        },
+        {
+          name: 'Albums',
+          link: '/profile/albums'
+        },
+        {
+          name: 'Likes',
+          link: '/profile/likes'
+        },
+        {
+          name: 'Saves',
+          link: '/profile/saves'
+        },
+        {
+          name: 'Views',
+          link: '/profile/views'
+        }
+      ]
     }
   },
   components: {
@@ -66,29 +74,29 @@ export default {
   },
   computed: {
     ...mapState({
-      authenticated: state => state.auth.authenticated,
-      authUser: state => state.auth.user
+      authenticated: (state) => state.auth.authenticated,
+      authUser: (state) => state.auth.user
     })
   },
-  mounted () {
+  mounted() {
     this.addPublicProfileTab()
   },
   watch: {
-    authUser () {
+    authUser() {
       this.addPublicProfileTab()
     }
   },
   methods: {
-    addPublicProfileTab () {
+    addPublicProfileTab() {
       if (this.authUser && this.authUser._id) {
-        if (this.tabItems.findIndex(item => item.name === 'Public Profile') === -1) {
+        if (this.tabItems.findIndex((item) => item.name === 'Public Profile') === -1) {
           this.tabItems.push({
             name: 'Public Profile',
             link: `/users/${this.authUser._id}`
           })
         }
       } else {
-        let index = this.tabItems.findIndex(item => item.name === 'Public Profile')
+        let index = this.tabItems.findIndex((item) => item.name === 'Public Profile')
         if (index !== -1) {
           this.tabItems.splice(index, 1)
         }

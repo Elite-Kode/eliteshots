@@ -24,49 +24,51 @@ const state = {
   viewed: []
 }
 const mutations = {
-  setAlbums (state, albums) {
+  setAlbums(state, albums) {
     state.albums = albums
   },
-  setImages (state, images) {
+  setImages(state, images) {
     state.images = images
   },
-  setLiked (state, images) {
+  setLiked(state, images) {
     state.liked = images
   },
-  setSaved (state, images) {
+  setSaved(state, images) {
     state.saved = images
   },
-  setViewed (state, images) {
+  setViewed(state, images) {
     state.viewed = images
   },
-  addImages (state, images) {
+  addImages(state, images) {
     state.images.push(...images)
   },
-  addLiked (state, images) {
+  addLiked(state, images) {
     state.liked.push(...images)
   },
-  addSaved (state, images) {
+  addSaved(state, images) {
     state.saved.push(...images)
   },
-  addViewed (state, images) {
+  addViewed(state, images) {
     state.viewed.push(...images)
   },
-  terminateImages (state) {
+  terminateImages(state) {
     state.images = []
   },
-  terminateLiked (state) {
+  terminateLiked(state) {
     state.liked = []
   },
-  terminateSaved (state) {
+  terminateSaved(state) {
     state.saved = []
   },
-  terminateViewed (state) {
+  terminateViewed(state) {
     state.viewed = []
   },
-  increaseViewCount (state, { imageItem, authenticated }) {
-    let index = state.images ? state.images.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+  increaseViewCount(state, { imageItem, authenticated }) {
+    let index = state.images
+      ? state.images.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.images[index].no_of_views = ++state.images[index].no_of_views || 1
@@ -74,9 +76,11 @@ const mutations = {
         state.images[index].anonymous_views = ++state.images[index].anonymous_views || 1
       }
     }
-    index = state.liked ? state.liked.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.liked
+      ? state.liked.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.liked[index].no_of_views = ++state.liked[index].no_of_views || 1
@@ -84,9 +88,11 @@ const mutations = {
         state.liked[index].anonymous_views = ++state.liked[index].anonymous_views || 1
       }
     }
-    index = state.saved ? state.saved.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.saved
+      ? state.saved.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.saved[index].no_of_views = ++state.saved[index].no_of_views || 1
@@ -95,10 +101,12 @@ const mutations = {
       }
     }
   },
-  likeImage (state, { imageItem, authenticated }) {
-    let index = state.images ? state.images.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+  likeImage(state, { imageItem, authenticated }) {
+    let index = state.images
+      ? state.images.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.images[index].self_like) {
@@ -109,9 +117,11 @@ const mutations = {
         state.images[index].self_like = !state.images[index].self_like
       }
     }
-    index = state.liked ? state.liked.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.liked
+      ? state.liked.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.liked[index].self_like) {
@@ -122,9 +132,11 @@ const mutations = {
         state.liked[index].self_like = !state.liked[index].self_like
       }
     }
-    index = state.saved ? state.saved.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.saved
+      ? state.saved.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.saved[index].self_like) {
@@ -136,10 +148,12 @@ const mutations = {
       }
     }
   },
-  saveImage (state, { imageItem, authenticated }) {
-    let index = state.images ? state.images.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+  saveImage(state, { imageItem, authenticated }) {
+    let index = state.images
+      ? state.images.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.images[index].self_save) {
@@ -150,9 +164,11 @@ const mutations = {
         state.images[index].self_save = !state.images[index].self_save
       }
     }
-    index = state.liked ? state.liked.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.liked
+      ? state.liked.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.liked[index].self_save) {
@@ -163,9 +179,11 @@ const mutations = {
         state.liked[index].self_save = !state.liked[index].self_save
       }
     }
-    index = state.saved ? state.saved.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.saved
+      ? state.saved.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.saved[index].self_save) {
@@ -177,10 +195,12 @@ const mutations = {
       }
     }
   },
-  editImage (state, { imageId, title, description, authenticated }) {
-    let index = state.images ? state.images.findIndex(image => {
-      return image._id === imageId
-    }) : -1
+  editImage(state, { imageId, title, description, authenticated }) {
+    let index = state.images
+      ? state.images.findIndex((image) => {
+          return image._id === imageId
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.images[index].title = title
@@ -189,9 +209,11 @@ const mutations = {
         state.images[index].description_lower = description.toLowerCase()
       }
     }
-    index = state.liked ? state.liked.findIndex(image => {
-      return image._id === imageId
-    }) : -1
+    index = state.liked
+      ? state.liked.findIndex((image) => {
+          return image._id === imageId
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.liked[index].title = title
@@ -200,9 +222,11 @@ const mutations = {
         state.liked[index].description_lower = description.toLowerCase()
       }
     }
-    index = state.saved ? state.saved.findIndex(image => {
-      return image._id === imageId
-    }) : -1
+    index = state.saved
+      ? state.saved.findIndex((image) => {
+          return image._id === imageId
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.saved[index].title = title
@@ -212,36 +236,44 @@ const mutations = {
       }
     }
   },
-  deleteImage (state, { imageItem, authenticated }) {
-    let index = state.images ? state.images.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+  deleteImage(state, { imageItem, authenticated }) {
+    let index = state.images
+      ? state.images.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.images.splice(index, 1)
       }
     }
-    index = state.liked ? state.liked.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.liked
+      ? state.liked.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.liked.splice(index, 1)
       }
     }
-    index = state.saved ? state.saved.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.saved
+      ? state.saved.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.saved.splice(index, 1)
       }
     }
   },
-  editAlbum (state, { albumId, title, description, authenticated }) {
-    let index = state.albums ? state.albums.findIndex(album => {
-      return album._id === albumId
-    }) : -1
+  editAlbum(state, { albumId, title, description, authenticated }) {
+    let index = state.albums
+      ? state.albums.findIndex((album) => {
+          return album._id === albumId
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.albums[index].title = title
@@ -251,17 +283,19 @@ const mutations = {
       }
     }
   },
-  deleteAlbum (state, albumId) {
-    let index = state.albums ? state.albums.findIndex(album => {
-      return album._id === albumId
-    }) : -1
+  deleteAlbum(state, albumId) {
+    let index = state.albums
+      ? state.albums.findIndex((album) => {
+          return album._id === albumId
+        })
+      : -1
     if (index !== -1) {
       state.albums.splice(index, 1)
     }
   }
 }
 const actions = {
-  async retryUpload (context, { title, description, album, file }) {
+  async retryUpload(context, { title, description, album, file }) {
     let formData = new FormData()
     formData.append('screenshot', file)
     formData.append('imageTitle', title)
@@ -274,21 +308,21 @@ const actions = {
       headers: formData.getHeaders()
     })
   },
-  async createAlbum ({ commit, dispatch }, { title, description }) {
+  async createAlbum({ dispatch }, { title, description }) {
     await axios.post('/frontend/self/albums', { title, description })
     dispatch('fetchAlbums')
   },
-  async fetchAlbums ({ commit }) {
+  async fetchAlbums({ commit }) {
     let response = await axios.get('/frontend/self/albums')
     let albums = response.data
     commit('setAlbums', albums)
     return albums
   },
-  async deleteAlbum ({ commit }, albumId) {
+  async deleteAlbum({ commit }, albumId) {
     await axios.delete(`/frontend/self/albums/${albumId}`)
     commit('deleteAlbum', albumId)
   },
-  async fetchImages ({ commit }, last) {
+  async fetchImages({ commit }, last) {
     let response = await axios.get('/frontend/self/images', { params: { last } })
     let images = response.data
     if (last) {
@@ -298,12 +332,12 @@ const actions = {
     }
     return images
   },
-  async fetchAlbumImages ({ commit }, { last, albumId }) {
+  async fetchAlbumImages(context, { last, albumId }) {
     let response = await axios.get(`/frontend/self/albums/${albumId}/images`, { params: { last } })
     let images = response.data
     return images
   },
-  async fetchLikedImages ({ commit }, last) {
+  async fetchLikedImages({ commit }, last) {
     let response = await axios.get('/frontend/self/images/liked', { params: { last } })
     let images = response.data
     if (last) {
@@ -313,7 +347,7 @@ const actions = {
     }
     return images
   },
-  async fetchSavedImages ({ commit }, last) {
+  async fetchSavedImages({ commit }, last) {
     let response = await axios.get('/frontend/self/images/saved', { params: { last } })
     let images = response.data
     if (last) {
@@ -323,7 +357,7 @@ const actions = {
     }
     return images
   },
-  async fetchViewedImages ({ commit }, last) {
+  async fetchViewedImages({ commit }, last) {
     let response = await axios.get('/frontend/self/images/viewed', { params: { last } })
     let images = response.data
     if (last) {
@@ -333,27 +367,27 @@ const actions = {
     }
     return images
   },
-  async triggerSelfImageViewed ({ commit, rootState }, imageItem) {
+  async triggerSelfImageViewed({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/public/images/${imageItem._id}/view`)
     commit('increaseViewCount', { imageItem, authenticated: rootState.auth.authenticated })
   },
-  async triggerSelfImageLiked ({ commit, rootState }, imageItem) {
+  async triggerSelfImageLiked({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/public/images/${imageItem._id}/like`)
     commit('likeImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
-  async triggerSelfImageSaved ({ commit, rootState }, imageItem) {
+  async triggerSelfImageSaved({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/public/images/${imageItem._id}/save`)
     commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
-  async triggerSelfImageEdited ({ commit, rootState }, { imageId, title, description, album }) {
+  async triggerSelfImageEdited({ commit, rootState }, { imageId, title, description, album }) {
     await axios.put(`/frontend/self/images/${imageId}/edit`, { title, description, album })
     commit('editImage', { imageId, title, description, authenticated: rootState.auth.authenticated })
   },
-  async triggerSelfImageDeleted ({ commit, rootState }, imageItem) {
+  async triggerSelfImageDeleted({ commit, rootState }, imageItem) {
     await axios.delete(`/frontend/self/images/${imageItem._id}`)
     commit('deleteImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
-  async triggerSelfAlbumEdited ({ commit, rootState }, { albumId, title, description }) {
+  async triggerSelfAlbumEdited({ commit, rootState }, { albumId, title, description }) {
     await axios.put(`/frontend/albums/${albumId}/edit`, { title, description })
     commit('editAlbum', { albumId, title, description, authenticated: rootState.auth.authenticated })
   }

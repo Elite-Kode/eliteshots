@@ -17,16 +17,18 @@
 <template>
   <div>
     <h1>Liked Images</h1>
-    <image-gallery :authenticated="authenticated"
-                   :end="imagesEnd"
-                   :imageItems="likedImages"
-                   :loading="loadingNewImages"
-                   curation-banner
-                   link-key="image_location"
-                   @fetchImages="onFetchImages"
-                   @imageLiked="onClickLike"
-                   @imageSaved="onClickSave"
-                   @imageViewed="onClickThumbnail"/>
+    <image-gallery
+      :authenticated="authenticated"
+      :end="imagesEnd"
+      :imageItems="likedImages"
+      :loading="loadingNewImages"
+      curation-banner
+      link-key="image_location"
+      @fetchImages="onFetchImages"
+      @imageLiked="onClickLike"
+      @imageSaved="onClickSave"
+      @imageViewed="onClickThumbnail"
+    />
   </div>
 </template>
 
@@ -39,7 +41,7 @@ export default {
   components: {
     'image-gallery': ImageGallery
   },
-  data () {
+  data() {
     return {
       loadingNewImages: false,
       imagesEnd: false
@@ -47,25 +49,25 @@ export default {
   },
   computed: {
     ...mapState({
-      likedImages: state => state.self.liked,
-      authenticated: state => state.auth.authenticated
+      likedImages: (state) => state.self.liked,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminateLiked')
   },
   methods: {
-    onClickThumbnail (image) {
+    onClickThumbnail(image) {
       this.$store.dispatch('triggerSelfImageViewed', image)
     },
-    onClickLike (image) {
+    onClickLike(image) {
       this.$store.dispatch('triggerSelfImageLiked', image)
     },
-    onClickSave (image) {
+    onClickSave(image) {
       this.$store.dispatch('triggerSelfImageSaved', image)
     },
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.likedImages && this.likedImages.length > 0) {

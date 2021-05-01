@@ -39,131 +39,163 @@ export default new Router({
       path: '/',
       component: MainLayout,
       name: 'main',
-      children: [{
-        path: '',
-        component: Home,
-        name: 'home',
-        children: [{
-          path: '/',
-          component: Popular,
-          name: 'popular'
-        }, {
-          path: 'recents',
-          component: Recents,
-          name: 'recents'
-        }, {
-          path: 'curated',
-          component: Curated,
-          name: 'curated'
-        }]
-      }, {
-        path: '/admin',
-        component: Admin,
-        name: 'admin',
-        children: [{
-          path: 'mod-queue',
-          component: ModQueue,
-          name: 'mod-queue'
-        }, {
-          path: 'accepted',
-          component: AcceptedImages,
-          name: 'accepted'
-        }, {
-          path: 'rejected',
-          component: RejectedImages,
-          name: 'rejected'
-        }, {
-          path: 'users',
-          component: UsersManagement,
-          name: 'users'
-        }, {
-          path: 'users/:userId',
-          component: UserDetail,
-          name: 'user-detail',
+      children: [
+        {
+          path: '',
+          component: Home,
+          name: 'home',
+          children: [
+            {
+              path: '/',
+              component: Popular,
+              name: 'popular'
+            },
+            {
+              path: 'recents',
+              component: Recents,
+              name: 'recents'
+            },
+            {
+              path: 'curated',
+              component: Curated,
+              name: 'curated'
+            }
+          ]
+        },
+        {
+          path: '/admin',
+          component: Admin,
+          name: 'admin',
+          children: [
+            {
+              path: 'mod-queue',
+              component: ModQueue,
+              name: 'mod-queue'
+            },
+            {
+              path: 'accepted',
+              component: AcceptedImages,
+              name: 'accepted'
+            },
+            {
+              path: 'rejected',
+              component: RejectedImages,
+              name: 'rejected'
+            },
+            {
+              path: 'users',
+              component: UsersManagement,
+              name: 'users'
+            },
+            {
+              path: 'users/:userId',
+              component: UserDetail,
+              name: 'user-detail',
+              props: true
+            },
+            {
+              path: 'mod-actions',
+              component: ModActionHistory,
+              name: 'mod-actions'
+            }
+          ]
+        },
+        {
+          path: '/profile',
+          component: Profile,
+          name: 'profile',
+          children: [
+            {
+              path: '/',
+              component: ProfileData,
+              name: 'profile-data'
+            },
+            {
+              path: 'images',
+              component: Images,
+              name: 'images'
+            },
+            {
+              path: 'albums',
+              component: Albums,
+              name: 'albums'
+            },
+            {
+              path: 'albums/:albumId',
+              component: AlbumImages,
+              name: 'album-images',
+              props: true
+            },
+            {
+              path: 'likes',
+              component: Likes,
+              name: 'likes'
+            },
+            {
+              path: 'saves',
+              component: Saves,
+              name: 'saves'
+            },
+            {
+              path: 'views',
+              component: ViewsHistory,
+              name: 'views-history'
+            }
+          ]
+        },
+        {
+          path: '/users/:userId',
+          component: PublicProfile,
+          name: 'public-profile',
           props: true
-        }, {
-          path: 'mod-actions',
-          component: ModActionHistory,
-          name: 'mod-actions'
-        }]
-      }, {
-        path: '/profile',
-        component: Profile,
-        name: 'profile',
-        children: [{
-          path: '/',
-          component: ProfileData,
-          name: 'profile-data'
-        }, {
-          path: 'images',
-          component: Images,
-          name: 'images'
-        }, {
-          path: 'albums',
-          component: Albums,
-          name: 'albums'
-        }, {
-          path: 'albums/:albumId',
-          component: AlbumImages,
-          name: 'album-images',
+        },
+        {
+          path: '/albums/:albumId',
+          component: PublicAlbum,
+          name: 'public-album',
           props: true
-        }, {
-          path: 'likes',
-          component: Likes,
-          name: 'likes'
-        }, {
-          path: 'saves',
-          component: Saves,
-          name: 'saves'
-        }, {
-          path: 'views',
-          component: ViewsHistory,
-          name: 'views-history'
-        }]
-      }, {
-        path: '/users/:userId',
-        component: PublicProfile,
-        name: 'public-profile',
-        props: true
-      }, {
-        path: '/albums/:albumId',
-        component: PublicAlbum,
-        name: 'public-album',
-        props: true
-      }, {
-        path: '/upload',
-        component: UploadCard,
-        name: 'upload-card'
-      }, {
-        path: '/about',
-        component: About,
-        name: 'about'
-      }, {
-        path: '/about/termsandconditions',
-        component: TAndC,
-        name: 'tandc'
-      }, {
-        path: '/about/disclaimer',
-        component: Disclaimer,
-        name: 'disclaimer'
-      }, {
-        path: '/about/privacypolicy',
-        component: PrivacyPolicy,
-        name: 'privacy-policy'
-      }, {
-        path: '/image/:imageId',
-        component: ImageItem,
-        name: 'image-item',
-        props: true
-      }, {
-        path: '/donate',
-        component: Donate,
-        name: 'donate'
-      }, {
-        path: '/guidelines',
-        component: Guidelines,
-        name: 'guidelines'
-      }
+        },
+        {
+          path: '/upload',
+          component: UploadCard,
+          name: 'upload-card'
+        },
+        {
+          path: '/about',
+          component: About,
+          name: 'about'
+        },
+        {
+          path: '/about/termsandconditions',
+          component: TAndC,
+          name: 'tandc'
+        },
+        {
+          path: '/about/disclaimer',
+          component: Disclaimer,
+          name: 'disclaimer'
+        },
+        {
+          path: '/about/privacypolicy',
+          component: PrivacyPolicy,
+          name: 'privacy-policy'
+        },
+        {
+          path: '/image/:imageId',
+          component: ImageItem,
+          name: 'image-item',
+          props: true
+        },
+        {
+          path: '/donate',
+          component: Donate,
+          name: 'donate'
+        },
+        {
+          path: '/guidelines',
+          component: Guidelines,
+          name: 'guidelines'
+        }
       ]
     }
   ],

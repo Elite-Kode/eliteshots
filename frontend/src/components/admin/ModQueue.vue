@@ -17,17 +17,21 @@
 <template>
   <div>
     <h1>Moderation Queue</h1>
-    <mod-action :action-target="modActionTarget"
-                :mod-action="modActionType"
-                :open-dialog="modActionDialog"
-                :target-type="modActionTargetType"
-                @cancelled="onCancelled"
-                @confirmed="onConfirmed"/>
-    <image-gallery :authenticated="authenticated"
-                   :end="imagesEnd"
-                   :imageItems="pendingImages"
-                   :loading="loadingNewImages"
-                   @fetchImages="onFetchImages">
+    <mod-action
+      :action-target="modActionTarget"
+      :mod-action="modActionType"
+      :open-dialog="modActionDialog"
+      :target-type="modActionTargetType"
+      @cancelled="onCancelled"
+      @confirmed="onConfirmed"
+    />
+    <image-gallery
+      :authenticated="authenticated"
+      :end="imagesEnd"
+      :imageItems="pendingImages"
+      :loading="loadingNewImages"
+      @fetchImages="onFetchImages"
+    >
       <template v-slot:thumbnail="slotProps">
         <v-card>
           <v-img
@@ -36,7 +40,7 @@
             min-height="200px"
             @click="slotProps.clickThumbnail(slotProps.itemIndex)"
           >
-            <v-btn :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" icon target="_blank">
+            <v-btn :to="{ name: 'image-item', params: { imageId: slotProps.imageItem._id } }" icon target="_blank">
               <v-icon>launch</v-icon>
             </v-btn>
           </v-img>
@@ -45,7 +49,7 @@
               <v-col class="headline py-0" cols="12">{{ slotProps.imageItem.title }}</v-col>
               <v-col class="subheading py-0" cols="12">{{ slotProps.imageItem.description }}</v-col>
               <v-col class="subheading py-0" cols="12">
-                <router-link :to="{ name: 'user-detail', params: { userId: slotProps.imageItem.user_id }}">
+                <router-link :to="{ name: 'user-detail', params: { userId: slotProps.imageItem.user_id } }">
                   CMDR {{ slotProps.imageItem.cmdr_name }}
                 </router-link>
               </v-col>
@@ -54,15 +58,24 @@
           <v-card-actions>
             <v-row dense>
               <v-col cols="6">
-                <v-btn :disabled="!canMod(slotProps.imageItem.user_id)" block color="success"
-                       @click.stop="acceptImage(slotProps.imageItem)">
+                <v-btn
+                  :disabled="!canMod(slotProps.imageItem.user_id)"
+                  block
+                  color="success"
+                  @click.stop="acceptImage(slotProps.imageItem)"
+                >
                   Accept
                   <v-icon right>check</v-icon>
                 </v-btn>
               </v-col>
               <v-col cols="6">
-                <v-btn :disabled="!canMod(slotProps.imageItem.user_id)" block color="error" outlined
-                       @click.stop="rejectImage(slotProps.imageItem)">
+                <v-btn
+                  :disabled="!canMod(slotProps.imageItem.user_id)"
+                  block
+                  color="error"
+                  outlined
+                  @click.stop="rejectImage(slotProps.imageItem)"
+                >
                   Reject
                   <v-icon right>clear</v-icon>
                 </v-btn>
@@ -86,7 +99,7 @@ export default {
     'image-gallery': ImageGallery,
     'mod-action': ModActionConfirmation
   },
-  data () {
+  data() {
     return {
       loadingNewImages: false,
       imagesEnd: false,
@@ -98,46 +111,49 @@ export default {
   },
   computed: {
     ...mapState({
-      pendingImages: state => state.admin.pendingImages,
-      authenticated: state => state.auth.authenticated,
-      authUser: state => state.auth.user
+      pendingImages: (state) => state.admin.pendingImages,
+      authenticated: (state) => state.auth.authenticated,
+      authUser: (state) => state.auth.user
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminatePendingImages')
   },
   methods: {
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.pendingImages && this.pendingImages.length > 0) {
-        images = await this.$store.dispatch('fetchPending', this.pendingImages[this.pendingImages.length - 1].uploaded_at)
+        images = await this.$store.dispatch(
+          'fetchPending',
+          this.pendingImages[this.pendingImages.length - 1].uploaded_at
+        )
       } else {
         images = await this.$store.dispatch('fetchPending', null)
       }
       this.imagesEnd = images.length === 0
       this.loadingNewImages = false
     },
-    canMod (userId) {
+    canMod(userId) {
       return this.authUser._id !== userId
     },
-    acceptImage (image) {
+    acceptImage(image) {
       this.modActionType = 'ACCEPT'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = image._id
       this.modActionDialog = true
     },
-    rejectImage (image) {
+    rejectImage(image) {
       this.modActionType = 'REJECT'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = image._id
       this.modActionDialog = true
     },
-    onCancelled () {
+    onCancelled() {
       this.modActionDialog = false
     },
-    onConfirmed (comment) {
+    onConfirmed(comment) {
       this.modActionDialog = false
       let payload = {
         target: this.modActionTarget,

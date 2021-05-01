@@ -46,40 +46,46 @@ router.get('/images/popular', async (req, res, next) => {
       moderation_status: acceptedStatus
     }
 
-    aggregate.match(query).lookup({
-      from: 'views',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'views'
-    }).lookup({
-      from: 'likes',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'likes'
-    }).lookup({
-      from: 'saves',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'saves'
-    }).lookup({
-      from: 'users',
-      localField: 'user_id',
-      foreignField: '_id',
-      as: 'user'
-    }).addFields({
-      no_of_views: {
-        $size: '$views'
-      },
-      no_of_likes: {
-        $size: '$likes'
-      },
-      no_of_saves: {
-        $size: '$saves'
-      },
-      cmdr_name: {
-        '$arrayElemAt': ['$user.commander', 0]
-      }
-    })
+    aggregate
+      .match(query)
+      .lookup({
+        from: 'views',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'views'
+      })
+      .lookup({
+        from: 'likes',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'likes'
+      })
+      .lookup({
+        from: 'saves',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'saves'
+      })
+      .lookup({
+        from: 'users',
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user'
+      })
+      .addFields({
+        no_of_views: {
+          $size: '$views'
+        },
+        no_of_likes: {
+          $size: '$likes'
+        },
+        no_of_saves: {
+          $size: '$saves'
+        },
+        cmdr_name: {
+          $arrayElemAt: ['$user.commander', 0]
+        }
+      })
 
     if (req.user) {
       aggregate.addFields({
@@ -107,29 +113,31 @@ router.get('/images/popular', async (req, res, next) => {
         }
       })
     }
-    aggregate.addFields({
-      score: {
-        $add: [{
-          $log10: {
-            $cond: {
-              if: { $gt: ['$no_of_likes', 0] },
-              then: '$no_of_likes',
-              else: 1
+    aggregate
+      .addFields({
+        score: {
+          $add: [
+            {
+              $log10: {
+                $cond: {
+                  if: { $gt: ['$no_of_likes', 0] },
+                  then: '$no_of_likes',
+                  else: 1
+                }
+              }
+            },
+            {
+              $divide: [{ $subtract: ['$uploaded_at', new Date(1551378600000)] }, 4500000]
             }
-          }
-        }, {
-          $divide: [
-            { $subtract: ['$uploaded_at', new Date(1551378600000)] },
-            4500000
           ]
-        }]
-      }
-    }).project({
-      views: 0,
-      likes: 0,
-      saves: 0,
-      user: 0
-    })
+        }
+      })
+      .project({
+        views: 0,
+        likes: 0,
+        saves: 0,
+        user: 0
+      })
 
     if (lastElement) {
       aggregate.match({
@@ -137,13 +145,15 @@ router.get('/images/popular', async (req, res, next) => {
       })
     }
 
-    aggregate.sort({
-      score: -1
-    }).limit(imagesPerFetch)
+    aggregate
+      .sort({
+        score: -1
+      })
+      .limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
-    imageData.map(image => {
+    imageData.map((image) => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -172,40 +182,46 @@ router.get('/images/recents', async (req, res, next) => {
       query.uploaded_at = { $lt: new Date(lastElement) }
     }
 
-    aggregate.match(query).lookup({
-      from: 'views',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'views'
-    }).lookup({
-      from: 'likes',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'likes'
-    }).lookup({
-      from: 'saves',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'saves'
-    }).lookup({
-      from: 'users',
-      localField: 'user_id',
-      foreignField: '_id',
-      as: 'user'
-    }).addFields({
-      no_of_views: {
-        $size: '$views'
-      },
-      no_of_likes: {
-        $size: '$likes'
-      },
-      no_of_saves: {
-        $size: '$saves'
-      },
-      cmdr_name: {
-        '$arrayElemAt': ['$user.commander', 0]
-      }
-    })
+    aggregate
+      .match(query)
+      .lookup({
+        from: 'views',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'views'
+      })
+      .lookup({
+        from: 'likes',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'likes'
+      })
+      .lookup({
+        from: 'saves',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'saves'
+      })
+      .lookup({
+        from: 'users',
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user'
+      })
+      .addFields({
+        no_of_views: {
+          $size: '$views'
+        },
+        no_of_likes: {
+          $size: '$likes'
+        },
+        no_of_saves: {
+          $size: '$saves'
+        },
+        cmdr_name: {
+          $arrayElemAt: ['$user.commander', 0]
+        }
+      })
 
     if (req.user) {
       aggregate.addFields({
@@ -240,13 +256,15 @@ router.get('/images/recents', async (req, res, next) => {
       user: 0
     })
 
-    aggregate.sort({
-      uploaded_at: -1
-    }).limit(imagesPerFetch)
+    aggregate
+      .sort({
+        uploaded_at: -1
+      })
+      .limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
-    imageData.map(image => {
+    imageData.map((image) => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -276,40 +294,46 @@ router.get('/images/curated', async (req, res, next) => {
       query.curated_at = { $lt: new Date(lastElement) }
     }
 
-    aggregate.match(query).lookup({
-      from: 'views',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'views'
-    }).lookup({
-      from: 'likes',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'likes'
-    }).lookup({
-      from: 'saves',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'saves'
-    }).lookup({
-      from: 'users',
-      localField: 'user_id',
-      foreignField: '_id',
-      as: 'user'
-    }).addFields({
-      no_of_views: {
-        $size: '$views'
-      },
-      no_of_likes: {
-        $size: '$likes'
-      },
-      no_of_saves: {
-        $size: '$saves'
-      },
-      cmdr_name: {
-        '$arrayElemAt': ['$user.commander', 0]
-      }
-    })
+    aggregate
+      .match(query)
+      .lookup({
+        from: 'views',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'views'
+      })
+      .lookup({
+        from: 'likes',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'likes'
+      })
+      .lookup({
+        from: 'saves',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'saves'
+      })
+      .lookup({
+        from: 'users',
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user'
+      })
+      .addFields({
+        no_of_views: {
+          $size: '$views'
+        },
+        no_of_likes: {
+          $size: '$likes'
+        },
+        no_of_saves: {
+          $size: '$saves'
+        },
+        cmdr_name: {
+          $arrayElemAt: ['$user.commander', 0]
+        }
+      })
 
     if (req.user) {
       aggregate.addFields({
@@ -344,13 +368,15 @@ router.get('/images/curated', async (req, res, next) => {
       user: 0
     })
 
-    aggregate.sort({
-      curated_at: -1
-    }).limit(imagesPerFetch)
+    aggregate
+      .sort({
+        curated_at: -1
+      })
+      .limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
-    imageData.map(image => {
+    imageData.map((image) => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -374,46 +400,52 @@ router.get('/images/:imageId', async (req, res, next) => {
       _id: ObjectId(req.params.imageId)
     }
 
-    aggregate.match(query).lookup({
-      from: 'views',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'views'
-    }).lookup({
-      from: 'likes',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'likes'
-    }).lookup({
-      from: 'saves',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'saves'
-    }).lookup({
-      from: 'users',
-      localField: 'user_id',
-      foreignField: '_id',
-      as: 'user'
-    }).addFields({
-      no_of_views: {
-        $size: '$views'
-      },
-      no_of_likes: {
-        $size: '$likes'
-      },
-      no_of_saves: {
-        $size: '$saves'
-      },
-      cmdr_name: {
-        '$arrayElemAt': ['$user.commander', 0]
-      },
-      user_access: {
-        '$arrayElemAt': ['$user.access', 0]
-      },
-      user_trusted: {
-        '$arrayElemAt': ['$user.trusted', 0]
-      }
-    })
+    aggregate
+      .match(query)
+      .lookup({
+        from: 'views',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'views'
+      })
+      .lookup({
+        from: 'likes',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'likes'
+      })
+      .lookup({
+        from: 'saves',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'saves'
+      })
+      .lookup({
+        from: 'users',
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user'
+      })
+      .addFields({
+        no_of_views: {
+          $size: '$views'
+        },
+        no_of_likes: {
+          $size: '$likes'
+        },
+        no_of_saves: {
+          $size: '$saves'
+        },
+        cmdr_name: {
+          $arrayElemAt: ['$user.commander', 0]
+        },
+        user_access: {
+          $arrayElemAt: ['$user.access', 0]
+        },
+        user_trusted: {
+          $arrayElemAt: ['$user.trusted', 0]
+        }
+      })
 
     if (req.user) {
       aggregate.addFields({
@@ -450,7 +482,7 @@ router.get('/images/:imageId', async (req, res, next) => {
 
     let imageData = await aggregate.exec()
 
-    imageData.map(image => {
+    imageData.map((image) => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -479,11 +511,14 @@ router.put('/images/:imageId/view', async (req, res, next) => {
         })
         await viewDocument.save()
       } else {
-        await imageModel.findOneAndUpdate({
-          _id: req.params.imageId
-        }, {
-          $inc: { anonymous_views: 1 }
-        })
+        await imageModel.findOneAndUpdate(
+          {
+            _id: req.params.imageId
+          },
+          {
+            $inc: { anonymous_views: 1 }
+          }
+        )
       }
     }
     res.status(200).send({})
@@ -496,10 +531,12 @@ router.put('/images/:imageId/like', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let liked = await likesModel.findOne({
-          image_id: req.params.imageId,
-          user_id: req.user._id
-        }).lean()
+        let liked = await likesModel
+          .findOne({
+            image_id: req.params.imageId,
+            user_id: req.user._id
+          })
+          .lean()
         if (liked) {
           await likesModel.findOneAndRemove({
             image_id: req.params.imageId,
@@ -529,10 +566,12 @@ router.put('/images/:imageId/save', async (req, res, next) => {
   try {
     if (req.user) {
       if (req.user.access !== bannedAccess) {
-        let saves = await savesModel.findOne({
-          image_id: req.params.imageId,
-          user_id: req.user._id
-        }).lean()
+        let saves = await savesModel
+          .findOne({
+            image_id: req.params.imageId,
+            user_id: req.user._id
+          })
+          .lean()
         if (saves) {
           await savesModel.findOneAndRemove({
             image_id: req.params.imageId,
@@ -582,32 +621,37 @@ router.get('/users/:userId/images', async (req, res, next) => {
       query.uploaded_at = { $lt: new Date(lastElement) }
     }
 
-    aggregate.match(query).lookup({
-      from: 'views',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'views'
-    }).lookup({
-      from: 'likes',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'likes'
-    }).lookup({
-      from: 'saves',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'saves'
-    }).addFields({
-      no_of_views: {
-        $size: '$views'
-      },
-      no_of_likes: {
-        $size: '$likes'
-      },
-      no_of_saves: {
-        $size: '$saves'
-      }
-    })
+    aggregate
+      .match(query)
+      .lookup({
+        from: 'views',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'views'
+      })
+      .lookup({
+        from: 'likes',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'likes'
+      })
+      .lookup({
+        from: 'saves',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'saves'
+      })
+      .addFields({
+        no_of_views: {
+          $size: '$views'
+        },
+        no_of_likes: {
+          $size: '$likes'
+        },
+        no_of_saves: {
+          $size: '$saves'
+        }
+      })
 
     if (req.user) {
       aggregate.addFields({
@@ -642,13 +686,15 @@ router.get('/users/:userId/images', async (req, res, next) => {
       saves: 0
     })
 
-    aggregate.sort({
-      uploaded_at: -1
-    }).limit(imagesPerFetch)
+    aggregate
+      .sort({
+        uploaded_at: -1
+      })
+      .limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
-    imageData.map(image => {
+    imageData.map((image) => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`
@@ -695,32 +741,37 @@ router.get('/albums/:albumId/images', async (req, res, next) => {
       query.uploaded_at = { $lt: new Date(lastElement) }
     }
 
-    aggregate.match(query).lookup({
-      from: 'views',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'views'
-    }).lookup({
-      from: 'likes',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'likes'
-    }).lookup({
-      from: 'saves',
-      localField: '_id',
-      foreignField: 'image_id',
-      as: 'saves'
-    }).addFields({
-      no_of_views: {
-        $size: '$views'
-      },
-      no_of_likes: {
-        $size: '$likes'
-      },
-      no_of_saves: {
-        $size: '$saves'
-      }
-    })
+    aggregate
+      .match(query)
+      .lookup({
+        from: 'views',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'views'
+      })
+      .lookup({
+        from: 'likes',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'likes'
+      })
+      .lookup({
+        from: 'saves',
+        localField: '_id',
+        foreignField: 'image_id',
+        as: 'saves'
+      })
+      .addFields({
+        no_of_views: {
+          $size: '$views'
+        },
+        no_of_likes: {
+          $size: '$likes'
+        },
+        no_of_saves: {
+          $size: '$saves'
+        }
+      })
 
     if (req.user) {
       aggregate.addFields({
@@ -755,13 +806,15 @@ router.get('/albums/:albumId/images', async (req, res, next) => {
       saves: 0
     })
 
-    aggregate.sort({
-      uploaded_at: -1
-    }).limit(imagesPerFetch)
+    aggregate
+      .sort({
+        uploaded_at: -1
+      })
+      .limit(imagesPerFetch)
 
     let imageData = await aggregate.exec()
 
-    imageData.map(image => {
+    imageData.map((image) => {
       image.image_location = `${imageUrlRoute}${image.image_location}`
       image.thumbnail_location = `${imageUrlRoute}${image.thumbnail_location}`
       image.low_res_location = `${imageUrlRoute}${image.low_res_location}`

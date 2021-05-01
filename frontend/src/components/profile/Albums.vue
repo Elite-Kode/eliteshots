@@ -17,20 +17,24 @@
 <template>
   <div>
     <h1>My Albums</h1>
-    <album-edit :edit-description="editDescription"
-                :edit-title="editTitle"
-                :editDialog="editDialog"
-                :editId="editId"
-                @cancel="onEditCancel"
-                @confirm="onEditConfirm"/>
-    <album-gallery :albumItems="albums"
-                   :authenticated="authenticated"
-                   deletable
-                   editable
-                   @albumCreated="onClickCreate"
-                   @albumDeleted="onClickDelete"
-                   @albumEdited="onClickEdit"
-                   @albumOpened="onClickOpen"/>
+    <album-edit
+      :edit-description="editDescription"
+      :edit-title="editTitle"
+      :editDialog="editDialog"
+      :editId="editId"
+      @cancel="onEditCancel"
+      @confirm="onEditConfirm"
+    />
+    <album-gallery
+      :albumItems="albums"
+      :authenticated="authenticated"
+      deletable
+      editable
+      @albumCreated="onClickCreate"
+      @albumDeleted="onClickDelete"
+      @albumEdited="onClickEdit"
+      @albumOpened="onClickOpen"
+    />
   </div>
 </template>
 
@@ -45,7 +49,7 @@ export default {
     AlbumEdit,
     'album-gallery': AlbumGallery
   },
-  data () {
+  data() {
     return {
       editDialog: false,
       editId: '',
@@ -55,16 +59,16 @@ export default {
   },
   computed: {
     ...mapState({
-      albums: state => state.self.albums,
-      authenticated: state => state.auth.authenticated
+      albums: (state) => state.self.albums,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.dispatch('fetchAlbums')
   },
   methods: {
-    onClickOpen (albumItem) {
+    onClickOpen(albumItem) {
       let params = {}
       if (albumItem._id) {
         params = { albumId: albumItem._id }
@@ -73,22 +77,22 @@ export default {
       }
       this.$router.push({ name: 'album-images', params })
     },
-    onClickEdit (albumItem) {
+    onClickEdit(albumItem) {
       this.editId = albumItem._id
       this.editTitle = albumItem.title
       this.editDescription = albumItem.description
       this.editDialog = true
     },
-    onClickCreate ({ title, description }) {
+    onClickCreate({ title, description }) {
       this.$store.dispatch('createAlbum', { title, description })
     },
-    onClickDelete (albumItem) {
+    onClickDelete(albumItem) {
       this.$store.dispatch('deleteAlbum', albumItem._id)
     },
-    onEditCancel () {
+    onEditCancel() {
       this.editDialog = false
     },
-    onEditConfirm ({ title, description }) {
+    onEditConfirm({ title, description }) {
       this.editDialog = false
       this.$store.dispatch('triggerSelfAlbumEdited', {
         albumId: this.editId,

@@ -16,53 +16,60 @@
 
 <template>
   <div>
-    <ed-toolbar scroll-of-screen scroll-threshold="64"/>
-    <mod-action :action-target="modActionTarget"
-                :mod-action="modActionType"
-                :open-dialog="modActionDialog"
-                :target-type="modActionTargetType"
-                @cancelled="onCancelled"
-                @confirmed="onConfirmed"/>
-    <image-edit :all-albums="albums"
-                :edit-album="editAlbum"
-                :edit-description="editDescription"
-                :edit-title="editTitle"
-                :editDialog="editDialog"
-                :editId="editId"
-                @cancel="onEditCancel"
-                @confirm="onEditConfirm"/>
+    <ed-toolbar scroll-of-screen scroll-threshold="64" />
+    <mod-action
+      :action-target="modActionTarget"
+      :mod-action="modActionType"
+      :open-dialog="modActionDialog"
+      :target-type="modActionTargetType"
+      @cancelled="onCancelled"
+      @confirmed="onConfirmed"
+    />
+    <image-edit
+      :all-albums="albums"
+      :edit-album="editAlbum"
+      :edit-description="editDescription"
+      :edit-title="editTitle"
+      :editDialog="editDialog"
+      :editId="editId"
+      @cancel="onEditCancel"
+      @confirm="onEditConfirm"
+    />
     <v-main>
       <v-container class="pa-0" fluid>
         <v-card>
-          <v-img :src="imageItem.image_location" class="image-fit"/>
+          <v-img :src="imageItem.image_location" class="image-fit" />
           <v-card-title class="d-block">
             <v-row dense>
               <v-col v-if="isMod" cols="12" lg="9">
                 <v-row class="flex-md-nowrap" dense>
                   <v-col>
-                    <v-btn :disabled="!canAccept" block color="success"
-                           @click="acceptImage">
+                    <v-btn :disabled="!canAccept" block color="success" @click="acceptImage">
                       Accept
                       <v-icon right>check</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn :disabled="!canReject" block color="error" outlined
-                           @click="rejectImage">
+                    <v-btn :disabled="!canReject" block color="error" outlined @click="rejectImage">
                       Reject
                       <v-icon right>clear</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn :disabled="!canCurate" block color="primary"
-                           @click="curateImage">
+                    <v-btn :disabled="!canCurate" block color="primary" @click="curateImage">
                       Curate
                       <v-icon right>mdi-image-frame</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn v-if="imageItem.user_access!==bannedAccess" :disabled="!canBan" block color="error" outlined
-                           @click="banUser">
+                    <v-btn
+                      v-if="imageItem.user_access !== bannedAccess"
+                      :disabled="!canBan"
+                      block
+                      color="error"
+                      outlined
+                      @click="banUser"
+                    >
                       Ban
                     </v-btn>
                     <v-btn v-else :disabled="!canUnban" block color="success" outlined @click="unbanUser">Unban</v-btn>
@@ -74,16 +81,23 @@
                     <v-btn :disabled="!canPromote" block color="success" @click="promoteUser">Promote</v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn v-if="!imageItem.user_trusted" :disabled="!canTrust" block color="success" outlined
-                           @click="trustUser">
+                    <v-btn
+                      v-if="!imageItem.user_trusted"
+                      :disabled="!canTrust"
+                      block
+                      color="success"
+                      outlined
+                      @click="trustUser"
+                    >
                       Trust
                     </v-btn>
-                    <v-btn v-else :disabled="!canTrust" block color="error" outlined @click="untrustUser">Untrust
+                    <v-btn v-else :disabled="!canTrust" block color="error" outlined @click="untrustUser"
+                      >Untrust
                     </v-btn>
                   </v-col>
                 </v-row>
               </v-col>
-              <v-col :lg="isMod?3:12" cols="12">
+              <v-col :lg="isMod ? 3 : 12" cols="12">
                 <v-row class="flex-md-nowrap" dense>
                   <v-col v-if="canEdit" class="d-flex justify-center">
                     <v-btn icon @click="editImage">
@@ -147,7 +161,7 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       imageItem: {},
       bannedAccess: 'BANNED',
@@ -167,23 +181,23 @@ export default {
   },
   computed: {
     ...mapState({
-      albums: state => state.self.albums,
-      authenticated: state => state.auth.authenticated,
-      authUser: state => state.auth.user
+      albums: (state) => state.self.albums,
+      authenticated: (state) => state.auth.authenticated,
+      authUser: (state) => state.auth.user
     }),
-    isMod () {
+    isMod() {
       return this.authUser.access === this.modAccess || this.authUser.access === this.adminAccess
     },
-    canAccept () {
+    canAccept() {
       return this.authUser._id !== this.imageItem.user_id && this.imageItem.moderation_status !== 'ACCEPTED'
     },
-    canReject () {
+    canReject() {
       return this.authUser._id !== this.imageItem.user_id && this.imageItem.moderation_status !== 'REJECTED'
     },
-    canCurate () {
+    canCurate() {
       return this.authUser._id !== this.imageItem.user_id && !this.imageItem.curated
     },
-    canBan () {
+    canBan() {
       if (this.imageItem.user_id === this.authUser._id) {
         return false
       } else if (this.imageItem.user_access === this.normalAccess) {
@@ -194,20 +208,20 @@ export default {
         return false
       }
     },
-    canUnban () {
+    canUnban() {
       if (this.imageItem.user_id === this.authUser._id) {
         return false
       } else {
         return this.imageItem.user_access === this.bannedAccess
       }
     },
-    canDemote () {
+    canDemote() {
       return this.authUser.access === this.adminAccess && this.imageItem.user_access === this.modAccess
     },
-    canPromote () {
+    canPromote() {
       return this.authUser.access === this.adminAccess && this.imageItem.user_access === this.normalAccess
     },
-    canTrust () {
+    canTrust() {
       if (this.imageItem.user_id === this.authUser._id) {
         return false
       } else if (this.imageItem.user_access === this.normalAccess) {
@@ -220,97 +234,97 @@ export default {
         return false
       }
     },
-    canEdit () {
+    canEdit() {
       return this.authUser._id === this.imageItem.user_id
     },
-    canDelete () {
+    canDelete() {
       return this.authUser._id === this.imageItem.user_id
     }
   },
-  async created () {
+  async created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.dispatch('fetchAlbums')
     await this.fetchUseImageDetail()
     this.$store.dispatch('triggerImageViewed', this.imageItem)
   },
   methods: {
-    async fetchUseImageDetail () {
+    async fetchUseImageDetail() {
       this.imageItem = await this.$store.dispatch('fetchImage', this.imageId)
     },
-    acceptImage () {
+    acceptImage() {
       this.modActionType = 'ACCEPT'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = this.imageItem._id
       this.modActionDialog = true
     },
-    rejectImage () {
+    rejectImage() {
       this.modActionType = 'REJECT'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = this.imageItem._id
       this.modActionDialog = true
     },
-    curateImage () {
+    curateImage() {
       this.modActionType = 'CURATE'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = this.imageItem._id
       this.modActionDialog = true
     },
-    banUser () {
+    banUser() {
       this.modActionType = 'BAN'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.imageItem.user_id
       this.modActionDialog = true
     },
-    unbanUser () {
+    unbanUser() {
       this.modActionType = 'UNBAN'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.imageItem.user_id
       this.modActionDialog = true
     },
-    demoteUser () {
+    demoteUser() {
       this.modActionType = 'DEMOTE'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.imageItem.user_id
       this.modActionDialog = true
     },
-    promoteUser () {
+    promoteUser() {
       this.modActionType = 'PROMOTE'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.imageItem.user_id
       this.modActionDialog = true
     },
-    trustUser () {
+    trustUser() {
       this.modActionType = 'TRUST'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.imageItem.user_id
       this.modActionDialog = true
     },
-    untrustUser () {
+    untrustUser() {
       this.modActionType = 'UNTRUST'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.imageItem.user_id
       this.modActionDialog = true
     },
-    editImage () {
+    editImage() {
       this.editId = this.imageItem._id
       this.editTitle = this.imageItem.title
       this.editDescription = this.imageItem.description
       this.editAlbum = this.imageItem.album_id ? this.imageItem.album_id : '0'
       this.editDialog = true
     },
-    deleteImage () {
+    deleteImage() {
       this.$store.dispatch('triggerSelfImageDeleted', this.imageItem)
     },
-    likeImage () {
+    likeImage() {
       this.$store.dispatch('triggerImageLiked', this.imageItem)
     },
-    saveImage () {
+    saveImage() {
       this.$store.dispatch('triggerImageSaved', this.imageItem)
     },
-    onEditCancel () {
+    onEditCancel() {
       this.editDialog = false
     },
-    onEditConfirm ({ title, description, album }) {
+    onEditConfirm({ title, description, album }) {
       this.editDialog = false
       this.$store.dispatch('triggerSelfImageEdited', {
         imageId: this.editId,
@@ -319,10 +333,10 @@ export default {
         album
       })
     },
-    onCancelled () {
+    onCancelled() {
       this.modActionDialog = false
     },
-    async onConfirmed (comment) {
+    async onConfirmed(comment) {
       this.modActionDialog = false
       let payload = {
         target: this.modActionTarget,

@@ -19,7 +19,6 @@
 const express = require('express')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
-const cors = require('cors')
 const axios = require('axios')
 const session = require('express-session')
 const mongoStore = require('connect-mongo')(session)
@@ -37,9 +36,7 @@ const authLogout = require('./routes/auth/logout')
 const authUser = require('./routes/auth/auth_user')
 const admin = require('./routes/admin')
 const self = require('./routes/self')
-const users = require('./routes/user')
 const publicRoutes = require('./routes/public')
-const frontEnd = require('./routes/front_end')
 
 require('./db')
 require('./modules/backblaze')
@@ -58,12 +55,14 @@ if (secrets.bugsnag_use) {
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 // app.use(cors())
-app.use(session({
-  name: 'EliteShots',
-  secret: secrets.session_secret,
-  cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
-  store: new mongoStore({ mongooseConnection: mongoose.connection })
-}))
+app.use(
+  session({
+    name: 'EliteShots',
+    secret: secrets.session_secret,
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+    store: new mongoStore({ mongooseConnection: mongoose.connection })
+  })
+)
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -73,9 +72,7 @@ app.use('/auth/logout', authLogout)
 app.use('/auth/user', authUser)
 app.use('/frontend/admin', admin)
 app.use('/frontend/self', self)
-app.use('/frontend/users', users)
 app.use('/frontend/public', publicRoutes)
-app.use('/frontend', frontEnd)
 
 // error handlers
 if (secrets.bugsnag_use) {
@@ -86,6 +83,7 @@ if (secrets.bugsnag_use) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(logger('dev'))
+  // eslint-disable-next-line no-unused-vars
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     res.send({
@@ -100,6 +98,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 if (app.get('env') === 'production') {
   app.use(logger('combined'))
+  // eslint-disable-next-line no-unused-vars
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     res.send({
@@ -123,11 +122,11 @@ passport.deserializeUser(async (id, done) => {
   }
 })
 
-let onAuthentication = async (accessToken, refreshToken, profile, done, type) => {
+let onAuthentication = async (accessToken, refreshToken, profile, done) => {
   try {
     let response = await axios.get('https://companion.orerve.net/profile', {
       headers: {
-        'Authorization': `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
     if (response.status === 200) {
@@ -141,13 +140,10 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
           frontier_id: profile.customer_id,
           commander: commanderName
         }
-        await model.findOneAndUpdate(
-          { frontier_id: profile.customer_id },
-          updatedUser,
-          {
-            upsert: false,
-            runValidators: true
-          })
+        await model.findOneAndUpdate({ frontier_id: profile.customer_id }, updatedUser, {
+          upsert: false,
+          runValidators: true
+        })
         done(null, user)
       } else {
         let user = {
@@ -162,13 +158,10 @@ let onAuthentication = async (accessToken, refreshToken, profile, done, type) =>
           },
           joined_at: new Date()
         }
-        await model.findOneAndUpdate(
-          { frontier_id: profile.customer_id },
-          user,
-          {
-            upsert: true,
-            runValidators: true
-          })
+        await model.findOneAndUpdate({ frontier_id: profile.customer_id }, user, {
+          upsert: true,
+          runValidators: true
+        })
         if (secrets.discord_use) {
           await axios.post(`${secrets.companion_bot_endpoint}/new-member`, { name: commanderName })
         }
@@ -200,12 +193,18 @@ let onAuthenticationIdentify = (accessToken, refreshToken, profile, done) => {
   onAuthentication(accessToken, refreshToken, profile, done, 'identify')
 }
 
-passport.use('frontier', new FrontierStrategy({
-  clientID: secrets.client_id,
-  clientSecret: secrets.client_secret,
-  callbackURL: `${processVars.protocol}://${processVars.host}/auth/frontier/callback`,
-  scope: ['auth', 'capi'],
-  state: true
-}, onAuthenticationIdentify))
+passport.use(
+  'frontier',
+  new FrontierStrategy(
+    {
+      clientID: secrets.client_id,
+      clientSecret: secrets.client_secret,
+      callbackURL: `${processVars.protocol}://${processVars.host}/auth/frontier/callback`,
+      scope: ['auth', 'capi'],
+      state: true
+    },
+    onAuthenticationIdentify
+  )
+)
 
 module.exports = app

@@ -33,9 +33,9 @@ if (useBugsnag) {
   })
 }
 
-function bugsnagCaller (err, metaData, logToConsole = true) {
+function bugsnagCaller(err, metaData, logToConsole = true) {
   if (useBugsnag) {
-    bugsnagClient.notify(err, event => {
+    bugsnagClient.notify(err, (event) => {
       event.addMetadata('Custom', metaData)
     })
   }

@@ -16,23 +16,21 @@
 
 <template>
   <div>
-    <mod-action :action-target="modActionTarget"
-                :mod-action="modActionType"
-                :open-dialog="modActionDialog"
-                :target-type="modActionTargetType"
-                @cancelled="onCancelled"
-                @confirmed="onConfirmed"/>
+    <mod-action
+      :action-target="modActionTarget"
+      :mod-action="modActionType"
+      :open-dialog="modActionDialog"
+      :target-type="modActionTargetType"
+      @cancelled="onCancelled"
+      @confirmed="onConfirmed"
+    />
     <v-form>
       <v-row align="center">
         <v-col cols="3">
           <v-subheader>Commander Name</v-subheader>
         </v-col>
         <v-col cols="9">
-          <v-text-field
-            :value="userData.commander"
-            dense
-            readonly>
-          </v-text-field>
+          <v-text-field :value="userData.commander" dense readonly> </v-text-field>
         </v-col>
       </v-row>
       <v-row align="center">
@@ -40,22 +38,14 @@
           <v-subheader>ID</v-subheader>
         </v-col>
         <v-col cols="3">
-          <v-text-field
-            :value="userData._id"
-            dense
-            readonly>
-          </v-text-field>
+          <v-text-field :value="userData._id" dense readonly> </v-text-field>
         </v-col>
         <template v-if="authenticated && authUser.access === adminAccess">
           <v-col cols="3">
             <v-subheader>Frontier ID</v-subheader>
           </v-col>
           <v-col cols="3">
-            <v-text-field
-              :value="userData.frontier_id"
-              dense
-              readonly>
-            </v-text-field>
+            <v-text-field :value="userData.frontier_id" dense readonly> </v-text-field>
           </v-col>
         </template>
       </v-row>
@@ -64,25 +54,25 @@
           <v-subheader>Access</v-subheader>
         </v-col>
         <v-col cols="3">
-          <v-text-field
-            :value="userData.access"
-            dense
-            readonly/>
+          <v-text-field :value="userData.access" dense readonly />
         </v-col>
         <v-col cols="3">
           <v-subheader>Trusted</v-subheader>
         </v-col>
         <v-col cols="3">
-          <v-checkbox
-            v-model="userData.trusted"
-            dense
-            readonly/>
+          <v-checkbox v-model="userData.trusted" dense readonly />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" sm="3">
-          <v-btn v-if="userData.access!==bannedAccess" :disabled="!canBan" block color="error" outlined
-                 @click="banUser">
+          <v-btn
+            v-if="userData.access !== bannedAccess"
+            :disabled="!canBan"
+            block
+            color="error"
+            outlined
+            @click="banUser"
+          >
             Ban
           </v-btn>
           <v-btn v-else :disabled="!canUnban" block color="success" outlined @click="unbanUser">Unban</v-btn>
@@ -101,10 +91,12 @@
         </v-col>
       </v-row>
     </v-form>
-    <uploaded-images :disable-mod-actions="!canModImages"
-                     :user-id="userId"
-                     @accept="onAcceptImage"
-                     @reject="onRejectImage"/>
+    <uploaded-images
+      :disable-mod-actions="!canModImages"
+      :user-id="userId"
+      @accept="onAcceptImage"
+      @reject="onRejectImage"
+    />
   </div>
 </template>
 
@@ -125,7 +117,7 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       userData: {},
       bannedAccess: 'BANNED',
@@ -140,12 +132,12 @@ export default {
   },
   computed: {
     ...mapState({
-      themes: state => state.themes.themes,
-      theme: state => state.themes.theme,
-      authenticated: state => state.auth.authenticated,
-      authUser: state => state.auth.user
+      themes: (state) => state.themes.themes,
+      theme: (state) => state.themes.theme,
+      authenticated: (state) => state.auth.authenticated,
+      authUser: (state) => state.auth.user
     }),
-    canBan () {
+    canBan() {
       if (this.userData._id === this.authUser._id) {
         return false
       } else if (this.userData.access === this.normalAccess) {
@@ -156,20 +148,20 @@ export default {
         return false
       }
     },
-    canUnban () {
+    canUnban() {
       if (this.userData._id === this.authUser._id) {
         return false
       } else {
         return this.userData.access === this.bannedAccess
       }
     },
-    canDemote () {
+    canDemote() {
       return this.authUser.access === this.adminAccess && this.userData.access === this.modAccess
     },
-    canPromote () {
+    canPromote() {
       return this.authUser.access === this.adminAccess && this.userData.access === this.normalAccess
     },
-    canTrust () {
+    canTrust() {
       if (this.userData._id === this.authUser._id) {
         return false
       } else if (this.userData.access === this.normalAccess) {
@@ -182,69 +174,69 @@ export default {
         return false
       }
     },
-    canModImages () {
+    canModImages() {
       return this.authUser._id !== this.userData._id
     }
   },
-  created () {
+  created() {
     this.fetchUserDetail()
   },
   methods: {
-    async fetchUserDetail () {
+    async fetchUserDetail() {
       this.userData = await this.$store.dispatch('fetchUser', this.userId)
     },
-    banUser () {
+    banUser() {
       this.modActionType = 'BAN'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.userData._id
       this.modActionDialog = true
     },
-    unbanUser () {
+    unbanUser() {
       this.modActionType = 'UNBAN'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.userData._id
       this.modActionDialog = true
     },
-    demoteUser () {
+    demoteUser() {
       this.modActionType = 'DEMOTE'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.userData._id
       this.modActionDialog = true
     },
-    promoteUser () {
+    promoteUser() {
       this.modActionType = 'PROMOTE'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.userData._id
       this.modActionDialog = true
     },
-    trustUser () {
+    trustUser() {
       this.modActionType = 'TRUST'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.userData._id
       this.modActionDialog = true
     },
-    untrustUser () {
+    untrustUser() {
       this.modActionType = 'UNTRUST'
       this.modActionTargetType = 'USER'
       this.modActionTarget = this.userData._id
       this.modActionDialog = true
     },
-    onAcceptImage (image) {
+    onAcceptImage(image) {
       this.modActionType = 'ACCEPT'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = image._id
       this.modActionDialog = true
     },
-    onRejectImage (image) {
+    onRejectImage(image) {
       this.modActionType = 'REJECT'
       this.modActionTargetType = 'IMAGE'
       this.modActionTarget = image._id
       this.modActionDialog = true
     },
-    onCancelled () {
+    onCancelled() {
       this.modActionDialog = false
     },
-    async onConfirmed (comment) {
+    async onConfirmed(comment) {
       this.modActionDialog = false
       let payload = {
         target: this.modActionTarget,

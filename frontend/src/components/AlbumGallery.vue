@@ -17,7 +17,7 @@
 <template>
   <div>
     <v-row class="mx-0" dense>
-      <v-col v-for="(albumItem, i) in albumItems" :key="i" cols=12 lg="2" md="4" sm="6">
+      <v-col v-for="(albumItem, i) in albumItems" :key="i" cols="12" lg="2" md="4" sm="6">
         <slot :albumItem="albumItem" :clickThumbnail="clickThumbnail" :itemIdex="i" name="thumbnail">
           <v-card>
             <v-img
@@ -35,18 +35,22 @@
             <v-card-actions>
               <v-icon class="mr-1">photo</v-icon>
               {{ albumItem.no_of_images }}
-              <v-spacer/>
-              <v-btn v-if="editable && albumItem.title!==defaultAlbum" icon @click="clickEdit(i)">
+              <v-spacer />
+              <v-btn v-if="editable && albumItem.title !== defaultAlbum" icon @click="clickEdit(i)">
                 <v-icon>edit</v-icon>
               </v-btn>
-              <v-btn v-if="deletable && albumItem.title!==defaultAlbum" icon @click="clickDelete(i)">
+              <v-btn v-if="deletable && albumItem.title !== defaultAlbum" icon @click="clickDelete(i)">
                 <v-icon>delete</v-icon>
               </v-btn>
-              <v-btn v-if="albumItem.title!==defaultAlbum" :to="{ name: 'public-album', params:{albumId: albumItem._id}}"
-                     icon target="_blank">
+              <v-btn
+                v-if="albumItem.title !== defaultAlbum"
+                :to="{ name: 'public-album', params: { albumId: albumItem._id } }"
+                icon
+                target="_blank"
+              >
                 <v-icon>share</v-icon>
               </v-btn>
-              <v-dialog v-if="albumItem.title===defaultAlbum" v-model="newAlbumDialog" max-width="600px" persistent>
+              <v-dialog v-if="albumItem.title === defaultAlbum" v-model="newAlbumDialog" max-width="600px" persistent>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" color="primary">New Album</v-btn>
                 </template>
@@ -58,18 +62,18 @@
                     <v-container>
                       <v-row dense>
                         <v-col>
-                          <v-text-field v-model="newAlbumTitle" label="Title"/>
+                          <v-text-field v-model="newAlbumTitle" label="Title" />
                         </v-col>
                       </v-row>
                       <v-row dense>
                         <v-col>
-                          <v-textarea v-model="newAlbumDescription" label="Description (optional)"/>
+                          <v-textarea v-model="newAlbumDescription" label="Description (optional)" />
                         </v-col>
                       </v-row>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <v-spacer/>
+                    <v-spacer />
                     <v-btn color="error" text @click="clickNewAlbumCancel">Cancel</v-btn>
                     <v-btn color="success" text @click="clickNewAlbumConfirm">Confirm</v-btn>
                   </v-card-actions>
@@ -91,7 +95,7 @@ export default {
   props: {
     albumItems: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     },
@@ -108,7 +112,7 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       selectedAlbumIndex: null,
       newAlbumDialog: false,
@@ -118,21 +122,21 @@ export default {
   },
   computed: {
     ...mapState({
-      defaultAlbum: state => state.albums.defaultAlbum
+      defaultAlbum: (state) => state.albums.defaultAlbum
     })
   },
   methods: {
-    clickThumbnail (index) {
+    clickThumbnail(index) {
       this.selectedAlbumIndex = index
       this.$emit('albumOpened', this.albumItems[index])
     },
-    clickEdit (index) {
+    clickEdit(index) {
       this.$emit('albumEdited', this.albumItems[index])
     },
-    clickDelete (index) {
+    clickDelete(index) {
       this.$emit('albumDeleted', this.albumItems[index])
     },
-    clickNewAlbumConfirm () {
+    clickNewAlbumConfirm() {
       this.newAlbumDialog = false
       this.$emit('albumCreated', {
         title: this.newAlbumTitle,
@@ -141,7 +145,7 @@ export default {
       this.newAlbumTitle = ''
       this.newAlbumDescription = ''
     },
-    clickNewAlbumCancel () {
+    clickNewAlbumCancel() {
       this.newAlbumDialog = false
       this.newAlbumTitle = ''
       this.newAlbumDescription = ''

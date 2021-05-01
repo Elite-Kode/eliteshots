@@ -16,21 +16,23 @@
 
 <template>
   <div>
-    <profile-toolbar/>
+    <profile-toolbar />
     <v-main>
       <v-container fluid>
         <h1>CMDR {{ publicProfileUser.commander }}</h1>
-        <image-gallery :authenticated="authenticated"
-                       :end="imagesEnd"
-                       :imageItems="publicProfileImages"
-                       :loading="loadingNewImages"
-                       curation-banner
-                       link-key="image_location"
-                       no-user
-                       @fetchImages="onFetchImages"
-                       @imageLiked="onClickLike"
-                       @imageSaved="onClickSave"
-                       @imageViewed="onClickThumbnail"/>
+        <image-gallery
+          :authenticated="authenticated"
+          :end="imagesEnd"
+          :imageItems="publicProfileImages"
+          :loading="loadingNewImages"
+          curation-banner
+          link-key="image_location"
+          no-user
+          @fetchImages="onFetchImages"
+          @imageLiked="onClickLike"
+          @imageSaved="onClickSave"
+          @imageViewed="onClickThumbnail"
+        />
       </v-container>
     </v-main>
   </div>
@@ -53,7 +55,7 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       loadingNewImages: false,
       imagesEnd: false
@@ -61,27 +63,27 @@ export default {
   },
   computed: {
     ...mapState({
-      publicProfileImages: state => state.users.publicProfileImages,
-      publicProfileUser: state => state.users.publicProfileUser,
-      authenticated: state => state.auth.authenticated
+      publicProfileImages: (state) => state.users.publicProfileImages,
+      publicProfileUser: (state) => state.users.publicProfileUser,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminatePublicProfileImages')
     this.$store.dispatch('fetchPublicProfileUser', this.userId)
   },
   methods: {
-    onClickThumbnail (image) {
+    onClickThumbnail(image) {
       this.$store.dispatch('triggerUserImageViewed', image)
     },
-    onClickLike (image) {
+    onClickLike(image) {
       this.$store.dispatch('triggerUserImageLiked', image)
     },
-    onClickSave (image) {
+    onClickSave(image) {
       this.$store.dispatch('triggerUserImageSaved', image)
     },
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.publicProfileImages && this.publicProfileImages.length > 0) {

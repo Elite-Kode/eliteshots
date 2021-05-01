@@ -32,7 +32,7 @@ export default {
     }
   },
   methods: {
-    scrollToTop () {
+    scrollToTop() {
       this.$vuetify.goTo(0, {
         duration: 500,
         easing: 'easeInOutCubic'

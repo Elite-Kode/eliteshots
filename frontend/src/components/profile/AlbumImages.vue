@@ -17,30 +17,34 @@
 <template>
   <div>
     <h1>Album Images</h1>
-    <image-edit :all-albums="albums"
-                :edit-album="editAlbum"
-                :edit-description="editDescription"
-                :edit-title="editTitle"
-                :editDialog="editDialog"
-                :editId="editId"
-                @cancel="onEditCancel"
-                @confirm="onEditConfirm"/>
-    <image-gallery :authenticated="authenticated"
-                   :end="imagesEnd"
-                   :imageItems="albumImages"
-                   :loading="loadingNewImages"
-                   curation-banner
-                   deletable
-                   editable
-                   link-key="image_location"
-                   mod-status-banner
-                   no-user
-                   @fetchImages="onFetchImages"
-                   @imageDeleted="onClickDelete"
-                   @imageEdited="onClickEdit"
-                   @imageLiked="onClickLike"
-                   @imageSaved="onClickSave"
-                   @imageViewed="onClickThumbnail"/>
+    <image-edit
+      :all-albums="albums"
+      :edit-album="editAlbum"
+      :edit-description="editDescription"
+      :edit-title="editTitle"
+      :editDialog="editDialog"
+      :editId="editId"
+      @cancel="onEditCancel"
+      @confirm="onEditConfirm"
+    />
+    <image-gallery
+      :authenticated="authenticated"
+      :end="imagesEnd"
+      :imageItems="albumImages"
+      :loading="loadingNewImages"
+      curation-banner
+      deletable
+      editable
+      link-key="image_location"
+      mod-status-banner
+      no-user
+      @fetchImages="onFetchImages"
+      @imageDeleted="onClickDelete"
+      @imageEdited="onClickEdit"
+      @imageLiked="onClickLike"
+      @imageSaved="onClickSave"
+      @imageViewed="onClickThumbnail"
+    />
   </div>
 </template>
 
@@ -61,7 +65,7 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       albumImages: [],
       loadingNewImages: false,
@@ -75,38 +79,38 @@ export default {
   },
   computed: {
     ...mapState({
-      albums: state => state.self.albums,
-      authenticated: state => state.auth.authenticated
+      albums: (state) => state.self.albums,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.dispatch('fetchAlbums')
   },
   methods: {
-    onClickThumbnail (image) {
+    onClickThumbnail(image) {
       this.$store.dispatch('triggerSelfImageViewed', image)
     },
-    onClickEdit (image) {
+    onClickEdit(image) {
       this.editId = image._id
       this.editTitle = image.title
       this.editDescription = image.description
       this.editAlbum = image.album_id ? image.album_id : '0'
       this.editDialog = true
     },
-    onClickDelete (image) {
+    onClickDelete(image) {
       this.$store.dispatch('triggerSelfImageDeleted', image)
     },
-    onClickLike (image) {
+    onClickLike(image) {
       this.$store.dispatch('triggerSelfImageLiked', image)
     },
-    onClickSave (image) {
+    onClickSave(image) {
       this.$store.dispatch('triggerSelfImageSaved', image)
     },
-    onEditCancel () {
+    onEditCancel() {
       this.editDialog = false
     },
-    onEditConfirm ({ title, description, album }) {
+    onEditConfirm({ title, description, album }) {
       this.editDialog = false
       this.$store.dispatch('triggerSelfImageEdited', {
         imageId: this.editId,
@@ -115,7 +119,7 @@ export default {
         album
       })
     },
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.albumImages && this.albumImages.length > 0) {

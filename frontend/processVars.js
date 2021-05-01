@@ -14,5 +14,8 @@ if (process.env.NODE_ENV === 'development') {
 let version = require('./version')
 
 module.exports = {
-  host, protocol, imageUrlRoute, version
+  host,
+  protocol,
+  imageUrlRoute,
+  version
 }

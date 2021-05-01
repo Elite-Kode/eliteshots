@@ -17,11 +17,13 @@
 <template>
   <div>
     <h1>Uploaded Images</h1>
-    <image-gallery :authenticated="authenticated"
-                   :end="imagesEnd"
-                   :imageItems="uploadedImages"
-                   :loading="loadingNewImages"
-                   @fetchImages="onFetchImages">
+    <image-gallery
+      :authenticated="authenticated"
+      :end="imagesEnd"
+      :imageItems="uploadedImages"
+      :loading="loadingNewImages"
+      @fetchImages="onFetchImages"
+    >
       <template v-slot:thumbnail="slotProps">
         <v-card>
           <v-img
@@ -30,7 +32,7 @@
             min-height="200px"
             @click="slotProps.clickThumbnail(slotProps.itemIndex)"
           >
-            <v-btn :to="{ name: 'image-item', params:{imageId: slotProps.imageItem._id}}" icon target="_blank">
+            <v-btn :to="{ name: 'image-item', params: { imageId: slotProps.imageItem._id } }" icon target="_blank">
               <v-icon>launch</v-icon>
             </v-btn>
           </v-img>
@@ -42,18 +44,31 @@
           </v-card-title>
           <v-card-actions>
             <v-row dense>
-              <v-col v-if="slotProps.imageItem.moderation_status !== 'ACCEPTED'"
-                     :cols="slotProps.imageItem.moderation_status !== 'REJECTED' ? 6 : 12">
-                <v-btn :disabled="disableModActions" block color="success"
-                       @click.stop="acceptImage(slotProps.imageItem)">
+              <v-col
+                v-if="slotProps.imageItem.moderation_status !== 'ACCEPTED'"
+                :cols="slotProps.imageItem.moderation_status !== 'REJECTED' ? 6 : 12"
+              >
+                <v-btn
+                  :disabled="disableModActions"
+                  block
+                  color="success"
+                  @click.stop="acceptImage(slotProps.imageItem)"
+                >
                   Accept
                   <v-icon right>check</v-icon>
                 </v-btn>
               </v-col>
-              <v-col v-if="slotProps.imageItem.moderation_status !== 'REJECTED'"
-                     :cols="slotProps.imageItem.moderation_status !== 'ACCEPTED' ? 6 : 12">
-                <v-btn :disabled="disableModActions" block color="error" outlined
-                       @click.stop="rejectImage(slotProps.imageItem)">
+              <v-col
+                v-if="slotProps.imageItem.moderation_status !== 'REJECTED'"
+                :cols="slotProps.imageItem.moderation_status !== 'ACCEPTED' ? 6 : 12"
+              >
+                <v-btn
+                  :disabled="disableModActions"
+                  block
+                  color="error"
+                  outlined
+                  @click.stop="rejectImage(slotProps.imageItem)"
+                >
                   Reject
                   <v-icon right>clear</v-icon>
                 </v-btn>
@@ -85,7 +100,7 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       loadingNewImages: false,
       imagesEnd: false
@@ -93,16 +108,16 @@ export default {
   },
   computed: {
     ...mapState({
-      uploadedImages: state => state.admin.uploadedImages,
-      authenticated: state => state.auth.authenticated
+      uploadedImages: (state) => state.admin.uploadedImages,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminateUploadedImages')
   },
   methods: {
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.uploadedImages && this.uploadedImages.length > 0) {
@@ -119,10 +134,10 @@ export default {
       this.imagesEnd = images.length === 0
       this.loadingNewImages = false
     },
-    acceptImage (image) {
+    acceptImage(image) {
       this.$emit('accept', image)
     },
-    rejectImage (image) {
+    rejectImage(image) {
       this.$emit('reject', image)
     }
   }

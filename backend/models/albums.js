@@ -21,14 +21,17 @@ const mongoose = require('mongoose')
 let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId
 
-let albums = new Schema({
-  title: String,
-  title_lower: { type: String, lowercase: true, index: true },
-  description: String,
-  description_lower: { type: String, lowercase: true, index: true },
-  created_at: { type: Date, index: true },
-  last_modified_at: { type: Date, index: true },
-  user_id: { type: ObjectId, index: true }
-}, { runSettersOnQuery: true })
+let albums = new Schema(
+  {
+    title: String,
+    title_lower: { type: String, lowercase: true, index: true },
+    description: String,
+    description_lower: { type: String, lowercase: true, index: true },
+    created_at: { type: Date, index: true },
+    last_modified_at: { type: Date, index: true },
+    user_id: { type: ObjectId, index: true }
+  },
+  { runSettersOnQuery: true }
+)
 
 module.exports = mongoose.model('albums', albums)

@@ -37,24 +37,30 @@ import Toolbar from '@/components/Toolbar'
 
 export default {
   name: 'AdminToolbar',
-  data () {
+  data() {
     return {
-      tabItems: [{
-        name: 'Moderation Queue',
-        link: '/admin/mod-queue'
-      }, {
-        name: 'Accepted',
-        link: '/admin/accepted'
-      }, {
-        name: 'Rejected',
-        link: '/admin/rejected'
-      }, {
-        name: 'Users',
-        link: '/admin/users'
-      }, {
-        name: 'Mod Actions',
-        link: '/admin/mod-actions'
-      }]
+      tabItems: [
+        {
+          name: 'Moderation Queue',
+          link: '/admin/mod-queue'
+        },
+        {
+          name: 'Accepted',
+          link: '/admin/accepted'
+        },
+        {
+          name: 'Rejected',
+          link: '/admin/rejected'
+        },
+        {
+          name: 'Users',
+          link: '/admin/users'
+        },
+        {
+          name: 'Mod Actions',
+          link: '/admin/mod-actions'
+        }
+      ]
     }
   },
   components: {

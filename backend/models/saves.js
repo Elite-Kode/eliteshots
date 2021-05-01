@@ -21,10 +21,13 @@ const mongoose = require('mongoose')
 let Schema = mongoose.Schema
 let ObjectId = mongoose.Schema.Types.ObjectId
 
-let saves = new Schema({
-  image_id: { type: ObjectId, index: true },
-  user_id: { type: ObjectId, index: true },
-  saved_at: { type: Date, index: true }
-}, { runSettersOnQuery: true })
+let saves = new Schema(
+  {
+    image_id: { type: ObjectId, index: true },
+    user_id: { type: ObjectId, index: true },
+    saved_at: { type: Date, index: true }
+  },
+  { runSettersOnQuery: true }
+)
 
 module.exports = mongoose.model('saves', saves)

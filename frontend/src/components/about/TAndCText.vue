@@ -24,33 +24,30 @@
     </p>
     <p>
       The term 'Elite Shots' or 'me' or 'my' or 'I' refers to the owner of the website. The term 'you' refers to the
-      user or
-      viewer of our website.
+      user or viewer of our website.
     </p>
     <p>The use of this website is subject to the following terms of use:</p>
     <ol>
-      <li>The content of the pages of this website is for your general information and use only. It is subject to
-        change without notice.
+      <li>
+        The content of the pages of this website is for your general information and use only. It is subject to change
+        without notice.
+      </li>
+      <li>This website uses cookies to manage sessions. No other data is tracked using cookies.</li>
+      <li>
+        Neither I nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance,
+        completeness or suitability of the information and materials found or offered on this website for any particular
+        purpose. You acknowledge that such information and materials may contain inaccuracies or errors and I expressly
+        exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.
       </li>
       <li>
-        This website uses cookies to manage sessions. No other data is tracked using cookies.
+        Your use of any information or materials on this website is entirely at your own risk, for which I shall not be
+        liable. It shall be your own responsibility to ensure that any products, services or information available
+        through this website meet your specific requirements.
       </li>
       <li>
-        Neither I nor any third parties provide any warranty or guarantee as to the accuracy, timeliness,
-        performance, completeness or suitability of the information and materials found or offered on this website
-        for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or
-        errors and I expressly exclude liability for any such inaccuracies or errors to the fullest extent
-        permitted by law.
-      </li>
-      <li>
-        Your use of any information or materials on this website is entirely at your own risk, for which I shall
-        not be liable. It shall be your own responsibility to ensure that any products, services or information
-        available through this website meet your specific requirements.
-      </li>
-      <li>
-        All product names, logos, and brands are property of their respective owners. All company, product and
-        service names used in this website are for identification purposes only. Use of these names, logos, and
-        brands does not imply endorsement or affiliation.
+        All product names, logos, and brands are property of their respective owners. All company, product and service
+        names used in this website are for identification purposes only. Use of these names, logos, and brands does not
+        imply endorsement or affiliation.
       </li>
       <li>
         From time to time this website may also include links to other websites. These links are provided for your
@@ -106,6 +103,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

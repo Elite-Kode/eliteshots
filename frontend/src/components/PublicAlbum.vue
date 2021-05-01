@@ -16,22 +16,24 @@
 
 <template>
   <div>
-    <ed-toolbar/>
+    <ed-toolbar />
     <v-main>
       <v-container fluid>
         <h1>{{ publicProfileAlbum.title }}</h1>
         <h3>CMDR {{ publicProfileUser.commander }}</h3>
-        <image-gallery :authenticated="authenticated"
-                       :end="imagesEnd"
-                       :imageItems="publicAlbumImages"
-                       :loading="loadingNewImages"
-                       curation-banner
-                       link-key="image_location"
-                       no-user
-                       @fetchImages="onFetchImages"
-                       @imageLiked="onClickLike"
-                       @imageSaved="onClickSave"
-                       @imageViewed="onClickThumbnail"/>
+        <image-gallery
+          :authenticated="authenticated"
+          :end="imagesEnd"
+          :imageItems="publicAlbumImages"
+          :loading="loadingNewImages"
+          curation-banner
+          link-key="image_location"
+          no-user
+          @fetchImages="onFetchImages"
+          @imageLiked="onClickLike"
+          @imageSaved="onClickSave"
+          @imageViewed="onClickThumbnail"
+        />
       </v-container>
     </v-main>
   </div>
@@ -54,7 +56,7 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       loadingNewImages: false,
       imagesEnd: false
@@ -62,29 +64,29 @@ export default {
   },
   computed: {
     ...mapState({
-      publicAlbumImages: state => state.users.publicAlbumImages,
-      publicProfileAlbum: state => state.users.publicProfileAlbum,
-      publicProfileUser: state => state.users.publicProfileUser,
-      authenticated: state => state.auth.authenticated
+      publicAlbumImages: (state) => state.users.publicAlbumImages,
+      publicProfileAlbum: (state) => state.users.publicProfileAlbum,
+      publicProfileUser: (state) => state.users.publicProfileUser,
+      authenticated: (state) => state.auth.authenticated
     })
   },
-  async created () {
+  async created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminatePublicAlbumImages')
     await this.$store.dispatch('fetchPublicProfileAlbum', this.albumId)
     this.$store.dispatch('fetchPublicProfileUser', this.publicProfileAlbum.user_id)
   },
   methods: {
-    onClickThumbnail (image) {
+    onClickThumbnail(image) {
       this.$store.dispatch('triggerUserImageViewed', image)
     },
-    onClickLike (image) {
+    onClickLike(image) {
       this.$store.dispatch('triggerUserImageLiked', image)
     },
-    onClickSave (image) {
+    onClickSave(image) {
       this.$store.dispatch('triggerUserImageSaved', image)
     },
-    async onFetchImages () {
+    async onFetchImages() {
       this.loadingNewImages = true
       let images = []
       if (this.publicAlbumImages && this.publicAlbumImages.length > 0) {

@@ -26,15 +26,13 @@
       :page.sync="page"
       :server-items-length="totalUsers"
       class="elevation-1"
-      dense>
-      <template v-slot:item._id="{item}">
-        <router-link :to="{ name: 'user-detail', params: { userId: item._id }}">{{ item._id }}</router-link>
+      dense
+    >
+      <template v-slot:item._id="{ item }">
+        <router-link :to="{ name: 'user-detail', params: { userId: item._id } }">{{ item._id }}</router-link>
       </template>
       <template v-slot:item.trusted="{ item }">
-        <v-simple-checkbox
-          v-model="item.trusted"
-          disabled
-        />
+        <v-simple-checkbox v-model="item.trusted" disabled />
       </template>
     </v-data-table>
   </div>
@@ -45,7 +43,7 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'UsersManagement',
-  data () {
+  data() {
     return {
       tableFooter: {
         disableItemsPerPage: true,
@@ -59,23 +57,28 @@ export default {
   },
   computed: {
     ...mapState({
-      authUser: state => state.auth.user,
-      users: state => state.admin.users
+      authUser: (state) => state.auth.user,
+      users: (state) => state.admin.users
     }),
-    headers () {
-      let normalHeaders = [{
-        text: 'User Id',
-        value: '_id'
-      }, {
-        text: 'CMDR Name',
-        value: 'commander'
-      }, {
-        text: 'Trust',
-        value: 'trusted'
-      }, {
-        text: 'Access Level',
-        value: 'access'
-      }]
+    headers() {
+      let normalHeaders = [
+        {
+          text: 'User Id',
+          value: '_id'
+        },
+        {
+          text: 'CMDR Name',
+          value: 'commander'
+        },
+        {
+          text: 'Trust',
+          value: 'trusted'
+        },
+        {
+          text: 'Access Level',
+          value: 'access'
+        }
+      ]
       if (this.authUser.access === 'ADMIN') {
         normalHeaders.splice(2, 0, {
           text: 'Frontier Id',
@@ -86,16 +89,16 @@ export default {
     }
   },
   watch: {
-    page () {
+    page() {
       this.fetchUsers()
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.fetchUsers()
   },
   methods: {
-    async fetchUsers () {
+    async fetchUsers() {
       this.loading = true
       let usersPaginated = await this.$store.dispatch('fetchUsers', { page: this.page })
       this.totalUsers = usersPaginated.totalDocs

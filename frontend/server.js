@@ -57,8 +57,8 @@ app.all('*', async (req, res) => {
     let imageId = urlsPathParts[1]
     let imageObject = (await imageWithUser(imageId))[0]
     let imageUrl = `${processVars.imageUrlRoute}${imageObject.thumbnail_location}`
-    let title =  imageObject.title ? imageObject.title : "&#x3164;"
-    let description =  imageObject.description ? imageObject.description : "&#x3164;"
+    let title = imageObject.title ? imageObject.title : '&#x3164;'
+    let description = imageObject.description ? imageObject.description : '&#x3164;'
     res.render('index.html', {
       title: title,
       description: description,
@@ -81,6 +81,7 @@ if (secrets.bugsnag_use) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(logger('dev'))
+  // eslint-disable-next-line no-unused-vars
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     res.send({
@@ -95,6 +96,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 if (app.get('env') === 'production') {
   app.use(logger('combined'))
+  // eslint-disable-next-line no-unused-vars
   app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     res.send({
@@ -109,18 +111,23 @@ let imageWithUser = (imageId) => {
   let query = {
     _id: mongoose.Types.ObjectId(imageId)
   }
-  return aggregate.match(query).lookup({
-    from: 'users',
-    localField: 'user_id',
-    foreignField: '_id',
-    as: 'user'
-  }).addFields({
-    cmdr_name: {
-      '$arrayElemAt': ['$user.commander', 0]
-    }
-  }).project({
-    user: 0
-  }).exec()
+  return aggregate
+    .match(query)
+    .lookup({
+      from: 'users',
+      localField: 'user_id',
+      foreignField: '_id',
+      as: 'user'
+    })
+    .addFields({
+      cmdr_name: {
+        $arrayElemAt: ['$user.commander', 0]
+      }
+    })
+    .project({
+      user: 0
+    })
+    .exec()
 }
 
 const getCircularReplacer = () => {

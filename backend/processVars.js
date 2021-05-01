@@ -16,5 +16,9 @@ let version = require('./version')
 let defaultAlbumTitle = 'Default'
 
 module.exports = {
-  host, protocol, imageUrlRoute, version, defaultAlbumTitle
+  host,
+  protocol,
+  imageUrlRoute,
+  version,
+  defaultAlbumTitle
 }

@@ -17,7 +17,7 @@
 <template>
   <div>
     <v-row ref="imageContainer" class="mx-0" dense>
-      <v-col v-for="(imageItem, i) in imageItems" :key="i" cols=12 lg="3" md="4" sm="6">
+      <v-col v-for="(imageItem, i) in imageItems" :key="i" cols="12" lg="3" md="4" sm="6">
         <slot :clickThumbnail="clickThumbnail" :imageItem="imageItem" :itemIndex="i" name="thumbnail">
           <v-card>
             <v-hover v-slot="{ hover }">
@@ -29,9 +29,11 @@
               >
                 <h4 v-if="imageItem.curated && curationBanner" class="ribbon ribbon-curated">CURATED</h4>
                 <template v-else-if="modStatusBanner">
-                  <h4 v-if="imageItem.moderation_status==='ACCEPTED'" class="ribbon ribbon-accepted">ACCEPTED</h4>
-                  <h4 v-else-if="imageItem.moderation_status==='REJECTED'" class="ribbon ribbon-rejected">REJECTED</h4>
-                  <h4 v-else-if="imageItem.moderation_status==='PENDING'" class="ribbon ribbon-pending">PENDING</h4>
+                  <h4 v-if="imageItem.moderation_status === 'ACCEPTED'" class="ribbon ribbon-accepted">ACCEPTED</h4>
+                  <h4 v-else-if="imageItem.moderation_status === 'REJECTED'" class="ribbon ribbon-rejected">
+                    REJECTED
+                  </h4>
+                  <h4 v-else-if="imageItem.moderation_status === 'PENDING'" class="ribbon ribbon-pending">PENDING</h4>
                 </template>
                 <v-expand-transition>
                   <v-row v-if="hover" class="mx-0 image-title-background">
@@ -47,7 +49,8 @@
                 <v-expand-transition v-if="!noUser">
                   <v-row v-if="hover" class="mx-0 image-title-background">
                     <v-col class="text-truncate cmdr-link">
-                      <router-link :to="{ name: 'public-profile', params: { userId: imageItem.user_id }}">CMDR
+                      <router-link :to="{ name: 'public-profile', params: { userId: imageItem.user_id } }"
+                        >CMDR
                         {{ imageItem.cmdr_name }}
                       </router-link>
                     </v-col>
@@ -61,18 +64,20 @@
             </v-hover>
             <v-card-actions>
               <template v-if="shareLinks[i].status">
-                <v-text-field :value="shareLinks[i].link"
-                              class="share-link"
-                              dense
-                              prepend-icon="clear"
-                              readonly
-                              @click:prepend="closeShare(i)"/>
+                <v-text-field
+                  :value="shareLinks[i].link"
+                  class="share-link"
+                  dense
+                  prepend-icon="clear"
+                  readonly
+                  @click:prepend="closeShare(i)"
+                />
               </template>
               <template v-else>
-                <v-btn :to="{ name: 'image-item', params:{imageId: imageItem._id}}" icon target="_blank">
+                <v-btn :to="{ name: 'image-item', params: { imageId: imageItem._id } }" icon target="_blank">
                   <v-icon>launch</v-icon>
                 </v-btn>
-                <v-spacer/>
+                <v-spacer />
                 <v-btn v-if="editable" icon @click="clickEdit(i)">
                   <v-icon>edit</v-icon>
                 </v-btn>
@@ -95,18 +100,19 @@
           </v-card>
         </slot>
       </v-col>
-      <slot :closeGallery="closeGallery" :imageLinks="imageLinks" :imageSlide="imageSlide"
-            :selectedImageIndex="selectedImageIndex" name="lightbox">
-        <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery" @onslideend="imageSlide"/>
+      <slot
+        :closeGallery="closeGallery"
+        :imageLinks="imageLinks"
+        :imageSlide="imageSlide"
+        :selectedImageIndex="selectedImageIndex"
+        name="lightbox"
+      >
+        <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery" @onslideend="imageSlide" />
       </slot>
     </v-row>
     <mugen-scroll :handler="fetchImages" :should-handle="!loading && !end">
-      <div v-if="end" class="my-2">
-        No more images
-      </div>
-      <div v-else>
-        loading...
-      </div>
+      <div v-if="end" class="my-2">No more images</div>
+      <div v-else>loading...</div>
     </mugen-scroll>
   </div>
 </template>
@@ -118,13 +124,13 @@ import MugenScroll from 'vue-mugen-scroll'
 export default {
   name: 'ImageGallery',
   components: {
-    'gallery': vueGallery,
+    gallery: vueGallery,
     'mugen-scroll': MugenScroll
   },
   props: {
     imageItems: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     },
@@ -165,25 +171,25 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       selectedImageIndex: null,
       shareLinks: []
     }
   },
   computed: {
-    imageLinks () {
-      return this.imageItems.map(imageItem => {
+    imageLinks() {
+      return this.imageItems.map((imageItem) => {
         return imageItem.low_res_location
       })
     }
   },
   watch: {
-    imageItems () {
+    imageItems() {
       if (this.$refs.imageContainer.clientHeight < window.innerHeight && !this.end) {
         this.fetchImages()
       }
-      this.shareLinks = this.imageItems.map(image => {
+      this.shareLinks = this.imageItems.map((image) => {
         return {
           link: image[this.linkKey],
           status: false
@@ -192,34 +198,34 @@ export default {
     }
   },
   methods: {
-    clickThumbnail (index) {
+    clickThumbnail(index) {
       this.selectedImageIndex = index
     },
-    clickEdit (index) {
+    clickEdit(index) {
       this.$emit('imageEdited', this.imageItems[index])
     },
-    clickDelete (index) {
+    clickDelete(index) {
       this.$emit('imageDeleted', this.imageItems[index])
     },
-    clickLike (index) {
+    clickLike(index) {
       this.$emit('imageLiked', this.imageItems[index])
     },
-    clickSave (index) {
+    clickSave(index) {
       this.$emit('imageSaved', this.imageItems[index])
     },
-    clickShare (index) {
+    clickShare(index) {
       this.shareLinks[index].status = true
     },
-    closeShare (index) {
+    closeShare(index) {
       this.shareLinks[index].status = false
     },
-    closeGallery () {
+    closeGallery() {
       this.selectedImageIndex = null
     },
-    imageSlide ({ index }) {
+    imageSlide({ index }) {
       this.$emit('imageViewed', this.imageItems[index])
     },
-    fetchImages () {
+    fetchImages() {
       this.$emit('fetchImages')
     }
   }

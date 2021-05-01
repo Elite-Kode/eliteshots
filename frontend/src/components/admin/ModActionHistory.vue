@@ -18,8 +18,7 @@
   <div>
     <div>Mod Action History</div>
     <v-timeline align-top>
-      <v-timeline-item v-for="(modAction, i) in modActionsFormatted"
-                       :key="i">
+      <v-timeline-item v-for="(modAction, i) in modActionsFormatted" :key="i">
         <template v-slot:opposite>
           <v-card>
             <v-img
@@ -27,9 +26,14 @@
               :src="modAction.images.thumbnail_location"
               class="image-thumbnail"
               min-height="200px"
-              @click="clickThumbnail(i)">
-              <v-btn :to="{ name: 'image-item', params:{imageId: modAction.images._id}}" icon target="_blank"
-                     @click.stop="">
+              @click="clickThumbnail(i)"
+            >
+              <v-btn
+                :to="{ name: 'image-item', params: { imageId: modAction.images._id } }"
+                icon
+                target="_blank"
+                @click.stop=""
+              >
                 <v-icon>launch</v-icon>
               </v-btn>
             </v-img>
@@ -39,11 +43,7 @@
                   <v-subheader>Commander Name</v-subheader>
                 </v-col>
                 <v-col cols="9">
-                  <v-text-field
-                    :value="modAction.users.commander"
-                    dense
-                    readonly>
-                  </v-text-field>
+                  <v-text-field :value="modAction.users.commander" dense readonly> </v-text-field>
                 </v-col>
               </v-row>
               <v-row align="center">
@@ -51,22 +51,14 @@
                   <v-subheader>ID</v-subheader>
                 </v-col>
                 <v-col cols="3">
-                  <v-text-field
-                    :value="modAction.users._id"
-                    dense
-                    readonly>
-                  </v-text-field>
+                  <v-text-field :value="modAction.users._id" dense readonly> </v-text-field>
                 </v-col>
                 <template v-if="authenticated && authUser.access === adminAccess">
                   <v-col cols="3">
                     <v-subheader>Frontier ID</v-subheader>
                   </v-col>
                   <v-col cols="3">
-                    <v-text-field
-                      :value="modAction.users.frontier_id"
-                      dense
-                      readonly>
-                    </v-text-field>
+                    <v-text-field :value="modAction.users.frontier_id" dense readonly> </v-text-field>
                   </v-col>
                 </template>
               </v-row>
@@ -74,10 +66,7 @@
           </v-card>
         </template>
         <v-card class="chevron">
-          <v-toolbar class="px-3"
-                     color="primary"
-                     dark
-                     dense>
+          <v-toolbar class="px-3" color="primary" dark dense>
             <v-toolbar-title class="text-truncate">
               <span>{{ modAction.action }}</span>
             </v-toolbar-title>
@@ -90,14 +79,10 @@
         </v-card>
       </v-timeline-item>
     </v-timeline>
-    <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"/>
+    <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()" />
     <mugen-scroll :handler="fetchModActions" :should-handle="!loading && !end">
-      <div v-if="end">
-        No more images
-      </div>
-      <div v-else>
-        loading...
-      </div>
+      <div v-if="end">No more images</div>
+      <div v-else>loading...</div>
     </mugen-scroll>
   </div>
 </template>
@@ -111,10 +96,10 @@ import moment from 'moment'
 export default {
   name: 'ModActionHistory',
   components: {
-    'gallery': vueGallery,
+    gallery: vueGallery,
     'mugen-scroll': MugenScroll
   },
-  data () {
+  data() {
     return {
       selectedImageIndex: null,
       loading: false,
@@ -124,19 +109,19 @@ export default {
   },
   computed: {
     ...mapState({
-      modActions: state => state.admin.modActions,
-      authenticated: state => state.auth.authenticated,
-      authUser: state => state.auth.user
+      modActions: (state) => state.admin.modActions,
+      authenticated: (state) => state.auth.authenticated,
+      authUser: (state) => state.auth.user
     }),
-    imageLinks () {
-      return this.modActions.map(modAction => {
+    imageLinks() {
+      return this.modActions.map((modAction) => {
         if (modAction.images) {
           return modAction.images.low_res_location
         }
       })
     },
-    modActionsFormatted () {
-      return this.modActions.map(modAction => {
+    modActionsFormatted() {
+      return this.modActions.map((modAction) => {
         return {
           ...modAction,
           action_at_formatted: moment(modAction.action_at).format('Do MMMM YYYY, h:mm:ss a')
@@ -144,23 +129,26 @@ export default {
       })
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminateModActions')
   },
   methods: {
-    clickThumbnail (index) {
+    clickThumbnail(index) {
       this.selectedImageIndex = index
       this.$store.dispatch('triggerImageViewed', this.viewedImages[index])
     },
-    closeGallery () {
+    closeGallery() {
       this.selectedImageIndex = null
     },
-    async fetchModActions () {
+    async fetchModActions() {
       this.loading = true
       let modActions = []
       if (this.modActions && this.modActions.length > 0) {
-        modActions = await this.$store.dispatch('fetchModActions', this.modActions[this.modActions.length - 1].action_at)
+        modActions = await this.$store.dispatch(
+          'fetchModActions',
+          this.modActions[this.modActions.length - 1].action_at
+        )
       } else {
         modActions = await this.$store.dispatch('fetchModActions', null)
       }

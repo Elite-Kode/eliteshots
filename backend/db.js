@@ -24,17 +24,25 @@ let elite_shots_db_user = require('./secrets').elite_shots_db_user
 let elite_shots_db_pwd = require('./secrets').elite_shots_db_pwd
 
 class DB {
-  constructor () {
+  constructor() {
+    this.options = {
+      keepAlive: true,
+      keepAliveInitialDelay: 120000,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      user: elite_shots_db_user,
+      pass: elite_shots_db_pwd
+    }
     this.listeners()
     this.connect()
   }
 
-  listeners () {
+  listeners() {
     mongoose.connection.on('connected', () => {
       console.log(`Connected to ${elite_shots_url}`)
     })
 
-    mongoose.connection.on('error', err => {
+    mongoose.connection.on('error', (err) => {
       console.log(`Mongoose error ${err}`)
     })
 
@@ -46,22 +54,13 @@ class DB {
     })
   }
 
-  options = {
-    keepAlive: true,
-    keepAliveInitialDelay: 120000,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    user: elite_shots_db_user,
-    pass: elite_shots_db_pwd
-  }
-
-  async connect () {
+  async connect() {
     await mongoose.connect(elite_shots_url, this.options)
 
     this.retryOnDisconnect()
   }
 
-  retryOnDisconnect () {
+  retryOnDisconnect() {
     let tracker = 0
     mongoose.connection.on('disconnected', () => {
       console.log(`Mongoose connection to ${elite_shots_url} disconnected`)

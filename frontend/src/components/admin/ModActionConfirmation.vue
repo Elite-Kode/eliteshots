@@ -24,13 +24,13 @@
         <v-container>
           <v-row dense>
             <v-col>
-              <v-text-field v-model="comment" label="Comments (optional)"/>
+              <v-text-field v-model="comment" label="Comments (optional)" />
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-spacer/>
+        <v-spacer />
         <v-btn color="error" text @click="clickCancel">Cancel</v-btn>
         <v-btn color="success" text @click="clickConfirm">Confirm</v-btn>
       </v-card-actions>
@@ -63,29 +63,27 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       dialog: false,
       comment: ''
     }
   },
   watch: {
-    openDialog () {
+    openDialog() {
       this.dialog = this.openDialog
     }
   },
   methods: {
-    clickCancel () {
+    clickCancel() {
       this.dialog = false
       this.$emit('cancelled')
     },
-    clickConfirm () {
+    clickConfirm() {
       this.$emit('confirmed', this.comment)
     }
   }
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

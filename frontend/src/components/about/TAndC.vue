@@ -16,13 +16,12 @@
 
 <template>
   <div>
-    <ed-toolbar>
-    </ed-toolbar>
+    <ed-toolbar> </ed-toolbar>
     <v-main>
       <v-container fluid>
-        <owner-info/>
+        <owner-info />
         <h2>Terms and Conditions</h2>
-        <tandc-text/>
+        <tandc-text />
       </v-container>
     </v-main>
   </div>
@@ -43,6 +42,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

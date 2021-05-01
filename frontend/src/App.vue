@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -11,18 +11,18 @@ export default {
   name: 'App',
   computed: {
     ...mapState({
-      themes: state => state.themes.themes
+      themes: (state) => state.themes.themes
     }),
     theme: {
-      get () {
+      get() {
         return this.$store.state.themes.theme
       },
-      set (newTheme) {
+      set(newTheme) {
         this.$store.commit('setTheme', newTheme)
       }
     }
   },
-  beforeMount () {
+  beforeMount() {
     try {
       const stored = localStorage.getItem('theme')
       if (stored) {

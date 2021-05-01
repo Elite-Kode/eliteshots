@@ -28,7 +28,7 @@ client.on('ready', () => {
   console.log('Elite Shots Bot ready')
 })
 
-client.on('guildMemberAdd', async member => {
+client.on('guildMemberAdd', async (member) => {
   try {
     let configModel = require('./models/configs')
     let config = await configModel.findOne()
@@ -38,7 +38,7 @@ client.on('guildMemberAdd', async member => {
   }
 })
 
-client.on('error', err => {
+client.on('error', (err) => {
   bugsnagCaller(err)
 })
 

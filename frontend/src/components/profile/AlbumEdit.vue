@@ -24,18 +24,18 @@
         <v-container>
           <v-row dense>
             <v-col>
-              <v-text-field v-model="editTitleNew" label="Title (optional)"/>
+              <v-text-field v-model="editTitleNew" label="Title (optional)" />
             </v-col>
           </v-row>
           <v-row dense>
             <v-col>
-              <v-textarea v-model="editDescriptionNew" label="Description (optional)"/>
+              <v-textarea v-model="editDescriptionNew" label="Description (optional)" />
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-spacer/>
+        <v-spacer />
         <v-btn color="error" text @click="clickEditCancel">Cancel</v-btn>
         <v-btn color="success" text @click="clickEditConfirm">Confirm</v-btn>
       </v-card-actions>
@@ -66,7 +66,7 @@ export default {
       default: false
     }
   },
-  data () {
+  data() {
     return {
       dialogState: false,
       editTitleNew: '',
@@ -75,30 +75,30 @@ export default {
   },
   computed: {
     ...mapState({
-      authenticated: state => state.auth.authenticated
+      authenticated: (state) => state.auth.authenticated
     })
   },
   watch: {
-    editDialog () {
+    editDialog() {
       this.dialogState = this.editDialog
       this.editTitleNew = this.editTitle
       this.editDescriptionNew = this.editDescription
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.dialogState = this.editDialog
     this.editTitleNew = this.editTitle
     this.editDescriptionNew = this.editDescription
   },
   methods: {
-    clickEditCancel () {
+    clickEditCancel() {
       this.editTitleNew = ''
       this.editDescriptionNew = ''
       this.$emit('cancel')
       this.dialogState = false
     },
-    clickEditConfirm () {
+    clickEditConfirm() {
       this.$emit('confirm', {
         title: this.editTitleNew,
         description: this.editDescriptionNew

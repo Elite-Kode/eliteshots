@@ -16,17 +16,12 @@
 
 <template>
   <div>
-    <ed-toolbar>
-    </ed-toolbar>
+    <ed-toolbar> </ed-toolbar>
     <v-main>
       <v-container fluid>
         <v-row>
           <v-col cols="12" lg="5" md="6">
-            <v-img :src="require('@/assets/EliteShotsV1.svg')"
-                   alt="Elite Shots Logo"
-                   contain
-                   height="50vh"
-            />
+            <v-img :src="require('@/assets/EliteShotsV1.svg')" alt="Elite Shots Logo" contain height="50vh" />
           </v-col>
           <v-col cols="12" lg="7" md="6">
             <h1 class="display-3">Elite Shots</h1>
@@ -81,156 +76,130 @@
         <v-row>
           <v-col cols="12" lg="3" md="6">
             <v-card class="pt-5 card-img" href="https://github.com/SayakMukhopadhyay">
-              <v-img :src="require('@/assets/github-logo.svg')"
-                     alt="Github Logo"
-                     contain
-                     height="50%"
-                     width="50%"/>
-              <v-card-text>
-                Github Profile
-              </v-card-text>
+              <v-img :src="require('@/assets/github-logo.svg')" alt="Github Logo" contain height="50%" width="50%" />
+              <v-card-text> Github Profile </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" lg="3" md="6">
             <v-card class="pt-5 card-img" href="https://discord.gg/0uwCh6R62aQ0eeAX">
-              <v-img :src="require('@/assets/edcd-logo.svg')"
-                     alt="EDCD Logo"
-                     contain
-                     height="50%"
-                     width="50%"/>
-              <v-card-text>
-                EDCD Discord Server
-              </v-card-text>
+              <v-img :src="require('@/assets/edcd-logo.svg')" alt="EDCD Logo" contain height="50%" width="50%" />
+              <v-card-text> EDCD Discord Server </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" lg="3" md="6">
             <v-card class="pt-5 card-img" href="https://forums.frontier.co.uk/member.php/136073-Garud">
-              <v-img :src="require('@/assets/ed-logo.svg')"
-                     alt="Elite Dangerous Logo"
-                     contain
-                     height="50%"
-                     width="50%"/>
-              <v-card-text>
-                Frontier Forums
-              </v-card-text>
+              <v-img
+                :src="require('@/assets/ed-logo.svg')"
+                alt="Elite Dangerous Logo"
+                contain
+                height="50%"
+                width="50%"
+              />
+              <v-card-text> Frontier Forums </v-card-text>
             </v-card>
           </v-col>
           <v-col cols="12" lg="3" md="6">
             <v-card class="pt-5 card-img" href="https://discord.gg/YksSXke">
-              <v-img :src="require('@/assets/discord-logo.svg')"
-                     alt="Discord Logo"
-                     contain
-                     height="50%"
-                     width="50%"/>
-              <v-card-text>
-                Elite Shots Discord Server
-              </v-card-text>
+              <v-img :src="require('@/assets/discord-logo.svg')" alt="Discord Logo" contain height="50%" width="50%" />
+              <v-card-text> Elite Shots Discord Server </v-card-text>
             </v-card>
           </v-col>
         </v-row>
         <h2>Brought to you By</h2>
         <v-row justify="center">
           <v-col class="card-img" cols="12" md="3">
-            <v-img :src="require('@/assets/garud-logo.svg')"
-                   alt="Garud Logo"
-                   contain
-                   height="50%"
-                   width="50%"/>
+            <v-img :src="require('@/assets/garud-logo.svg')" alt="Garud Logo" contain height="50%" width="50%" />
             <h3>CMDR Garud</h3>
           </v-col>
           <v-col class="card-img" cols="12" lg="3" md="2" sm="12">
-            <v-img :src="require('@/assets/ampersand.svg')"
-                   alt="Ampersand"
-                   contain
-                   height="50%"
-                   width="50%"/>
+            <v-img :src="require('@/assets/ampersand.svg')" alt="Ampersand" contain height="50%" width="50%" />
           </v-col>
           <v-col cols="12" lg="3" md="3" sm="12">
             <a class="card-img" href="https://knightsofkarma.com" target="_blank">
-              <v-img :src="require('@/assets/kok-logo.svg')"
-                     alt="Knights of Karma Logo"
-                     contain
-                     height="50%"
-                     width="50%"/>
+              <v-img
+                :src="require('@/assets/kok-logo.svg')"
+                alt="Knights of Karma Logo"
+                contain
+                height="50%"
+                width="50%"
+              />
               <h3>Knights of Karma</h3>
             </a>
           </v-col>
         </v-row>
-        <owner-info/>
+        <owner-info />
         <h2>
           <router-link to="/about/termsandconditions">Terms and Conditions</router-link>
         </h2>
-        <tandc-text/>
+        <tandc-text />
         <h2>
           <router-link to="/about/disclaimer">Disclaimer</router-link>
         </h2>
-        <disclaimer-text/>
+        <disclaimer-text />
         <h2>
           <router-link to="/about/privacypolicy">Privacy Policy</router-link>
         </h2>
-        <privacy-policy-text/>
+        <privacy-policy-text />
       </v-container>
 
       <v-footer>
         <v-row class="pt-4 pl-4">
-          <h4>
-            The site is powered by
-          </h4>
+          <h4>The site is powered by</h4>
         </v-row>
         <v-row style="width: 100%" justify="center" align="center">
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://www.mongodb.com/">
-              <v-img contain src="@/assets/mongodb-logo.svg" alt="MongoDB Logo"/>
+              <v-img contain src="@/assets/mongodb-logo.svg" alt="MongoDB Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://expressjs.com/">
-              <v-img contain src="@/assets/express-logo.svg" alt="Express Logo"/>
+              <v-img contain src="@/assets/express-logo.svg" alt="Express Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://vuejs.org/">
-              <v-img contain src="@/assets/vuejs-logo.svg" alt="Vue.js Logo"/>
+              <v-img contain src="@/assets/vuejs-logo.svg" alt="Vue.js Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://nodejs.org/">
-              <v-img contain src="@/assets/nodejs-logo.svg" alt="Node.js Logo"/>
+              <v-img contain src="@/assets/nodejs-logo.svg" alt="Node.js Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://vuetifyjs.com/en/">
-              <v-img contain src="@/assets/vuetify-logo.svg" alt="Vuetify Logo"/>
+              <v-img contain src="@/assets/vuetify-logo.svg" alt="Vuetify Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://www.w3.org/html/">
-              <v-img contain src="@/assets/html5-logo.svg" alt="HTML5 and CSS3 Logo"/>
+              <v-img contain src="@/assets/html5-logo.svg" alt="HTML5 and CSS3 Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="http://sass-lang.com/">
-              <v-img contain src="@/assets/sass-logo.svg" alt="Sass Logo"/>
+              <v-img contain src="@/assets/sass-logo.svg" alt="Sass Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href=" https://www.jetbrains.com/?from=elitebgs">
-              <v-img contain src="@/assets/jetbrains-logo.svg" alt="JetBrains Logo"/>
+              <v-img contain src="@/assets/jetbrains-logo.svg" alt="JetBrains Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://studio3t.com/">
-              <v-img contain src="@/assets/studio-3t-logo.png" alt="Studio 3T Logo"/>
+              <v-img contain src="@/assets/studio-3t-logo.png" alt="Studio 3T Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://www.bugsnag.com/open-source/">
-              <v-img contain src="@/assets/bugsnag-logo.svg" alt="Bugsnag Logo"/>
+              <v-img contain src="@/assets/bugsnag-logo.svg" alt="Bugsnag Logo" />
             </a>
           </v-col>
           <v-col cols="12" lg="2" md="3" sm="6" xs="12">
             <a href="https://www.cloudflare.com/">
-              <v-img contain src="@/assets/cloudflare-logo.svg" alt="Cloudflare Logo"/>
+              <v-img contain src="@/assets/cloudflare-logo.svg" alt="Cloudflare Logo" />
             </a>
           </v-col>
         </v-row>
@@ -238,25 +207,22 @@
           <v-col cols="12" md="6" sm="12">
             <a rel="nofollow" href="https://affiliate.namecheap.com/?affId=122323">
               Domain registered at
-              <img src="@/assets/namecheap-logo.svg" alt="Namecheap.com"/>
+              <img src="@/assets/namecheap-logo.svg" alt="Namecheap.com" />
             </a>
           </v-col>
           <v-col cols="12" md="6" sm="12">
             <a href="https://www.hetzner.com/">
               Site hosted on
-              <img src="@/assets/hetzner-logo.svg" alt="Hetzner"/>
+              <img src="@/assets/hetzner-logo.svg" alt="Hetzner" />
             </a>
           </v-col>
         </v-row>
         <div class="notice">
+          <p>Elite Shots © 2021</p>
           <p>
-            Elite Shots © 2021
-          </p>
-          <p>
-            All product names, logos, and brands are property of their respective owners. All company,
-            product
-            and service names used in this website are for identification purposes only. Use of these names,
-            logos, and brands does not imply endorsement or affiliation.
+            All product names, logos, and brands are property of their respective owners. All company, product and
+            service names used in this website are for identification purposes only. Use of these names, logos, and
+            brands does not imply endorsement or affiliation.
           </p>
         </div>
       </v-footer>

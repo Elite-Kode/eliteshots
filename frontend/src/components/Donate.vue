@@ -16,22 +16,23 @@
 
 <template>
   <div>
-    <ed-toolbar scroll-of-screen scroll-threshold="64"/>
+    <ed-toolbar scroll-of-screen scroll-threshold="64" />
     <v-main>
       <v-container fluid>
         <h1>Support Elite Shots</h1>
         <p>
           Hi,
-          <br> Thank you for showing interest in Elite Shots. Looking forward to suggestions and feedback. But as you
-          might know, running this website is a costly process. If you like my work, please consider making a donation
-          through the following channels.
+          <br />
+          Thank you for showing interest in Elite Shots. Looking forward to suggestions and feedback. But as you might
+          know, running this website is a costly process. If you like my work, please consider making a donation through
+          the following channels.
         </p>
         <v-row>
           <v-col cols="6">
-            <a class="patreon-button" href="https://www.patreon.com/bePatron?u=6593507"/>
+            <a class="patreon-button" href="https://www.patreon.com/bePatron?u=6593507" />
           </v-col>
           <v-col cols="6">
-            <a class="paypal-button" href="https://www.paypal.me/SayakMukhopadhyay"/>
+            <a class="paypal-button" href="https://www.paypal.me/SayakMukhopadhyay" />
           </v-col>
         </v-row>
         <p>

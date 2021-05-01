@@ -22,37 +22,39 @@ const state = {
   curated: []
 }
 const mutations = {
-  setPopular (state, popular) {
+  setPopular(state, popular) {
     state.popular = popular
   },
-  setRecents (state, recents) {
+  setRecents(state, recents) {
     state.recents = recents
   },
-  setCurated (state, curated) {
+  setCurated(state, curated) {
     state.curated = curated
   },
-  addPopular (state, popular) {
+  addPopular(state, popular) {
     state.popular.push(...popular)
   },
-  addRecents (state, recents) {
+  addRecents(state, recents) {
     state.recents.push(...recents)
   },
-  addCurated (state, curated) {
+  addCurated(state, curated) {
     state.curated.push(...curated)
   },
-  terminatePopular (state) {
+  terminatePopular(state) {
     state.popular = []
   },
-  terminateRecents (state) {
+  terminateRecents(state) {
     state.recents = []
   },
-  terminateCurated (state) {
+  terminateCurated(state) {
     state.curated = []
   },
-  increaseViewCount (state, { imageItem, authenticated }) {
-    let index = state.popular ? state.popular.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+  increaseViewCount(state, { imageItem, authenticated }) {
+    let index = state.popular
+      ? state.popular.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.popular[index].no_of_views = ++state.popular[index].no_of_views || 1
@@ -60,9 +62,11 @@ const mutations = {
         state.popular[index].anonymous_views = ++state.popular[index].anonymous_views || 1
       }
     }
-    index = state.recents ? state.recents.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.recents
+      ? state.recents.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.recents[index].no_of_views = ++state.recents[index].no_of_views || 1
@@ -70,9 +74,11 @@ const mutations = {
         state.recents[index].anonymous_views = ++state.recents[index].anonymous_views || 1
       }
     }
-    index = state.curated ? state.curated.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.curated
+      ? state.curated.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         state.curated[index].no_of_views = ++state.curated[index].no_of_views || 1
@@ -81,10 +87,12 @@ const mutations = {
       }
     }
   },
-  likeImage (state, { imageItem, authenticated }) {
-    let index = state.popular ? state.popular.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+  likeImage(state, { imageItem, authenticated }) {
+    let index = state.popular
+      ? state.popular.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.popular[index].self_like) {
@@ -95,9 +103,11 @@ const mutations = {
         state.popular[index].self_like = !state.popular[index].self_like
       }
     }
-    index = state.recents ? state.recents.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.recents
+      ? state.recents.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.recents[index].self_like) {
@@ -108,9 +118,11 @@ const mutations = {
         state.recents[index].self_like = !state.recents[index].self_like
       }
     }
-    index = state.curated ? state.curated.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.curated
+      ? state.curated.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.curated[index].self_like) {
@@ -122,10 +134,12 @@ const mutations = {
       }
     }
   },
-  saveImage (state, { imageItem, authenticated }) {
-    let index = state.popular ? state.popular.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+  saveImage(state, { imageItem, authenticated }) {
+    let index = state.popular
+      ? state.popular.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.popular[index].self_save) {
@@ -136,9 +150,11 @@ const mutations = {
         state.popular[index].self_save = !state.popular[index].self_save
       }
     }
-    index = state.recents ? state.recents.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.recents
+      ? state.recents.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.recents[index].self_save) {
@@ -149,9 +165,11 @@ const mutations = {
         state.recents[index].self_save = !state.recents[index].self_save
       }
     }
-    index = state.curated ? state.curated.findIndex(image => {
-      return image._id === imageItem._id
-    }) : -1
+    index = state.curated
+      ? state.curated.findIndex((image) => {
+          return image._id === imageItem._id
+        })
+      : -1
     if (index !== -1) {
       if (authenticated) {
         if (state.curated[index].self_save) {
@@ -165,7 +183,7 @@ const mutations = {
   }
 }
 const actions = {
-  async fetchPopular ({ commit }, last) {
+  async fetchPopular({ commit }, last) {
     let response = await axios.get('/frontend/public/images/popular', { params: { last } })
     let popular = response.data
     if (last) {
@@ -175,7 +193,7 @@ const actions = {
     }
     return popular
   },
-  async fetchRecents ({ commit }, last) {
+  async fetchRecents({ commit }, last) {
     let response = await axios.get('/frontend/public/images/recents', { params: { last } })
     let recents = response.data
     if (last) {
@@ -185,7 +203,7 @@ const actions = {
     }
     return recents
   },
-  async fetchCurated ({ commit }, last) {
+  async fetchCurated({ commit }, last) {
     let response = await axios.get('/frontend/public/images/curated', { params: { last } })
     let curated = response.data
     if (last) {
@@ -195,19 +213,19 @@ const actions = {
     }
     return curated
   },
-  async fetchImage ({ commit }, imageId) {
+  async fetchImage(context, imageId) {
     let response = await axios.get(`/frontend/public/images/${imageId}`)
     return response.data
   },
-  async triggerImageViewed ({ commit, rootState }, imageItem) {
+  async triggerImageViewed({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/public/images/${imageItem._id}/view`)
     commit('increaseViewCount', { imageItem, authenticated: rootState.auth.authenticated })
   },
-  async triggerImageLiked ({ commit, rootState }, imageItem) {
+  async triggerImageLiked({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/public/images/${imageItem._id}/like`)
     commit('likeImage', { imageItem, authenticated: rootState.auth.authenticated })
   },
-  async triggerImageSaved ({ commit, rootState }, imageItem) {
+  async triggerImageSaved({ commit, rootState }, imageItem) {
     await axios.put(`/frontend/public/images/${imageItem._id}/save`)
     commit('saveImage', { imageItem, authenticated: rootState.auth.authenticated })
   }

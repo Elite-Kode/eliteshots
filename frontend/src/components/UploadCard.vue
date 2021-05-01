@@ -3,7 +3,7 @@
     <ed-toolbar>
       <template v-slot:toolbar-tabs>
         <v-toolbar color="accent" dense light>
-          <v-spacer/>
+          <v-spacer />
           <v-toolbar-items>
             <v-combobox
               v-model="currentAlbumTitle"
@@ -11,7 +11,7 @@
               clearable
               label="Select or Make a new Album"
               solo-inverted
-              @input.native="currentAlbumTitle=$event.target.value"
+              @input.native="currentAlbumTitle = $event.target.value"
             />
             <v-btn icon @click="removeUploads">
               <v-icon>delete</v-icon>
@@ -27,13 +27,18 @@
       <v-container class="fill-height pa-0" fluid>
         <v-row class="flex-column mx-0 fill-height flex-nowrap">
           <v-col class="flex-grow-1 pa-0 uploaderColumn">
-            <vue-dropzone id="uploadDropzone" ref="uploadDropzone" :class="[{light: theme === themes[0]}, {dark: theme === themes[1]}]"
-                          :options="dropzoneOptions"
-                          class="fill-height outline d-flex justify-center"
-                          useCustomSlot
-                          @vdropzone-sending="onImageSending"
-                          @vdropzone-thumbnail="onImageUploaded"
-                          @vdropzone-success="onImageUploadSuccess" @vdropzone-error="onImageUploadError">
+            <vue-dropzone
+              id="uploadDropzone"
+              ref="uploadDropzone"
+              :class="[{ light: theme === themes[0] }, { dark: theme === themes[1] }]"
+              :options="dropzoneOptions"
+              class="fill-height outline d-flex justify-center"
+              useCustomSlot
+              @vdropzone-sending="onImageSending"
+              @vdropzone-thumbnail="onImageUploaded"
+              @vdropzone-success="onImageUploadSuccess"
+              @vdropzone-error="onImageUploadError"
+            >
               <div class="message">
                 <h3 class="title">Drag and drop to upload content!</h3>
                 <div class="subtitle">...or click to select a file from your computer</div>
@@ -49,15 +54,15 @@
                       <v-btn v-if="uploadImage.file.status === 'queued'" icon @click="removeImage(i)">
                         <v-icon x-large>cancel</v-icon>
                       </v-btn>
-                      <v-icon v-else-if="uploadImage.status === 'SUCCESS'"
-                              x-large>
-                        check
-                      </v-icon>
-                      <v-btn v-else-if="uploadImage.status === 'FAILED' || uploadImage.status === 'ERROR'" icon
-                             @click="retryUpload(i)">
+                      <v-icon v-else-if="uploadImage.status === 'SUCCESS'" x-large> check </v-icon>
+                      <v-btn
+                        v-else-if="uploadImage.status === 'FAILED' || uploadImage.status === 'ERROR'"
+                        icon
+                        @click="retryUpload(i)"
+                      >
                         <v-icon x-large>refresh</v-icon>
                       </v-btn>
-                      <v-progress-circular v-else indeterminate/>
+                      <v-progress-circular v-else indeterminate />
                     </div>
                   </v-img>
                 </v-col>
@@ -68,9 +73,7 @@
                         <v-subheader>Title</v-subheader>
                       </v-col>
                       <v-col cols="9">
-                        <v-text-field
-                          v-model="uploadImage.title"
-                          dense/>
+                        <v-text-field v-model="uploadImage.title" dense />
                       </v-col>
                     </v-row>
                     <v-row align="center">
@@ -78,9 +81,7 @@
                         <v-subheader>Description</v-subheader>
                       </v-col>
                       <v-col cols="9">
-                        <v-textarea
-                          v-model="uploadImage.description"
-                          dense/>
+                        <v-textarea v-model="uploadImage.description" dense />
                       </v-col>
                     </v-row>
                   </v-form>
@@ -106,9 +107,9 @@ export default {
     'ed-toolbar': Toolbar
   },
   props: {
-    'value': Boolean
+    value: Boolean
   },
-  data () {
+  data() {
     return {
       dropzoneOptions: {
         url: '/frontend/self/upload',
@@ -125,45 +126,47 @@ export default {
   },
   computed: {
     ...mapState({
-      theme: state => state.themes.theme,
-      themes: state => state.themes.themes,
-      albums: state => state.self.albums,
-      defaultAlbum: state => state.albums.defaultAlbum
+      theme: (state) => state.themes.theme,
+      themes: (state) => state.themes.themes,
+      albums: (state) => state.self.albums,
+      defaultAlbum: (state) => state.albums.defaultAlbum
     }),
-    albumTitles () {
-      return [this.defaultAlbum].concat(this.albums.map(album => {
-        return album.title
-      }))
+    albumTitles() {
+      return [this.defaultAlbum].concat(
+        this.albums.map((album) => {
+          return album.title
+        })
+      )
     }
   },
   watch: {
-    value (newValue) {
+    value(newValue) {
       if (newValue === true) {
         this.$store.dispatch('fetchAlbums')
       }
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('fetchAlbums')
   },
   methods: {
-    removeUploads () {
+    removeUploads() {
       this.$refs.uploadDropzone.removeAllFiles()
       this.uploadedImages = []
     },
-    startUpload () {
+    startUpload() {
       this.$refs.uploadDropzone.processQueue()
     },
-    onImageUploaded (file, thumbnail) {
+    onImageUploaded(file, thumbnail) {
       this.uploadedImages.push({ file, thumbnail })
     },
-    removeImage (index) {
+    removeImage(index) {
       let removedImages = this.uploadedImages.splice(index, 1)
       for (let removedImage of removedImages) {
         this.$refs.uploadDropzone.removeFile(removedImage.file)
       }
     },
-    async retryUpload (index) {
+    async retryUpload(index) {
       let image = this.uploadedImages[index]
       this.uploadedImages.splice(index, 1, {
         ...image,
@@ -194,8 +197,8 @@ export default {
         this.onImageUploadError(image.file, e.message)
       }
     },
-    onImageSending (file, xhr, formData) {
-      let index = this.uploadedImages.findIndex(image => {
+    onImageSending(file, xhr, formData) {
+      let index = this.uploadedImages.findIndex((image) => {
         return image.file === file
       })
       let image = this.uploadedImages[index]
@@ -215,8 +218,8 @@ export default {
         formData.append('albumTitle', this.currentAlbumTitle)
       }
     },
-    onImageUploadSuccess (file) {
-      let index = this.uploadedImages.findIndex(image => {
+    onImageUploadSuccess(file) {
+      let index = this.uploadedImages.findIndex((image) => {
         return image.file === file
       })
       let image = this.uploadedImages[index]
@@ -225,8 +228,8 @@ export default {
         status: 'SUCCESS'
       })
     },
-    onImageUploadError (file, message, xhr) {
-      let index = this.uploadedImages.findIndex(image => {
+    onImageUploadError(file, message, xhr) {
+      let index = this.uploadedImages.findIndex((image) => {
         return image.file === file
       })
       let image = this.uploadedImages[index]

@@ -18,16 +18,11 @@
   <div>
     <div>View History</div>
     <v-timeline align-top>
-      <v-timeline-item v-for="(view, i) in viewedImagesDeDuped"
-                       :key="i">
+      <v-timeline-item v-for="(view, i) in viewedImagesDeDuped" :key="i">
         <template v-slot:opposite>
           <v-card>
-            <v-img
-              :src="view.thumbnail_location"
-              class="image-thumbnail"
-              min-height="200px"
-              @click="clickThumbnail(i)">
-              <v-btn :to="{ name: 'image-item', params:{imageId: view._id}}" icon target="_blank" @click.stop="">
+            <v-img :src="view.thumbnail_location" class="image-thumbnail" min-height="200px" @click="clickThumbnail(i)">
+              <v-btn :to="{ name: 'image-item', params: { imageId: view._id } }" icon target="_blank" @click.stop="">
                 <v-icon>launch</v-icon>
               </v-btn>
             </v-img>
@@ -39,10 +34,7 @@
           </v-avatar>
         </template>
         <v-card class="chevron">
-          <v-toolbar class="px-3"
-                     color="primary"
-                     dark
-                     dense>
+          <v-toolbar class="px-3" color="primary" dark dense>
             <v-toolbar-title class="text-truncate">
               <span>{{ view.title }}</span>
             </v-toolbar-title>
@@ -54,20 +46,15 @@
         </v-card>
       </v-timeline-item>
     </v-timeline>
-    <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()"/>
+    <gallery :images="imageLinks" :index="selectedImageIndex" @close="closeGallery()" />
     <mugen-scroll :handler="fetchViews" :should-handle="!loading && !end">
-      <div v-if="end">
-        No more images
-      </div>
-      <div v-else>
-        loading...
-      </div>
+      <div v-if="end">No more images</div>
+      <div v-else>loading...</div>
     </mugen-scroll>
   </div>
 </template>
 
 <script>
-
 import { mapState } from 'vuex'
 import vueGallery from 'vue-gallery'
 import MugenScroll from 'vue-mugen-scroll'
@@ -76,10 +63,10 @@ import moment from 'moment'
 export default {
   name: 'ViewHistory',
   components: {
-    'gallery': vueGallery,
+    gallery: vueGallery,
     'mugen-scroll': MugenScroll
   },
-  data () {
+  data() {
     return {
       selectedImageIndex: null,
       loading: false,
@@ -88,12 +75,12 @@ export default {
   },
   computed: {
     ...mapState({
-      viewedImages: state => state.self.viewed
+      viewedImages: (state) => state.self.viewed
     }),
-    viewedImagesDeDuped () {
+    viewedImagesDeDuped() {
       let deDuped = []
       let count = 0
-      for (let i = 0; i < this.viewedImages.length;) {
+      for (let i = 0; i < this.viewedImages.length; ) {
         for (let j = i; j < this.viewedImages.length && this.viewedImages[i]._id === this.viewedImages[j]._id; j++) {
           count++
         }
@@ -107,29 +94,32 @@ export default {
       }
       return deDuped
     },
-    imageLinks () {
-      return this.viewedImages.map(view => {
+    imageLinks() {
+      return this.viewedImages.map((view) => {
         return view.low_res_location
       })
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('checkAuthenticated')
     this.$store.commit('terminateViewed')
   },
   methods: {
-    clickThumbnail (index) {
+    clickThumbnail(index) {
       this.selectedImageIndex = index
       this.$store.dispatch('triggerSelfImageViewed', this.viewedImages[index])
     },
-    closeGallery () {
+    closeGallery() {
       this.selectedImageIndex = null
     },
-    async fetchViews () {
+    async fetchViews() {
       this.loading = true
       let views = []
       if (this.viewedImages && this.viewedImages.length > 0) {
-        views = await this.$store.dispatch('fetchViewedImages', this.viewedImages[this.viewedImages.length - 1].viewed_at)
+        views = await this.$store.dispatch(
+          'fetchViewedImages',
+          this.viewedImages[this.viewedImages.length - 1].viewed_at
+        )
       } else {
         views = await this.$store.dispatch('fetchViewedImages', null)
       }

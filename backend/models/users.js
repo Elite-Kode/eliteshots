@@ -21,25 +21,30 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 
 let Schema = mongoose.Schema
 
-let users = new Schema({
-  discord_id: String,
-  discord_username: String,
-  discord_avatar: String,
-  discord_discriminator: String,
-  frontier_id: String,
-  commander: String,
-  trusted: Boolean,
-  patronage: {
-    level: { type: String, enum: ['BACKER', 'BENEFACTOR', 'PROMOTER', 'CONTRIBUTER', 'NONE'], uppercase: true },
-    since: Date
+let users = new Schema(
+  {
+    discord_id: String,
+    discord_username: String,
+    discord_avatar: String,
+    discord_discriminator: String,
+    frontier_id: String,
+    commander: String,
+    trusted: Boolean,
+    patronage: {
+      level: { type: String, enum: ['BACKER', 'BENEFACTOR', 'PROMOTER', 'CONTRIBUTER', 'NONE'], uppercase: true },
+      since: Date
+    },
+    donation: [
+      {
+        amount: Number,
+        date: Date
+      }
+    ],
+    access: { type: String, enum: ['NORMAL', 'MOD', 'BANNED', 'ADMIN'], uppercase: true },
+    joined_at: { type: Date, index: true }
   },
-  donation: [{
-    amount: Number,
-    date: Date
-  }],
-  access: { type: String, enum: ['NORMAL', 'MOD', 'BANNED', 'ADMIN'], uppercase: true },
-  joined_at: { type: Date, index: true }
-}, { runSettersOnQuery: true })
+  { runSettersOnQuery: true }
+)
 
 mongoose.plugin(mongoosePaginate)
 
