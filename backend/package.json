@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "start": "cross-env PORT=4021 pm2 start process.json --env production",
-    "startdev": "cross-env NODE_ENV=development nodemon --inspect=localhost:9129 ./bin/start.js"
+    "startdev": "cross-env NODE_ENV=development nodemon --inspect=localhost:9129 ./bin/start.js",
+    "lint": "eslint **/*.js",
+    "lint:fix": "eslint **/*.js --fix"
   },
   "dependencies": {
     "@bugsnag/js": "^7.9.0",
@@ -27,7 +29,11 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "nodemon": "^2.0.2",
-    "pm2": "^4.5.6"
+    "pm2": "^4.5.6",
+    "prettier": "^2.2.1"
   }
 }
