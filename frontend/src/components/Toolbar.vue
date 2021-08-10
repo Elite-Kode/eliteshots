@@ -10,7 +10,7 @@
     >
       <v-btn class="ml-4" exact icon large to="/">
         <v-avatar>
-          <v-img :src="require('@/assets/EliteShotsV1.svg')" alt="Elite Shots" />
+          <v-img :src="require('@/assets/shots-logo.svg')" alt="Elite Shots" />
         </v-avatar>
       </v-btn>
       <v-toolbar-title class="headline text-uppercase">

@@ -21,7 +21,7 @@
       <v-container fluid>
         <v-row>
           <v-col cols="12" lg="5" md="6">
-            <v-img :src="require('@/assets/EliteShotsV1.svg')" alt="Elite Shots Logo" contain height="50vh" />
+            <v-img :src="require('@/assets/shots-logo.svg')" alt="Elite Shots Logo" contain height="50vh" />
           </v-col>
           <v-col cols="12" lg="7" md="6">
             <h1 class="display-3">Elite Shots</h1>
