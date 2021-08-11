@@ -21,7 +21,7 @@
       <v-timeline-item v-for="(view, i) in viewedImagesDeDuped" :key="i">
         <template v-slot:opposite>
           <v-card>
-            <v-img :src="view.thumbnail_location" class="image-thumbnail" min-height="200px" @click="clickThumbnail(i)">
+            <v-img :src="view.image_location" class="image-thumbnail" min-height="200px" @click="clickThumbnail(i)">
               <v-btn :to="{ name: 'image-item', params: { imageId: view._id } }" icon target="_blank" @click.stop="">
                 <v-icon>launch</v-icon>
               </v-btn>
