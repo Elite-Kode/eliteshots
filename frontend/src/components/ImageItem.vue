@@ -133,6 +133,10 @@
               <div>
                 <h3 class="headline">{{ imageItem.title }}</h3>
                 <div>{{ imageItem.description }}</div>
+                <div>
+                  Image link : <a target="_blank" :href="imageItem.image_location">{{ imageItem.image_location }}</a>
+                  <v-icon>launch</v-icon>
+                </div>
               </div>
             </v-row>
           </v-card-title>
