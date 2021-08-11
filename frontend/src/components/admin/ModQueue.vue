@@ -35,6 +35,7 @@
       <template v-slot:thumbnail="slotProps">
         <v-card>
           <v-img
+            :aspect-ratio="1"
             :src="slotProps.imageItem.thumbnail_location"
             class="image-thumbnail"
             min-height="200px"

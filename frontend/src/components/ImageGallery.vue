@@ -17,7 +17,7 @@
 <template>
   <div>
     <v-row ref="imageContainer" class="mx-0" dense>
-      <v-col v-for="(imageItem, i) in imageItems" :key="i" cols="12" lg="3" md="4" sm="6">
+      <v-col v-for="(imageItem, i) in imageItems" :key="i" cols="12" lg="2" md="3" sm="4">
         <slot :clickThumbnail="clickThumbnail" :imageItem="imageItem" :itemIndex="i" name="thumbnail">
           <v-card>
             <v-hover v-slot="{ hover }">

@@ -17,7 +17,7 @@
 <template>
   <div>
     <v-row class="mx-0" dense>
-      <v-col v-for="(albumItem, i) in albumItems" :key="i" cols="12" lg="2" md="4" sm="6">
+      <v-col v-for="(albumItem, i) in albumItems" :key="i" cols="12" lg="2" md="3" sm="4">
         <slot :albumItem="albumItem" :clickThumbnail="clickThumbnail" :itemIdex="i" name="thumbnail">
           <v-card>
             <v-img
